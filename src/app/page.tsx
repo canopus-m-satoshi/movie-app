@@ -54,13 +54,15 @@ export default function Home() {
         <div className="flex justify-center gap-2 mt-5 w-fit mx-auto">
           <div className="flex-grow">
             <input
-              className="w-64 border px-2 py-1"
+              className="input input-bordered w-64 max-w-xs"
               type="text"
               placeholder="タイトル,ジャンル,気分を入力"
               onChange={(e) => handleOnChange(e)}
             />
           </div>
-          <button className=" border py-1 px-4" onClick={() => handleOnClick()}>
+          <button
+            className="btn btn-primary py-1"
+            onClick={() => handleOnClick()}>
             検索
           </button>
         </div>

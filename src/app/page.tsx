@@ -4,6 +4,8 @@ import axios from 'axios'
 import Image from 'next/image'
 import { useState } from 'react'
 
+import dummyImg from '../../public/assets/images/dummy-image.png'
+
 type Movie = {
   id: string
   title: string
@@ -47,6 +49,8 @@ export default function Home() {
       }
 
       const response = await axios.get(baseUrl, options)
+      console.log(response.data.results)
+
       return setMovies(response.data.results)
     } catch {
       throw new Error('Failed to fetch search results')
@@ -90,16 +94,22 @@ export default function Home() {
           {movies &&
             movies.map((movie) => (
               <div key={movie.id}>
-                <div>
-                  <Image
-                    src={`${poster_url}${movie.poster_path}`}
-                    alt={movie.title}
-                    width={300}
-                    height={440}
-                  />
-                </div>
+                <Image
+                  src={
+                    movie.poster_path
+                      ? `${poster_url}${movie.poster_path}`
+                      : dummyImg
+                  }
+                  alt={movie.poster_path ? movie.title : 'ダミー画像'}
+                  width={300}
+                  height={440}
+                />
                 <h3 className="font-bold text-2xl mt-3">{movie.title}</h3>
-                <p>公開日:{movie.release_date}</p>
+
+                <p>
+                  公開日:
+                  {movie.release_date ? movie.release_date : ' 不明'}
+                </p>
               </div>
             ))}
         </div>

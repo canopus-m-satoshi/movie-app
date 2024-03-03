@@ -1,6 +1,7 @@
 'use client'
 
 import axios from 'axios'
+import Image from 'next/image'
 import { useState } from 'react'
 
 type Movie = {
@@ -72,9 +73,11 @@ export default function Home() {
             movies.map((movie) => (
               <div key={movie.id}>
                 <div>
-                  <img
+                  <Image
                     src={`${poster_url}${movie.poster_path}`}
                     alt={movie.title}
+                    width={300}
+                    height={440}
                   />
                 </div>
                 <h3 className="font-bold text-2xl mt-3">{movie.title}</h3>

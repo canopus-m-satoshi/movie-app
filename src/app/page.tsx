@@ -13,25 +13,29 @@ type Movie = {
 }
 
 export default function Home() {
+  const [inputedText, setInputedText] = useState('')
   const [searchField, setSearchField] = useState('')
   const [movies, setMovies] = useState<Movie[]>([])
 
   const poster_url = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/'
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchField(e.target.value)
-
-    console.log(searchField)
+    setInputedText(e.target.value)
   }
 
   const handleOnClick = () => {
     searchMovies()
+    setSearchField(inputedText)
+    setInputedText('')
+  }
+
+  const handleOnClear = () => {
+    setInputedText('')
   }
 
   const searchMovies = async () => {
     const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
-    const baseUrl =
-      'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en&page=1&sort_by=popularity.desc'
+    const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=en-US&page=1`
 
     try {
       const options = {
@@ -41,6 +45,7 @@ export default function Home() {
           Authorization: `Bearer ${apiToken}`,
         },
       }
+
       const response = await axios.get(baseUrl, options)
       return setMovies(response.data.results)
     } catch {
@@ -59,16 +64,29 @@ export default function Home() {
               type="text"
               placeholder="タイトル,ジャンル,気分を入力"
               onChange={(e) => handleOnChange(e)}
+              value={inputedText}
             />
           </div>
+
           <button
             className="btn btn-primary py-1"
+            disabled={!inputedText}
             onClick={() => handleOnClick()}>
             検索
           </button>
+          <button
+            className="btn py-1"
+            disabled={!inputedText}
+            onClick={() => handleOnClear()}>
+            クリア
+          </button>
         </div>
 
-        <div className="grid grid-cols-5 gap-y-10 gap-x-4">
+        <div className="my-8">
+          <p className="">検索キーワード：{searchField}</p>
+        </div>
+
+        <div className="grid grid-cols-5 gap-y-10 gap-x-4 ">
           {movies &&
             movies.map((movie) => (
               <div key={movie.id}>

@@ -17,6 +17,7 @@ type Movie = {
 export default function Home() {
   const [inputedText, setInputedText] = useState('')
   const [searchField, setSearchField] = useState('')
+  const [isShowInputedText, setIsShowInputedText] = useState(false)
   const [movies, setMovies] = useState<Movie[]>([])
 
   const poster_url = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/'
@@ -28,16 +29,18 @@ export default function Home() {
   const handleOnClick = () => {
     searchMovies()
     setSearchField(inputedText)
+    setIsShowInputedText(true)
     setInputedText('')
   }
 
   const handleOnClear = () => {
-    setInputedText('')
+    setIsShowInputedText(false)
+    setMovies([])
   }
 
   const searchMovies = async () => {
     const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
-    const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=en-US&page=1`
+    const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=1`
 
     try {
       const options = {
@@ -49,7 +52,6 @@ export default function Home() {
       }
 
       const response = await axios.get(baseUrl, options)
-      console.log(response.data.results)
 
       return setMovies(response.data.results)
     } catch {
@@ -80,15 +82,17 @@ export default function Home() {
           </button>
           <button
             className="btn py-1"
-            disabled={!inputedText}
+            disabled={!movies}
             onClick={() => handleOnClear()}>
             クリア
           </button>
         </div>
 
-        <div className="my-8">
-          <p className="">検索キーワード：{searchField}</p>
-        </div>
+        {isShowInputedText && (
+          <div className="my-8">
+            <p className="">検索キーワード：{searchField}</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-5 gap-y-10 gap-x-4 ">
           {movies &&

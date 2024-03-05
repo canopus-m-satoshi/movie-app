@@ -17,37 +17,35 @@ type Movie = {
 export default function Home() {
   const [inputedText, setInputedText] = useState('')
   const [searchField, setSearchField] = useState('')
-  const [isShowInputedText, setIsShowInputedText] = useState(false)
   const [isShowLoadButton, setIsShowLoadButton] = useState(false)
   const [movies, setMovies] = useState<Movie[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState<number>(0)
 
-  const poster_url = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/'
+  const posterURL = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/'
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const isSearched = totalPages > 0
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputedText(e.target.value)
   }
 
-  const handleOnClick = () => {
+  const searchMoviesOnClick = () => {
     searchMovies()
     setSearchField(inputedText)
-    setIsShowInputedText(true)
     setCurrentPage((prevPage) => prevPage + 1)
   }
 
-  const handleOnClear = () => {
+  const handleClear = () => {
     setInputedText('')
-    setIsShowInputedText(false)
     setIsShowLoadButton(false)
     setMovies([])
     setCurrentPage(1)
     setTotalPages(0)
   }
 
-  const handleOnLoad = () => {
+  const loadMoreMovies = () => {
     setCurrentPage((prevPage) => prevPage + 1)
-
     searchMovies()
   }
 
@@ -68,15 +66,13 @@ export default function Home() {
 
       setMovies((prevMovies) => [...prevMovies, ...response.data.results])
       setTotalPages(response.data.total_pages)
-
-      setIsShowInputedText(true)
     } catch {
       throw new Error('Failed to fetch search results')
     }
   }
 
   useEffect(() => {
-    if (totalPages >= 1) {
+    if (totalPages > 1) {
       setIsShowLoadButton(true)
     } else {
       setIsShowLoadButton(false)
@@ -97,26 +93,26 @@ export default function Home() {
               className="input input-bordered w-64 max-w-xs"
               type="text"
               placeholder="タイトル,ジャンル,気分を入力"
-              onChange={(e) => handleOnChange(e)}
+              onChange={(e) => handleInputChange(e)}
               value={inputedText}
             />
           </div>
 
           <button
             className="btn btn-primary py-1"
-            disabled={!inputedText}
-            onClick={() => handleOnClick()}>
+            disabled={totalPages > 0}
+            onClick={() => searchMoviesOnClick()}>
             検索
           </button>
           <button
             className="btn py-1"
             disabled={!movies}
-            onClick={() => handleOnClear()}>
+            onClick={() => handleClear()}>
             クリア
           </button>
         </div>
 
-        {isShowInputedText && (
+        {isSearched && (
           <div className="my-8">
             <p className="">検索キーワード：{searchField}</p>
           </div>
@@ -131,7 +127,7 @@ export default function Home() {
                     <Image
                       src={
                         movie.poster_path
-                          ? `${poster_url}${movie.poster_path}`
+                          ? `${posterURL}${movie.poster_path}`
                           : dummyImg
                       }
                       alt={movie.poster_path ? movie.title : 'ダミー画像'}
@@ -150,7 +146,7 @@ export default function Home() {
               {isShowLoadButton && (
                 <button
                   className="btn btn-primary block w-fit mx-auto mt-6"
-                  onClick={handleOnLoad}>
+                  onClick={loadMoreMovies}>
                   さらに読み込む
                 </button>
               )}

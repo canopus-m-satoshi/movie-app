@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from 'react'
 
 import dummyImg from '../../../public/assets/images/dummy-image.png'
 import Loading from '../components/Loading'
+import Link from 'next/link'
 import { Movie } from '../types/Movie'
 
 export default function Home() {
@@ -124,7 +125,7 @@ export default function Home() {
               <>
                 <div className="grid grid-cols-5 gap-y-10 gap-x-4">
                   {movies.map((movie) => (
-                    <div key={movie.id}>
+                    <Link key={movie.id} href={`/movie/${movie.id}`}>
                       <Image
                         src={
                           movie.poster_path
@@ -140,7 +141,7 @@ export default function Home() {
                         公開日:
                         {movie.release_date ? movie.release_date : ' 不明'}
                       </p>
-                    </div>
+                    </Link>
                   ))}
                 </div>
 

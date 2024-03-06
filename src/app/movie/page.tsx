@@ -6,14 +6,7 @@ import { Suspense, useEffect, useState } from 'react'
 
 import dummyImg from '../../../public/assets/images/dummy-image.png'
 import Loading from '../components/Loading'
-
-type Movie = {
-  id: string
-  title: string
-  overview: string
-  poster_path: string
-  release_date: string
-}
+import { Movie } from '../types/Movie'
 
 export default function Home() {
   const [inputedText, setInputedText] = useState('')

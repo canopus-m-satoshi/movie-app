@@ -4,7 +4,6 @@ import axios from 'axios'
 import Image from 'next/image'
 import { Suspense, useEffect, useState } from 'react'
 
-import dummyImg from '../../../public/assets/images/dummy-image.png'
 import Loading from '../components/Loading'
 import Link from 'next/link'
 import { Movie } from '../types/Movie'
@@ -130,7 +129,7 @@ export default function Home() {
                         src={
                           movie.poster_path
                             ? `${posterURL}${movie.poster_path}`
-                            : dummyImg
+                            : '/dummy-image.png'
                         }
                         alt={movie.poster_path ? movie.title : 'ダミー画像'}
                         width={300}

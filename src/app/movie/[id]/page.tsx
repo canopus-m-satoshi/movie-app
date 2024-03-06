@@ -1,5 +1,4 @@
 import axios from 'axios'
-import dummyImg from '../../../../public/assets/images/dummy-image.png'
 import Image from 'next/image'
 import { Movie } from '@/app/types/Movie'
 
@@ -41,7 +40,7 @@ export default async function MovieDetails({
               src={
                 movie.poster_path
                   ? `${posterURL}${movie.poster_path}`
-                  : dummyImg
+                  : '/dummy-image.png'
               }
               alt={movie.poster_path ? movie.title : 'ダミー画像'}
               width={300}

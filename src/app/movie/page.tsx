@@ -7,6 +7,7 @@ import { Suspense, useEffect, useState } from 'react'
 import Loading from '../components/Loading'
 import Link from 'next/link'
 import { Movie } from '../types/Movie'
+import { posterURL } from '@/constants/posterURL'
 
 export default function Home() {
   const [inputedText, setInputedText] = useState('')
@@ -16,8 +17,6 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(false)
-
-  const posterURL = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/'
 
   const isSearched = totalPages > 0
 

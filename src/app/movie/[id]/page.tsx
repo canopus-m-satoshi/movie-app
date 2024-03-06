@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Image from 'next/image'
 import { Movie } from '@/app/types/Movie'
+import { posterURL } from '@/constants/posterURL'
 
 type Genres = Pick<Movie, 'genres'>
 
@@ -27,7 +28,6 @@ export default async function MovieDetails({
 }: {
   params: { id: number }
 }) {
-  const posterURL = 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/'
   const res = await fetchMovie(params.id)
   const movie = res.data
 

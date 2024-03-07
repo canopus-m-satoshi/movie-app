@@ -1,34 +1,17 @@
 import axios from 'axios'
 import Image from 'next/image'
 import { Movie } from '@/app/types/Movie'
+import { getMovieDetails } from '@/api/movie/gethMovieDetails/route'
 import { posterURL } from '@/constants/posterURL'
 
 type Genres = Pick<Movie, 'genres'>
 
-const fetchMovie = async (id: number) => {
-  const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
-  const baseUrl = `https://api.themoviedb.org/3/movie/${id}?language=ja`
-
-  try {
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${apiToken}`,
-      },
-    }
-
-    return await axios.get(baseUrl, options)
-  } catch (error) {
-    throw new Error('Failed to fetch search results')
-  }
-}
 export default async function MovieDetails({
   params,
 }: {
   params: { id: number }
 }) {
-  const res = await fetchMovie(params.id)
+  const res = await getMovieDetails(params.id)
   const movie = res.data
 
   return (

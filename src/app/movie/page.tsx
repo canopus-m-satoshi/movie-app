@@ -2,7 +2,7 @@
 
 import axios from 'axios'
 import Image from 'next/image'
-import { Suspense, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Loading from '../components/Loading'
 import Link from 'next/link'
@@ -45,10 +45,10 @@ export default function Home() {
 
   const searchMovies = async () => {
     setIsLoading(true)
-    const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
-    const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=${currentPage}`
 
     try {
+      const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
+      const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=${currentPage}`
       const options = {
         method: 'GET',
         headers: {
@@ -56,7 +56,6 @@ export default function Home() {
           Authorization: `Bearer ${apiToken}`,
         },
       }
-
       const response = await axios.get(baseUrl, options)
 
       setMovies((prevMovies) => [...prevMovies, ...response.data.results])

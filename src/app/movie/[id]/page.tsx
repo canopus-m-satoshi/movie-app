@@ -1,8 +1,11 @@
-import axios from 'axios'
 import Image from 'next/image'
 import { Movie } from '@/app/types/Movie'
 import { getMovieDetails } from '@/api/movie/gethMovieDetails/route'
 import { posterURL } from '@/constants/posterURL'
+import Link from 'next/link'
+import { IoCaretBackOutline } from 'react-icons/io5'
+import { FaBookmark, FaHeart, FaList } from 'react-icons/fa'
+import TooltipButton from '@/app/components/TooltipButton'
 
 type Genres = Pick<Movie, 'genres'>
 
@@ -46,10 +49,22 @@ export default async function MovieDetails({
           <div className="col-span-2 row-span-1">
             <p>{movie.overview}</p>
           </div>
-          <div className="col-start-3 col-span-1 row-start-3">
-            <button className="btn">addFavoritButton</button>
-            <button className="btn ml-3">WatchedButton</button>
+          <div className="col-start-3 col-span-1 row-start-3 flex gap-4">
+            <TooltipButton icon={<FaHeart />} tip="お気に入りに追加する" />
+            <TooltipButton
+              icon={<FaBookmark />}
+              tip="ウォッチリストに追加する"
+            />
+            <TooltipButton icon={<FaList />} tip="リストに追加する" />
           </div>
+        </div>
+
+        {/* TODO：戻った際に検索結果を保持させる機能の実装 */}
+        <div className="w-fit mx-auto mt-6">
+          <Link href={'/movie'} className="btn btn-accent rounded-full">
+            <IoCaretBackOutline />
+            <span className="pr-2">戻る</span>
+          </Link>
         </div>
       </div>
     </>

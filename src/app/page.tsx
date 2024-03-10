@@ -8,7 +8,6 @@ export default function Home() {
           映画を検索するアプリです
         </h2>
 
-        {/* この要素を中央寄せにしたい */}
         <div className="flex justify-center items-center mt-20">
           <Link href={'/movie/'} className="btn btn-active btn-primary">
             映画タイトルで検索する

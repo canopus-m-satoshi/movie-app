@@ -79,14 +79,14 @@ export default function Home() {
 
   return (
     <main className="mt-5">
-      <div className="container mx-auto py-8">
-        <h2 className="text-center font-bold text-4xl">
+      <div className="container mx-auto py-8 px-3 md:px-0">
+        <h2 className="text-center font-bold  text-xl md:text-4xl">
           映画を検索 名探偵コナン
         </h2>
-        <div className="flex justify-center gap-2 mt-5 w-fit mx-auto">
+        <div className="flex justify-center flex-wrap gap-2 mt-5 w-fit mx-auto">
           <div className="flex-grow">
             <input
-              className="input input-bordered w-64 max-w-xs"
+              className="input input-bordered w-full md:w-64"
               type="text"
               placeholder="タイトル,ジャンル,気分を入力"
               onChange={(e) => handleInputChange(e)}
@@ -95,13 +95,13 @@ export default function Home() {
           </div>
 
           <button
-            className="btn btn-primary py-1"
+            className="btn btn-primary whitespace-nowrap	 py-1 basis-[48%] md:basis-[15%]"
             disabled={totalPages > 0}
             onClick={() => searchMoviesOnClick()}>
             検索
           </button>
           <button
-            className="btn py-1"
+            className="btn py-1 whitespace-nowrap basis-[48%] md:basis-[15%]"
             disabled={!movies}
             onClick={() => handleClear()}>
             クリア
@@ -109,7 +109,7 @@ export default function Home() {
         </div>
 
         {isSearched && (
-          <div className="my-8">
+          <div className="my-4 md:my-8">
             <p className="">検索キーワード：{searchField}</p>
           </div>
         )}
@@ -120,7 +120,7 @@ export default function Home() {
           <div>
             {movies && (
               <>
-                <div className="grid grid-cols-5 gap-y-10 gap-x-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-4">
                   {movies.map((movie) => (
                     <Link key={movie.id} href={`/movie/${movie.id}`}>
                       <Image
@@ -133,7 +133,9 @@ export default function Home() {
                         width={300}
                         height={440}
                       />
-                      <h3 className="font-bold text-2xl mt-3">{movie.title}</h3>
+                      <h3 className="font-bold text-lg lg:text-2xl mt-3">
+                        {movie.title}
+                      </h3>
                       <p>
                         公開日:
                         {movie.release_date ? movie.release_date : ' 不明'}

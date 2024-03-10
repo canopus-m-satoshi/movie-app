@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <main className="mt-5">
       <div className="container mx-auto py-8">
-        <h2 className="text-center font-bold text-4xl">
+        <h2 className="text-center font-bold text-xl md:text-4xl">
           映画を検索するアプリです
         </h2>
 

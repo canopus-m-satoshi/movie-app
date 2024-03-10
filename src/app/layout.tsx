@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import StoreProvider from './provider/StoreProvider'
 
 export const metadata: Metadata = {
   title: 'Movie App',
@@ -17,11 +18,13 @@ export default function RootLayout({
   return (
     <html lang="jp">
       <body>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <div className="flex-grow">{children}</div>
-          <Footer />
-        </div>
+        <StoreProvider>
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <div className="flex-grow">{children}</div>
+            <Footer />
+          </div>
+        </StoreProvider>
       </body>
     </html>
   )

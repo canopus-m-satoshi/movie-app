@@ -1,4 +1,4 @@
-import { auth } from '@/lib/firebase'
+import { auth, db } from '@/lib/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   GoogleAuthProvider,
@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   signOut,
 } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
 
 interface AuthState {
   user: null | { uid: string; email: string | null }
@@ -48,8 +49,20 @@ export const signInWithGoogle = createAsyncThunk(
     try {
       const provider = new GoogleAuthProvider()
       const result = await signInWithPopup(auth, provider)
+      const user = result.user
 
-      return { uid: result.user.uid, email: result.user.email }
+      const usersRef = doc(db, 'users', user.uid)
+      await setDoc(
+        usersRef,
+        {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+        },
+        { merge: true },
+      )
+
+      return { uid: user.uid, email: user.email }
     } catch (error: any) {
       return rejectWithValue(error.message)
     }

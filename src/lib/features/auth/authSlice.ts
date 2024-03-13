@@ -15,6 +15,11 @@ interface AuthState {
   error: string | undefined
 }
 
+interface User {
+  uid: string
+  email: string | null
+}
+
 const initialState: AuthState = { user: null, status: 'idle', error: undefined }
 
 export const signIn = createAsyncThunk(
@@ -83,6 +88,22 @@ export const signOutUser = createAsyncThunk(
   },
 )
 
+export const checkAuthStatus = createAsyncThunk<User>(
+  'auth/checkAuthStatus',
+  async (_, { rejectWithValue }) => {
+    const auth = getAuth()
+    return new Promise((resolve, reject) => {
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          resolve({ uid: user.uid, email: user.email })
+        } else {
+          reject(rejectWithValue('No user logged in'))
+        }
+      })
+    })
+  },
+)
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -123,8 +144,22 @@ const authSlice = createSlice({
         state.error = action.payload as string
       })
       .addCase(signOutUser.fulfilled, (state) => {
-        state.user = null
         state.status = 'idle'
+        state.user = null
+      })
+      .addCase(checkAuthStatus.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        state.user = action.payload
+      })
+      .addCase(checkAuthStatus.rejected, (state, action) => {
+        state.status = 'failed'
+        // action.payloadがstring型であることを確認
+        if (typeof action.payload === 'string') {
+          state.error = action.payload
+        } else {
+          // action.payloadがstring型でない場合のデフォルトエラーメッセージ
+          state.error = 'An unknown error occurred'
+        }
       })
   },
 })

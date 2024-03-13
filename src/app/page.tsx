@@ -1,6 +1,19 @@
+'use client'
+
+import { useDispatch } from 'react-redux'
+import { checkAuthStatus } from '@/lib/features/auth/authSlice'
+import { useEffect } from 'react'
+
 import Link from 'next/link'
+import { AppDispatch } from '@/lib/store'
 
 export default function Home() {
+  const dispatch: AppDispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(checkAuthStatus())
+  }, [dispatch])
+
   return (
     <main className="mt-5">
       <div className="container mx-auto py-8">

@@ -43,9 +43,7 @@ const SignUp = () => {
   const signUpWithGoogle = async () => {
     const provider = new GoogleAuthProvider()
     signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log('Googleアカウントでのログイン成功', result.user)
-      })
+      .then((result) => {})
       .catch((error) => {
         console.error('Googleアカウントでのログイン失敗', error)
       })

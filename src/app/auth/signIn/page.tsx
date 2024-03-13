@@ -14,11 +14,12 @@ import { auth } from '@/lib/firebase'
 import { signInWithGoogle } from '@/lib/features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/lib/store'
-
+import { useRouter } from 'next/navigation'
 const SignIn = () => {
   const [emailInput, setEmailInput] = useState('')
   const [passwordInput, setPasswordInput] = useState('')
   const [isShowPassword, setIsShowPassword] = useState(false)
+  const router = useRouter()
 
   const dispatch: AppDispatch = useDispatch()
 
@@ -44,6 +45,8 @@ const SignIn = () => {
 
   const handleGoogleSignIn = async () => {
     await dispatch(signInWithGoogle())
+
+    await router.push('/movie')
 
     toast.success('ログインしました', {
       position: 'bottom-right',

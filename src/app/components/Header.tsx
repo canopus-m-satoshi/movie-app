@@ -34,8 +34,14 @@ const Header = () => {
           <Link href={'/movie'}>MOVIE APP</Link>
         </h1>
 
-        <div className="dropdown dropdown-left">
-          <div tabIndex={0} role="button">
+        <div className="dropdown dropdown-bottom dropdown-end">
+          <div
+            tabIndex={0}
+            role="button"
+            className="flex items-center gap-1 group">
+            <p className="inline-block border-b border-black group-hover:border-transparent">
+              {user ? user.displayName : 'ゲスト'}
+            </p>
             <CgProfile size={30} />
           </div>
           <ul

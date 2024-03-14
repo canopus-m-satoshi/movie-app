@@ -62,7 +62,7 @@ export const signInWithGoogle = createAsyncThunk(
         { merge: true },
       )
 
-      return { uid: user.uid, email: user.email }
+      return { uid: user.uid, email: user.email, displayName: user.displayName }
     } catch (error: any) {
       return rejectWithValue(error.message)
     }

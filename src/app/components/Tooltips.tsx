@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, RootState } from '@/lib/store'
 import { addMovieToList } from '@/lib/features/lists/listsSlice'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { toastConfig } from '@/lib/toastConfig'
+import Loading from './Loading'
 
 type ListType = 'favorites' | 'watchlist' | 'custom'
 type Props = {
@@ -18,7 +19,7 @@ type Props = {
 const Tooltips = ({ movieId }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
-  const uid = useSelector((state: RootState) => state.auth.user.uid)
+  const uid = useSelector((state: RootState) => state.auth.user?.uid)
 
   const usersLists = useSelector(
     (state: RootState) => state.lists.usersLists[uid],
@@ -64,6 +65,16 @@ const Tooltips = ({ movieId }: Props) => {
       default:
         break
     }
+  }
+
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) {
+    return <Loading />
   }
 
   return (

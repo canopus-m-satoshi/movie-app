@@ -1,6 +1,13 @@
 import { db } from '@/lib/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore'
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore'
 
 type ListType = 'favorites' | 'watchlist' | 'custom'
 
@@ -20,30 +27,56 @@ interface AddMoviePayload {
   uid: string
 }
 
+interface ToggleMoviePayload {
+  listType: ListType
+  movieId: string
+  uid: string
+}
+
 const initialState: ListsState = {
   usersLists: {},
   status: 'idle',
   error: undefined,
 }
 
-export const addMovieToList = createAsyncThunk<
-  AddMoviePayload,
-  AddMoviePayload,
+export const toggleMovieInList = createAsyncThunk<
+  ToggleMoviePayload,
+  ToggleMoviePayload,
   { rejectValue: string }
->('lists/addMovie', async ({ listType, movieId, uid }, { rejectWithValue }) => {
-  try {
-    const listDocRef = doc(db, 'users', uid, 'lists', listType)
+>(
+  'lists/toggleMovie',
+  async ({ listType, movieId, uid }, { rejectWithValue }) => {
+    try {
+      const listDocRef = doc(db, 'users', uid, 'lists', listType)
+      const docSnap = await getDoc(listDocRef)
 
-    await setDoc(listDocRef, { movieIds: arrayUnion(movieId) }, { merge: true })
+      if (docSnap.exists()) {
+        const data = docSnap.data()
+        if (data.movieIds && data.movieIds.includes(movieId)) {
+          // 映画がリストに既に存在する場合、削除
+          await updateDoc(listDocRef, { movieIds: arrayRemove(movieId) })
+        } else {
+          // 映画がリストに存在しない場合、追加
+          await updateDoc(
+            listDocRef,
+            { movieIds: arrayUnion(movieId) },
+            { merge: true },
+          )
+        }
+      } else {
+        // ドキュメントが存在しない場合、新規作成して映画を追加
+        await setDoc(listDocRef, { movieIds: [movieId] }, { merge: true })
+      }
 
-    return { listType, movieId, uid }
-  } catch (error) {
-    if (error instanceof Error) {
-      return rejectWithValue(error.message)
+      return { listType, movieId, uid }
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message)
+      }
+      return rejectWithValue('An unknown error occurred')
     }
-    return rejectWithValue('An unknown error occurred')
-  }
-})
+  },
+)
 
 const listsSlice = createSlice({
   name: 'lists',
@@ -51,23 +84,34 @@ const listsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(addMovieToList.pending, (state) => {
+      .addCase(toggleMovieInList.pending, (state) => {
         state.status = 'loading'
       })
-      .addCase(addMovieToList.fulfilled, (state, action) => {
+      .addCase(toggleMovieInList.fulfilled, (state, action) => {
         state.status = 'succeeded'
         const { listType, movieId, uid } = action.payload
 
+        // ユーザーのリストが未定義の場合は初期化
         if (!state.usersLists[uid]) {
           state.usersLists[uid] = { favorites: [], watchlist: [], custom: [] }
         }
+
+        // リストタイプが未定義の場合は初期化
         if (!state.usersLists[uid][listType]) {
           state.usersLists[uid][listType] = []
         }
 
-        state.usersLists[uid][listType].push(movieId)
+        if (state.usersLists[uid][listType].includes(movieId)) {
+          // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成
+          state.usersLists[uid][listType] = state.usersLists[uid][
+            listType
+          ].filter((id) => id !== movieId)
+        } else {
+          // 映画IDがリスト内に存在しない場合、リストに追加
+          state.usersLists[uid][listType].push(movieId)
+        }
       })
-      .addCase(addMovieToList.rejected, (state, action) => {
+      .addCase(toggleMovieInList.rejected, (state, action) => {
         state.status = 'failed'
         if (typeof action.payload === 'string') {
           state.error = action.payload

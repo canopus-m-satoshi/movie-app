@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/lib/store'
 import { addMovieToList } from '@/lib/features/lists/listsSlice'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
+import { toastConfig } from '@/lib/toastConfig'
 
 type ListType = 'favorites' | 'watchlist' | 'custom'
 type Props = {
@@ -36,16 +38,22 @@ const Tooltips = ({ movieId }: Props) => {
         usersLists.favorites.includes(movieId)
           ? setIsFavorite(true)
           : setIsFavorite(false)
+
+        toast.success('お気に入りリストに追加しました', toastConfig)
         break
       case 'watchlist':
         usersLists.watchlist.includes(movieId)
           ? setIsWatchlist(true)
           : setIsWatchlist(false)
+
+        toast.success('ウォッチリストに追加しました', toastConfig)
         break
       case 'custom':
         usersLists.custom.includes(movieId)
           ? setIsCustom(true)
           : setIsCustom(false)
+
+        toast.success('リストに追加しました', toastConfig)
         break
 
       default:

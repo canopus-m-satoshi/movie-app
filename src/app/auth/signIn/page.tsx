@@ -8,13 +8,14 @@ import { IoIosEyeOff, IoMdEye, IoMdMail } from 'react-icons/io'
 import { IoKey } from 'react-icons/io5'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 
-import { Bounce, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 
 import { auth } from '@/lib/firebase'
 import { signInWithGoogle } from '@/lib/features/auth/authSlice'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/lib/store'
 import { useRouter } from 'next/navigation'
+import { toastConfig } from '@/lib/toastConfig'
 const SignIn = () => {
   const [emailInput, setEmailInput] = useState('')
   const [passwordInput, setPasswordInput] = useState('')
@@ -48,17 +49,7 @@ const SignIn = () => {
 
     await router.push('/movie')
 
-    toast.success('ログインしました', {
-      position: 'bottom-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-      transition: Bounce,
-    })
+    toast.success('ログインしました', toastConfig)
   }
 
   return (

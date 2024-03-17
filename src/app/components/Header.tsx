@@ -4,8 +4,9 @@ import Link from 'next/link'
 import { CgProfile } from 'react-icons/cg'
 import { useDispatch, useSelector } from 'react-redux'
 import { signOutUser } from '@/lib/features/auth/authSlice'
-import { Bounce, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { AppDispatch } from '@/lib/store'
+import { toastConfig } from '@/lib/toastConfig'
 
 const Header = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -14,17 +15,7 @@ const Header = () => {
   const handleSignOut = () => {
     dispatch(signOutUser())
 
-    toast.success('ログアウトしました', {
-      position: 'bottom-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-      transition: Bounce,
-    })
+    toast.success('ログアウトしました', toastConfig)
   }
 
   return (

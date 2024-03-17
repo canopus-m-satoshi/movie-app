@@ -1,12 +1,15 @@
 type Props = {
   icon: React.ReactNode
   tip: string
+  onClick: () => void
 }
 
-const TooltipButton = ({ icon, tip }: Props) => {
+const TooltipButton = ({ icon, tip, onClick }: Props) => {
   return (
     <div className="tooltip" data-tip={tip}>
-      <button className="btn rounded-badge">{icon}</button>
+      <button className="btn rounded-badge" onClick={onClick}>
+        {icon}
+      </button>
     </div>
   )
 }

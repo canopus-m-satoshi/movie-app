@@ -24,10 +24,15 @@ const Tooltips = ({ movieId }: Props) => {
     (state: RootState) => state.lists.usersLists[uid],
   )
 
-  // The UI state is derived from whether the movieId is in the corresponding list
-  const [isFavorite, setIsFavorite] = useState(false)
-  const [isWatchlist, setIsWatchlist] = useState(false)
-  const [isCustom, setIsCustom] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(
+    usersLists?.favorites?.includes(movieId),
+  )
+  const [isWatchlist, setIsWatchlist] = useState(
+    usersLists?.watchlist?.includes(movieId),
+  )
+  const [isCustom, setIsCustom] = useState(
+    usersLists?.custom?.includes(movieId),
+  )
 
   // This function dispatches the RTK action and is concerned with the application state
   const onAddLists = async (listType: ListType, movieId: string) => {

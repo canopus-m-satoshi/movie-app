@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const getMovieDetails = async (id: number) => {
+export const getMovieDetails = async (id: number | string) => {
   const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
   const baseUrl = `https://api.themoviedb.org/3/movie/${id}?language=ja`
 

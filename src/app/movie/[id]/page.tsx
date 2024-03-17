@@ -1,11 +1,11 @@
 import Image from 'next/image'
+import Link from 'next/link'
+import { IoCaretBackOutline } from 'react-icons/io5'
+
 import { Movie } from '@/app/types/Movie'
 import { getMovieDetails } from '@/api/movie/gethMovieDetails/route'
 import { posterURL } from '@/constants/posterURL'
-import Link from 'next/link'
-import { IoCaretBackOutline } from 'react-icons/io5'
-import { FaBookmark, FaHeart, FaList } from 'react-icons/fa'
-import TooltipButton from '@/app/components/TooltipButton'
+import Tooltips from '@/app/components/Tooltips'
 
 type Genres = Pick<Movie, 'genres'>
 
@@ -47,14 +47,9 @@ export default async function MovieDetails({
               ))}
             </ul>
           </div>
-          <div className="md:col-span-2 md:row-span-1 flex gap-4 ml-0 mr-auto w-fit">
-            <TooltipButton icon={<FaHeart />} tip="お気に入りに追加する" />
-            <TooltipButton
-              icon={<FaBookmark />}
-              tip="ウォッチリストに追加する"
-            />
-            <TooltipButton icon={<FaList />} tip="リストに追加する" />
-          </div>
+
+          <Tooltips movieId={params.id} />
+
           <div className="md:col-span-3 xl:col-span-2">
             <p>{movie.overview}</p>
           </div>

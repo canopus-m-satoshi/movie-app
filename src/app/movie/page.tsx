@@ -8,6 +8,23 @@ import Loading from '../components/Loading'
 import Link from 'next/link'
 import { Movie } from '../types/Movie'
 import { posterURL } from '@/constants/posterURL'
+import useSWR from 'swr'
+
+type FetchFunc = (url: string, token: string) => Promise<any>
+
+const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
+
+const fetchWithToken: FetchFunc = async (url, token) => {
+  try {
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    throw error
+  }
+}
 
 export default function Home() {
   const [inputedText, setInputedText] = useState('')
@@ -17,8 +34,18 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(false)
-
   const isSearched = totalPages > 0
+
+  const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=${currentPage}`
+
+  const useCustomFetch = (url) => {
+    const { data, error } = useSWR([url, apiToken], ([url, token]) =>
+      fetchWithToken(url, token),
+    )
+    return { data, error }
+  }
+
+  const { data, error } = useCustomFetch(baseUrl)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputedText(e.target.value)
@@ -47,20 +74,10 @@ export default function Home() {
     setIsLoading(true)
 
     try {
-      const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
-      const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=${currentPage}`
-      const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${apiToken}`,
-        },
-      }
-      const response = await axios.get(baseUrl, options)
+      if (!data.results) return
 
-      setMovies((prevMovies) => [...prevMovies, ...response.data.results])
-      setTotalPages(response.data.total_pages)
-
+      setMovies((prevMovies) => [...prevMovies, ...data.results])
+      setTotalPages(data.total_pages)
       setIsLoading(false)
     } catch {
       throw new Error('Failed to fetch search results')

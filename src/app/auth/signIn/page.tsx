@@ -1,8 +1,12 @@
 'use client'
 
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 import { IoIosEyeOff, IoMdEye, IoMdMail } from 'react-icons/io'
 import { IoKey } from 'react-icons/io5'

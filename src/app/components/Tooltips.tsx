@@ -4,29 +4,30 @@ import TooltipButton from './TooltipButton'
 import { FaBookmark, FaHeart, FaList } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/lib/store'
-import { toggleMovieInList } from '@/lib/features/lists/listsSlice'
+import {
+  fetchUserLists,
+  toggleMovieInList,
+} from '@/lib/features/lists/listsSlice'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { toastConfig } from '@/lib/toastConfig'
-import Loading from './Loading'
-
 type ListType = 'favorites' | 'watchlist' | 'custom'
 type Props = {
   movieId: string
 }
 
+interface UsersLists {
+  custom: string[]
+  favorites: string[]
+  watchlist: string[]
+}
+
 const Tooltips = ({ movieId }: Props) => {
-  const [hasMounted, setHasMounted] = useState(false)
   const dispatch: AppDispatch = useDispatch()
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
-  const usersLists = useSelector(
-    (state: RootState) =>
-      state.lists.usersLists[uid] || {
-        favorites: [],
-        watchlist: [],
-        custom: [],
-      },
+  const usersLists: UsersLists = useSelector(
+    (state: RootState) => state.lists.usersLists[uid],
   )
 
   const [isFavorite, setIsFavorite] = useState(false)
@@ -43,19 +44,12 @@ const Tooltips = ({ movieId }: Props) => {
     isCustom ? 'カスタムリストに追加する' : 'カスタムリストに削除する',
   )
 
-  // リスト更新後のトースト通知用の状態
   const [toastMessage, setToastMessage] = useState('')
-
-  useEffect(() => {
-    setIsFavorite(usersLists.favorites.includes(movieId))
-    setIsWatchlist(usersLists.watchlist.includes(movieId))
-    setIsCustom(usersLists.custom.includes(movieId))
-  }, [usersLists, movieId])
 
   useEffect(() => {
     if (toastMessage) {
       toast.success(toastMessage, toastConfig)
-      setToastMessage('') // トースト表示後はメッセージをクリア
+      setToastMessage('')
     }
   }, [toastMessage])
 
@@ -71,9 +65,20 @@ const Tooltips = ({ movieId }: Props) => {
       isCustom ? 'カスタムリストから削除する' : 'カスタムリストに追加する',
     )
   }, [isFavorite, isWatchlist, isCustom])
+
   useEffect(() => {
-    setHasMounted(true)
-  }, [])
+    if (uid) {
+      dispatch(fetchUserLists(uid))
+    }
+  }, [uid])
+
+  useEffect(() => {
+    if (usersLists) {
+      setIsFavorite(usersLists.favorites.includes(movieId))
+      setIsWatchlist(usersLists.watchlist.includes(movieId))
+      setIsCustom(usersLists.custom.includes(movieId))
+    }
+  }, [usersLists, movieId])
 
   const onToggleLists = async (listType: ListType) => {
     await dispatch(toggleMovieInList({ listType, movieId, uid }))
@@ -112,10 +117,6 @@ const Tooltips = ({ movieId }: Props) => {
     }
 
     setToastMessage(message) // トーストメッセージを設定
-  }
-
-  if (!hasMounted || !uid) {
-    return <Loading />
   }
 
   return (

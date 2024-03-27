@@ -3,8 +3,10 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   arrayRemove,
   arrayUnion,
+  collection,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
 } from 'firebase/firestore'
@@ -12,7 +14,7 @@ import {
 type ListType = 'favorites' | 'watchlist' | 'custom'
 
 interface UserLists {
-  [listType: string]: string[] // Or use a specific ListType enum/union if defined
+  [listType: string]: string[]
 }
 
 interface ListsState {
@@ -33,11 +35,40 @@ interface ToggleMoviePayload {
   uid: string
 }
 
+interface FetchUserLists {
+  uid: string
+  movieListData: Record<string, string[]>
+}
+
 const initialState: ListsState = {
   usersLists: {},
   status: 'idle',
   error: undefined,
 }
+
+// FetchUserLists = Return type of the payload creator
+// string = First argument to the payload creator
+
+export const fetchUserLists = createAsyncThunk<FetchUserLists, string>(
+  'lists/fetchUserLists',
+
+  async (uid, { rejectWithValue }) => {
+    try {
+      const listsRef = collection(db, 'users', uid, 'lists')
+      const snapShot = await getDocs(listsRef)
+      const movieListData = {}
+
+      snapShot.forEach((doc) => {
+        const data = doc.data() as { movieIds: string[] }
+        movieListData[doc.id] = data.movieIds
+      })
+
+      return { uid, movieListData }
+    } catch (error: any) {
+      return rejectWithValue('Failed to fetch user lists')
+    }
+  },
+)
 
 export const toggleMovieInList = createAsyncThunk<
   ToggleMoviePayload,
@@ -54,7 +85,9 @@ export const toggleMovieInList = createAsyncThunk<
         const data = docSnap.data()
         if (data.movieIds && data.movieIds.includes(movieId)) {
           // 映画がリストに既に存在する場合、削除
-          await updateDoc(listDocRef, { movieIds: arrayRemove(movieId) })
+          await updateDoc(listDocRef, {
+            movieIds: arrayRemove(movieId),
+          })
         } else {
           // 映画がリストに存在しない場合、追加
           await updateDoc(
@@ -84,22 +117,20 @@ const listsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchUserLists.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchUserLists.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        const { uid, movieListData } = action.payload
+        state.usersLists[uid] = movieListData
+      })
       .addCase(toggleMovieInList.pending, (state) => {
         state.status = 'loading'
       })
       .addCase(toggleMovieInList.fulfilled, (state, action) => {
         state.status = 'succeeded'
         const { listType, movieId, uid } = action.payload
-
-        // ユーザーのリストが未定義の場合は初期化
-        if (!state.usersLists[uid]) {
-          state.usersLists[uid] = { favorites: [], watchlist: [], custom: [] }
-        }
-
-        // リストタイプが未定義の場合は初期化
-        if (!state.usersLists[uid][listType]) {
-          state.usersLists[uid][listType] = []
-        }
 
         if (state.usersLists[uid][listType].includes(movieId)) {
           // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成

@@ -3,6 +3,7 @@ import './globals.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import StoreProvider from './provider/StoreProvider'
+import AuthProvider from './provider/AuthProvider'
 import { ToastContainer } from 'react-toastify'
 
 export const metadata: Metadata = {
@@ -21,12 +22,14 @@ export default function RootLayout({
     <html lang="jp">
       <body>
         <StoreProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <div className="flex-grow">{children}</div>
-            <Footer />
-            <ToastContainer />
-          </div>
+          <AuthProvider>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <div className="flex-grow">{children}</div>
+              <Footer />
+              <ToastContainer />
+            </div>
+          </AuthProvider>
         </StoreProvider>
       </body>
     </html>

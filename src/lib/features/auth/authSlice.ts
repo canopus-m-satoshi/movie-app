@@ -10,15 +10,16 @@ import {
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 
-interface AuthState {
-  user: null | { uid: string; email: string | null }
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
-  error: string | undefined
-}
-
 interface User {
   uid: string
   email: string | null
+  displayName: string | null
+}
+
+interface AuthState {
+  user: User | null
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: string | undefined
 }
 
 const initialState: AuthState = { user: null, status: 'idle', error: undefined }
@@ -61,7 +62,6 @@ export const signInWithGoogle = createAsyncThunk(
         },
         { merge: true },
       )
-
       return { uid: user.uid, email: user.email, displayName: user.displayName }
     } catch (error: any) {
       return rejectWithValue(error.message)
@@ -108,7 +108,11 @@ export const checkAuthStatus = createAsyncThunk<User>(
     return new Promise((resolve, reject) => {
       auth.onAuthStateChanged((user) => {
         if (user) {
-          resolve({ uid: user.uid, email: user.email })
+          resolve({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+          })
         } else {
           reject(rejectWithValue('No user logged in'))
         }
@@ -159,6 +163,9 @@ const authSlice = createSlice({
       .addCase(signOutUser.fulfilled, (state) => {
         state.status = 'idle'
         state.user = null
+      })
+      .addCase(checkAuthStatus.pending, (state) => {
+        state.status = 'loading'
       })
       .addCase(checkAuthStatus.fulfilled, (state, action) => {
         state.status = 'succeeded'

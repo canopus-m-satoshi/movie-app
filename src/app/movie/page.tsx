@@ -1,10 +1,8 @@
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 import Loading from '../components/Loading'
-import Link from 'next/link'
 import { Movie } from '../types/Movie'
 
 import { useCustomFetch } from '@/hooks/useMovieFetch'

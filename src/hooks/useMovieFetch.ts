@@ -1,3 +1,5 @@
+'use client'
+
 import axios from 'axios'
 import useSWR from 'swr'
 
@@ -22,10 +24,11 @@ const useCustomFetch = (url: string) => {
     throw new Error('APIトークンが設定されていません。')
   }
 
-  const { data, error } = useSWR([url, apiToken], ([url, token]) =>
+  const { data, error, isLoading } = useSWR([url, apiToken], ([url, token]) =>
     fetchWithToken(url, token),
   )
-  return { data, error }
+
+  return { data, error, isLoading }
 }
 
 export { fetchWithToken, useCustomFetch }

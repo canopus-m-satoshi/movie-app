@@ -8,55 +8,46 @@ import Link from 'next/link'
 import { Movie } from '../types/Movie'
 import { posterURL } from '@/constants/posterURL'
 import { useCustomFetch } from '@/hooks/useMovieFetch'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function Home() {
-  const [inputedText, setInputedText] = useState('')
-  const [searchField, setSearchField] = useState('')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const query: string | null = searchParams.get('query')
+  const page: string | null = searchParams.get('page')
+
+  const [inputedText, setInputedText] = useState(query || '')
   const [isShowLoadButton, setIsShowLoadButton] = useState(false)
-  const [movies, setMovies] = useState<Movie[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState<number>(0)
-  const [isLoading, setIsLoading] = useState(false)
-  const isSearched = totalPages > 0
+  const [currentPage, setCurrentPage] = useState(page || '1')
+  const [isShowData, setIsShowData] = useState(false)
+
   const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=${currentPage}`
 
-  const { data, error } = useCustomFetch(baseUrl)
+  const { data, isLoading } = useCustomFetch(baseUrl)
+
+  const movies = data?.results || null
+  const totalPages = data?.total_pages || 0
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputedText(e.target.value)
   }
 
   const searchMoviesOnClick = () => {
-    searchMovies()
-    setSearchField(inputedText)
-    setCurrentPage((prevPage) => prevPage + 1)
+    setIsShowData(true)
+    setCurrentPage('1')
+    router.push(`/movie?query=${inputedText}&page=1`)
   }
 
   const handleClear = () => {
     setInputedText('')
-    setIsShowLoadButton(false)
-    setMovies([])
-    setCurrentPage(1)
-    setTotalPages(0)
+
+    setIsShowData(false)
+    router.push('/movie')
   }
 
   const loadMoreMovies = () => {
     setCurrentPage((prevPage) => prevPage + 1)
-    searchMovies()
-  }
-
-  const searchMovies = async () => {
-    setIsLoading(true)
-
-    try {
-      if (!data.results) return
-
-      setMovies((prevMovies) => [...prevMovies, ...data.results])
-      setTotalPages(data.total_pages)
-      setIsLoading(false)
-    } catch {
-      throw new Error('Failed to fetch search results')
-    }
+    router.push(`/movie?query=${inputedText}&page=${currentPage + 1}`)
   }
 
   useEffect(() => {
@@ -68,6 +59,12 @@ export default function Home() {
 
     currentPage > totalPages && setIsShowLoadButton(false)
   }, [totalPages, currentPage])
+
+  useEffect(() => {
+    if (query) {
+      setIsShowData(true)
+    }
+  }, [query])
 
   return (
     <main className="mt-5">
@@ -88,7 +85,7 @@ export default function Home() {
 
           <button
             className="btn btn-primary whitespace-nowrap	 py-1 basis-[48%] md:basis-[15%]"
-            disabled={totalPages > 0}
+            disabled={inputedText === ''}
             onClick={() => searchMoviesOnClick()}>
             検索
           </button>
@@ -100,21 +97,23 @@ export default function Home() {
           </button>
         </div>
 
-        {isSearched && (
+        {query && (
           <div className="my-4 md:my-8">
-            <p className="">検索キーワード：{searchField}</p>
+            <p className="">検索キーワード：{query}</p>
           </div>
         )}
 
-        {isLoading && currentPage === 0 ? (
+        {isShowData && isLoading ? (
           <Loading />
         ) : (
           <div>
-            {movies && (
+            {isShowData && movies && (
               <>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-4">
                   {movies.map((movie) => (
-                    <Link key={movie.id} href={`/movie/${movie.id}`}>
+                    <Link
+                      key={movie.id}
+                      href={`/movie/${movie.id}?query=${query}&page=${page}`}>
                       <Image
                         src={
                           movie.poster_path

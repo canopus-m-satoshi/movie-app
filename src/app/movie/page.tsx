@@ -1,6 +1,5 @@
 'use client'
 
-import axios from 'axios'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
@@ -8,74 +7,53 @@ import Loading from '../components/Loading'
 import Link from 'next/link'
 import { Movie } from '../types/Movie'
 import { posterURL } from '@/constants/posterURL'
+import { useCustomFetch } from '@/hooks/useMovieFetch'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function Home() {
-  const [inputedText, setInputedText] = useState('')
-  const [searchField, setSearchField] = useState('')
-  const [isShowLoadButton, setIsShowLoadButton] = useState(false)
-  const [movies, setMovies] = useState<Movie[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState<number>(0)
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const query: string | null = searchParams.get('query')
+  const page: number | null = parseInt(searchParams.get('page'))
 
-  const isSearched = totalPages > 0
+  const [inputedText, setInputedText] = useState(query || '')
+  const [currentPage, setCurrentPage] = useState<number>(page || 1)
+  const [isShowData, setIsShowData] = useState(false)
+
+  const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=${currentPage}`
+
+  const { data, isLoading } = useCustomFetch(baseUrl)
+
+  const movies = data?.results || null
+  const totalPages = data?.total_pages || 0
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputedText(e.target.value)
   }
 
   const searchMoviesOnClick = () => {
-    searchMovies()
-    setSearchField(inputedText)
-    setCurrentPage((prevPage) => prevPage + 1)
+    setIsShowData(true)
+    setCurrentPage(1)
+    router.push(`/movie?query=${inputedText}&page=1`)
   }
 
   const handleClear = () => {
     setInputedText('')
-    setIsShowLoadButton(false)
-    setMovies([])
-    setCurrentPage(1)
-    setTotalPages(0)
+
+    setIsShowData(false)
+    router.push('/movie')
   }
 
-  const loadMoreMovies = () => {
-    setCurrentPage((prevPage) => prevPage + 1)
-    searchMovies()
-  }
-
-  const searchMovies = async () => {
-    setIsLoading(true)
-
-    try {
-      const apiToken = process.env.NEXT_PUBLIC_TMDB_API_TOKEN
-      const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=${currentPage}`
-      const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${apiToken}`,
-        },
-      }
-      const response = await axios.get(baseUrl, options)
-
-      setMovies((prevMovies) => [...prevMovies, ...response.data.results])
-      setTotalPages(response.data.total_pages)
-
-      setIsLoading(false)
-    } catch {
-      throw new Error('Failed to fetch search results')
-    }
+  const handleSearchPageChange = (index: number) => {
+    setCurrentPage(index + 1)
+    router.push(`/movie?query=${inputedText}&page=${index + 1}`)
   }
 
   useEffect(() => {
-    if (totalPages > 1) {
-      setIsShowLoadButton(true)
-    } else {
-      setIsShowLoadButton(false)
+    if (query) {
+      setIsShowData(true)
     }
-
-    currentPage > totalPages && setIsShowLoadButton(false)
-  }, [totalPages, currentPage])
+  }, [query])
 
   return (
     <main className="mt-5">
@@ -96,7 +74,7 @@ export default function Home() {
 
           <button
             className="btn btn-primary whitespace-nowrap	 py-1 basis-[48%] md:basis-[15%]"
-            disabled={totalPages > 0}
+            disabled={inputedText === ''}
             onClick={() => searchMoviesOnClick()}>
             検索
           </button>
@@ -108,21 +86,23 @@ export default function Home() {
           </button>
         </div>
 
-        {isSearched && (
+        {query && (
           <div className="my-4 md:my-8">
-            <p className="">検索キーワード：{searchField}</p>
+            <p className="">検索キーワード：{query}</p>
           </div>
         )}
 
-        {isLoading && currentPage === 0 ? (
+        {isShowData && isLoading ? (
           <Loading />
         ) : (
           <div>
-            {movies && (
+            {isShowData && movies && (
               <>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-4">
                   {movies.map((movie) => (
-                    <Link key={movie.id} href={`/movie/${movie.id}`}>
+                    <Link
+                      key={movie.id}
+                      href={`/movie/${movie.id}?query=${query}&page=${page}`}>
                       <Image
                         src={
                           movie.poster_path
@@ -144,15 +124,23 @@ export default function Home() {
                   ))}
                 </div>
 
-                {isShowLoadButton && (
-                  <button
-                    className="btn btn-primary block w-fit mx-auto mt-6"
-                    onClick={loadMoreMovies}>
-                    さらに読み込む
-                    {isLoading && (
-                      <span className="loading loading-spinner"></span>
-                    )}
-                  </button>
+                {totalPages && (
+                  <div className="join block w-fit mx-auto mt-6">
+                    {Array.from({ length: totalPages }, (_, index) => (
+                      <button
+                        key={index}
+                        className={`join-item btn btn-square ${
+                          currentPage === index + 1
+                            ? 'btn-active btn-primary'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          handleSearchPageChange(index)
+                        }}>
+                        {index + 1}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </>
             )}

@@ -11,11 +11,14 @@ type Genres = Pick<Movie, 'genres'>
 
 export default async function MovieDetails({
   params,
+  searchParams,
 }: {
   params: { id: number }
+  searchParams: { query: string; page: number }
 }) {
   const res = await getMovieDetails(params.id)
   const movie = res.data
+  const { query, page } = searchParams
 
   return (
     <>
@@ -57,7 +60,9 @@ export default async function MovieDetails({
 
         {/* TODO：戻った際に検索結果を保持させる機能の実装 */}
         <div className="w-fit mx-auto mt-6">
-          <Link href={'/movie'} className="btn btn-accent rounded-full">
+          <Link
+            href={`/movie?query=${query}&page=${page}`}
+            className="btn btn-accent rounded-full">
             <IoCaretBackOutline />
             <span className="pr-2">戻る</span>
           </Link>

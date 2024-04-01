@@ -10,6 +10,7 @@ import { Movie } from '../types/Movie'
 import { useCustomFetch } from '@/hooks/useMovieFetch'
 import { useRouter, useSearchParams } from 'next/navigation'
 import MovieList from '../components/MovieList'
+import Pagination from '../components/Pagination'
 
 export default function Home() {
   const router = useRouter()
@@ -102,22 +103,11 @@ export default function Home() {
                 <MovieList movies={movies} query={query} page={page} />
 
                 {totalPages && (
-                  <div className="join block w-fit mx-auto mt-6">
-                    {Array.from({ length: totalPages }, (_, index) => (
-                      <button
-                        key={index}
-                        className={`join-item btn btn-square ${
-                          currentPage === index + 1
-                            ? 'btn-active btn-primary'
-                            : ''
-                        }`}
-                        onClick={() => {
-                          handleSearchPageChange(index)
-                        }}>
-                        {index + 1}
-                      </button>
-                    ))}
-                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handleSearchPageChange}
+                  />
                 )}
               </>
             )}

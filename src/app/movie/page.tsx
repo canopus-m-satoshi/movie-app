@@ -14,11 +14,10 @@ export default function Home() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
-  const page: string | null = searchParams.get('page')
+  const page: number | null = parseInt(searchParams.get('page'))
 
   const [inputedText, setInputedText] = useState(query || '')
-  const [isShowLoadButton, setIsShowLoadButton] = useState(false)
-  const [currentPage, setCurrentPage] = useState(page || '1')
+  const [currentPage, setCurrentPage] = useState<number>(page || 1)
   const [isShowData, setIsShowData] = useState(false)
 
   const baseUrl = `https://api.themoviedb.org/3/search/movie?query=${inputedText}&include_adult=false&language=ja&page=${currentPage}`
@@ -34,7 +33,7 @@ export default function Home() {
 
   const searchMoviesOnClick = () => {
     setIsShowData(true)
-    setCurrentPage('1')
+    setCurrentPage(1)
     router.push(`/movie?query=${inputedText}&page=1`)
   }
 
@@ -45,20 +44,10 @@ export default function Home() {
     router.push('/movie')
   }
 
-  const loadMoreMovies = () => {
-    setCurrentPage((prevPage) => prevPage + 1)
-    router.push(`/movie?query=${inputedText}&page=${currentPage + 1}`)
+  const handleSearchPageChange = (index: number) => {
+    setCurrentPage(index + 1)
+    router.push(`/movie?query=${inputedText}&page=${index + 1}`)
   }
-
-  useEffect(() => {
-    if (totalPages > 1) {
-      setIsShowLoadButton(true)
-    } else {
-      setIsShowLoadButton(false)
-    }
-
-    currentPage > totalPages && setIsShowLoadButton(false)
-  }, [totalPages, currentPage])
 
   useEffect(() => {
     if (query) {
@@ -135,15 +124,23 @@ export default function Home() {
                   ))}
                 </div>
 
-                {isShowLoadButton && (
-                  <button
-                    className="btn btn-primary block w-fit mx-auto mt-6"
-                    onClick={loadMoreMovies}>
-                    さらに読み込む
-                    {isLoading && (
-                      <span className="loading loading-spinner"></span>
-                    )}
-                  </button>
+                {totalPages && (
+                  <div className="join block w-fit mx-auto mt-6">
+                    {Array.from({ length: totalPages }, (_, index) => (
+                      <button
+                        key={index}
+                        className={`join-item btn btn-square ${
+                          currentPage === index + 1
+                            ? 'btn-active btn-primary'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          handleSearchPageChange(index)
+                        }}>
+                        {index + 1}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </>
             )}

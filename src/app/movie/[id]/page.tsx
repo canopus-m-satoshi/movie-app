@@ -13,7 +13,7 @@ export default async function MovieDetails({
   params,
   searchParams,
 }: {
-  params: { id: number }
+  params: { id: string }
   searchParams: { query: string; page: number }
 }) {
   const res = await getMovieDetails(params.id)
@@ -58,7 +58,6 @@ export default async function MovieDetails({
           </div>
         </div>
 
-        {/* TODO：戻った際に検索結果を保持させる機能の実装 */}
         <div className="w-fit mx-auto mt-6">
           <Link
             href={`/movie?query=${query}&page=${page}`}

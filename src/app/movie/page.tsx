@@ -15,7 +15,7 @@ export default function Home() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
-  const page: number | null = parseInt(searchParams.get('page'))
+  const page: number | null = parseInt(searchParams.get('page') || '1')
 
   const [inputedText, setInputedText] = useState(query || '')
   const [currentPage, setCurrentPage] = useState<number>(page || 1)
@@ -25,7 +25,7 @@ export default function Home() {
 
   const { data, isLoading } = useCustomFetch(baseUrl)
 
-  const movies = data?.results || null
+  const movies: Movie[] = data?.results || null
   const totalPages = data?.total_pages || 0
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +67,7 @@ export default function Home() {
             <input
               className="input input-bordered w-full md:w-64"
               type="text"
-              placeholder="タイトル,ジャンル,気分を入力"
+              placeholder="タイトルを入力"
               onChange={(e) => handleInputChange(e)}
               value={inputedText}
             />

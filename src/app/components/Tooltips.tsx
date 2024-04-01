@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { toastConfig } from '@/lib/toastConfig'
 type ListType = 'favorites' | 'watchlist' | 'custom'
+
 type Props = {
   movieId: string
 }
@@ -70,7 +71,7 @@ const Tooltips = ({ movieId }: Props) => {
     if (uid) {
       dispatch(fetchUserLists(uid))
     }
-  }, [uid])
+  }, [uid, dispatch])
 
   useEffect(() => {
     if (usersLists) {

@@ -1,20 +1,20 @@
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 import Loading from '../components/Loading'
-import Link from 'next/link'
 import { Movie } from '../types/Movie'
-import { posterURL } from '@/constants/posterURL'
+
 import { useCustomFetch } from '@/hooks/useMovieFetch'
 import { useRouter, useSearchParams } from 'next/navigation'
+import MovieList from '../components/MovieList'
+import Pagination from '../components/Pagination'
 
 export default function Home() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const query: string | null = searchParams.get('query')
-  const page: number | null = parseInt(searchParams.get('page'))
+  const page: number | null = parseInt(searchParams.get('page') || '1')
 
   const [inputedText, setInputedText] = useState(query || '')
   const [currentPage, setCurrentPage] = useState<number>(page || 1)
@@ -24,7 +24,7 @@ export default function Home() {
 
   const { data, isLoading } = useCustomFetch(baseUrl)
 
-  const movies = data?.results || null
+  const movies: Movie[] = data?.results || null
   const totalPages = data?.total_pages || 0
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +66,7 @@ export default function Home() {
             <input
               className="input input-bordered w-full md:w-64"
               type="text"
-              placeholder="タイトル,ジャンル,気分を入力"
+              placeholder="タイトルを入力"
               onChange={(e) => handleInputChange(e)}
               value={inputedText}
             />
@@ -98,49 +98,14 @@ export default function Home() {
           <div>
             {isShowData && movies && (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-4">
-                  {movies.map((movie) => (
-                    <Link
-                      key={movie.id}
-                      href={`/movie/${movie.id}?query=${query}&page=${page}`}>
-                      <Image
-                        src={
-                          movie.poster_path
-                            ? `${posterURL}${movie.poster_path}`
-                            : '/dummy-image.png'
-                        }
-                        alt={movie.poster_path ? movie.title : 'ダミー画像'}
-                        width={300}
-                        height={440}
-                      />
-                      <h3 className="font-bold text-lg lg:text-2xl mt-3">
-                        {movie.title}
-                      </h3>
-                      <p>
-                        公開日:
-                        {movie.release_date ? movie.release_date : ' 不明'}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
+                <MovieList movies={movies} query={query} page={page} />
 
                 {totalPages && (
-                  <div className="join block w-fit mx-auto mt-6">
-                    {Array.from({ length: totalPages }, (_, index) => (
-                      <button
-                        key={index}
-                        className={`join-item btn btn-square ${
-                          currentPage === index + 1
-                            ? 'btn-active btn-primary'
-                            : ''
-                        }`}
-                        onClick={() => {
-                          handleSearchPageChange(index)
-                        }}>
-                        {index + 1}
-                      </button>
-                    ))}
-                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handleSearchPageChange}
+                  />
                 )}
               </>
             )}

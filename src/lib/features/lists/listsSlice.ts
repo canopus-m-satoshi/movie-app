@@ -56,7 +56,7 @@ export const fetchUserLists = createAsyncThunk<FetchUserLists, string>(
     try {
       const listsRef = collection(db, 'users', uid, 'lists')
       const snapShot = await getDocs(listsRef)
-      const movieListData = {}
+      const movieListData: Record<string, string[]> = {}
 
       snapShot.forEach((doc) => {
         const data = doc.data() as { movieIds: string[] }
@@ -90,11 +90,9 @@ export const toggleMovieInList = createAsyncThunk<
           })
         } else {
           // 映画がリストに存在しない場合、追加
-          await updateDoc(
-            listDocRef,
-            { movieIds: arrayUnion(movieId) },
-            { merge: true },
-          )
+          await updateDoc(listDocRef, {
+            movieIds: arrayUnion(movieId),
+          })
         }
       } else {
         // ドキュメントが存在しない場合、新規作成して映画を追加

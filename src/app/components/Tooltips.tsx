@@ -11,23 +11,18 @@ import {
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { toastConfig } from '@/lib/toastConfig'
-type ListType = 'favorites' | 'watchlist' | 'custom'
+
+import { Lists, ListType } from '../types/Lists'
 
 type Props = {
   movieId: string
-}
-
-interface UsersLists {
-  custom: string[]
-  favorites: string[]
-  watchlist: string[]
 }
 
 const Tooltips = ({ movieId }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
-  const usersLists: UsersLists = useSelector(
+  const usersLists: Lists | undefined = useSelector(
     (state: RootState) => state.lists.usersLists[uid],
   )
 
@@ -35,15 +30,9 @@ const Tooltips = ({ movieId }: Props) => {
   const [isWatchlist, setIsWatchlist] = useState(false)
   const [isCustom, setIsCustom] = useState(false)
 
-  const [favoriteTip, setFavoriteTip] = useState(
-    isFavorite ? 'お気に入りに追加する' : 'お気に入りに削除する',
-  )
-  const [watchTip, setWatchTip] = useState(
-    isWatchlist ? 'ウォッチリストに追加する' : 'ウォッチリストに削除する',
-  )
-  const [customTip, setCustomTip] = useState(
-    isCustom ? 'カスタムリストに追加する' : 'カスタムリストに削除する',
-  )
+  const [favoriteTip, setFavoriteTip] = useState('')
+  const [watchTip, setWatchTip] = useState('')
+  const [customTip, setCustomTip] = useState('')
 
   const [toastMessage, setToastMessage] = useState('')
 
@@ -75,9 +64,9 @@ const Tooltips = ({ movieId }: Props) => {
 
   useEffect(() => {
     if (usersLists) {
-      setIsFavorite(usersLists.favorites.includes(movieId))
-      setIsWatchlist(usersLists.watchlist.includes(movieId))
-      setIsCustom(usersLists.custom.includes(movieId))
+      setIsFavorite(usersLists.favorites?.some((el) => el.movieId === movieId))
+      setIsWatchlist(usersLists.watchlist?.some((el) => el.movieId === movieId))
+      setIsCustom(usersLists.custom?.some((el) => el.movieId === movieId))
     }
   }, [usersLists, movieId])
 
@@ -87,37 +76,29 @@ const Tooltips = ({ movieId }: Props) => {
     let message = ''
     switch (listType) {
       case 'favorites':
+        setIsFavorite(!isFavorite)
         message = isFavorite
           ? 'お気に入りリストから削除しました'
           : 'お気に入りリストに追加しました'
 
-        setFavoriteTip(
-          isFavorite ? 'お気に入りに追加する' : 'お気に入りに削除する',
-        )
         break
       case 'watchlist':
+        setIsWatchlist(!isWatchlist)
         message = isWatchlist
           ? 'ウォッチリストから削除しました'
           : 'ウォッチリストに追加しました'
 
-        setWatchTip(
-          isWatchlist ? 'ウォッチリストに追加する' : 'ウォッチリストに削除する',
-        )
         break
       case 'custom':
-        message = 'カスタムリストに追加しました'
-
+        setIsCustom(!isCustom)
         message = isCustom
           ? 'カスタムリストから削除しました'
           : 'カスタムリストに追加しました'
 
-        setCustomTip(
-          isCustom ? 'カスタムリストに追加する' : 'カスタムリストに削除する',
-        )
         break
     }
 
-    setToastMessage(message) // トーストメッセージを設定
+    setToastMessage(message)
   }
 
   return (
@@ -127,7 +108,6 @@ const Tooltips = ({ movieId }: Props) => {
         tip={favoriteTip}
         onClick={() => onToggleLists('favorites')}
       />
-
       <TooltipButton
         icon={isWatchlist ? <FaBookmark color={'#ffe200'} /> : <FaBookmark />}
         tip={watchTip}

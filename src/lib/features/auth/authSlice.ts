@@ -1,3 +1,4 @@
+import { AuthState, User } from '@/app/types/User'
 import { auth, db } from '@/lib/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
@@ -9,18 +10,6 @@ import {
   signOut,
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
-
-interface User {
-  uid: string
-  email: string | null
-  displayName: string | null
-}
-
-interface AuthState {
-  user: User | null
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
-  error: string | undefined
-}
 
 const initialState: AuthState = { user: null, status: 'idle', error: undefined }
 

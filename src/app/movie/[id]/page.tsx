@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { IoCaretBackOutline } from 'react-icons/io5'
 
 import { Movie } from '@/app/types/Movie'
-import { getMovieDetails } from '@/api/movie/gethMovieDetails/route'
+import { getMovieDetails } from '@/api/movie/getMovieDetails/route'
 import { posterURL } from '@/constants/posterURL'
 import Tooltips from '@/app/components/Tooltips'
 

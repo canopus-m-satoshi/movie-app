@@ -3,9 +3,13 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { User } from '../types/User'
 import { AppDispatch, RootState } from '@/lib/store'
-import { ListType, Lists } from '../types/Lists'
+import { ListType, Lists, MovieItem } from '../types/Lists'
 import { useEffect, useState } from 'react'
-import { fetchUserLists, removeMovie } from '@/lib/features/lists/listsSlice'
+import {
+  fetchUserLists,
+  removeMovie,
+  updateComment,
+} from '@/lib/features/lists/listsSlice'
 import Loading from '../loading'
 import MovieTitle from '../components/MovieTitle'
 import { FaCheck, FaPen } from 'react-icons/fa'
@@ -22,7 +26,6 @@ export default function Home() {
 
   const [edittingMovieId, setEdittingMovieId] = useState<string | null>(null)
   const [inputedComment, setInputedComment] = useState<string>('')
-  const [movieComments, setMovieComments] = useState<Record<string, string>>({}) // 各アイテムのコメント管理
 
   useEffect(() => {
     if (user) {
@@ -30,16 +33,28 @@ export default function Home() {
     }
   }, [user, dispatch])
 
-  const toggleEditMode = (movieId: string) => {
+  const toggleEditMode = (movieId: string, comment: string | undefined) => {
     setEdittingMovieId((prevId) => (prevId === movieId ? null : movieId))
-    console.log(edittingMovieId)
+    setInputedComment(comment || '')
   }
 
-  const confirmEdit = (movieId: string, comment: string) => {
-    console.log(comment)
+  const confirmEdit = (listType: ListType, movieId: string, uid: string) => {
+    setEdittingMovieId(null)
+
+    dispatch(updateComment({ listType, movieId, uid, comment: inputedComment }))
+    toast.success('コメントを編集しました', toastConfig)
   }
 
-  
+  const cancelEdit = () => {
+    setEdittingMovieId(null)
+    if (window.confirm('編集をキャンセルしますか？')) {
+      setInputedComment('')
+      toast.error('編集をキャンセルしました', toastConfig)
+    } else {
+      return
+    }
+  }
+
   const removeItem = (listType: ListType, movieId: string, uid: string) => {
     if (window.confirm('リストから削除しますか?')) {
       dispatch(removeMovie({ listType, movieId, uid }))
@@ -65,7 +80,7 @@ export default function Home() {
       {lists?.favorites && (
         <div className="w-full mt-6">
           <h2 className="font-bold text-2xl">お気に入りリスト</h2>
-          <ul className=" p-2">
+          <ul className="p-2">
             {lists.favorites.map((el) => (
               <li
                 key={el.movieId}
@@ -77,35 +92,38 @@ export default function Home() {
                 </button>
                 <MovieTitle movieId={el.movieId} />
                 <p>追加日: {el.addedAt}</p>
-                  {edittingMovieId === el.movieId ? (
+                {edittingMovieId === el.movieId ? (
                   <div className="md:flex justify-between items-end gap-2">
                     <textarea
                       className="textarea textarea-bordered w-full"
-                        value={inputedComment}
+                      value={inputedComment}
                       onChange={handleOnChange}></textarea>
-                      <div className="flex gap-2">
-                      <button onClick={() => confirmEdit(el.movieId)}>
-                          <FaCheck color={'#04b600'} />
-                        </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() =>
+                          confirmEdit('favorites', el.movieId, user.uid)
+                        }>
+                        <FaCheck color={'#04b600'} />
+                      </button>
                       <button onClick={cancelEdit}>
-                          <FaXmark color={'#ff002d'} />
-                        </button>
-                      </div>
+                        <FaXmark color={'#ff002d'} />
+                      </button>
+                    </div>
                   </div>
-                  ) : (
+                ) : (
                   <div className="flex justify-between gap-2">
                     <p>
                       コメント:
                       {edittingMovieId === el.movieId
                         ? inputedComment
-                        : movieComments[el.movieId] || ''}
+                        : el.comment || ''}
                     </p>
                     <button
                       onClick={() => toggleEditMode(el.movieId, el.comment)}>
-                        <FaPen />
-                      </button>
+                      <FaPen />
+                    </button>
                   </div>
-                  )}
+                )}
               </li>
             ))}
           </ul>

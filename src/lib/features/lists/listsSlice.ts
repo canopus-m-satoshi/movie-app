@@ -83,7 +83,7 @@ export const toggleMovieInList = createAsyncThunk<
     try {
       const listDocRef = doc(db, 'users', uid, 'lists', listType)
       const docSnap = await getDoc(listDocRef)
-      const addedAt = format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+      const addedAt = format(new Date(), 'yyyy-MM-dd')
 
       if (docSnap.exists()) {
         const data = docSnap.data()

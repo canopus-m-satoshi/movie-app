@@ -9,4 +9,5 @@ export interface Lists {
 export interface MovieItem {
   movieId: string
   addedAt: string
+  comment?: string
 }

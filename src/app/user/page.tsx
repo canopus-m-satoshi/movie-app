@@ -48,7 +48,13 @@ export default function Home() {
     toast.success('削除しました', toastConfig)
   }
 
-  const removeItem = () => {}
+  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputedComment(e.target.value)
+  }
+
+  if (!user) {
+    return <Loading />
+  }
 
   return (
     <div className="w-full mx-auto mt-6 px-2">
@@ -71,40 +77,35 @@ export default function Home() {
                 </button>
                 <MovieTitle movieId={el.movieId} />
                 <p>追加日: {el.addedAt}</p>
-                <div className="flex justify-between gap-2">
                   {edittingMovieId === el.movieId ? (
-                    <>
-                      <input
-                        type="text"
-                        id="text"
-                        className="input input-bordered w-full max-w-xs"
+                  <div className="md:flex justify-between items-end gap-2">
+                    <textarea
+                      className="textarea textarea-bordered w-full"
                         value={inputedComment}
-                        onChange={(e) => setInputedComment(e.target.value)}
-                      />
+                      onChange={handleOnChange}></textarea>
                       <div className="flex gap-2">
-                        <button
-                          onClick={() =>
-                            confirmEdit(el.movieId, inputedComment)
-                          }>
+                      <button onClick={() => confirmEdit(el.movieId)}>
                           <FaCheck color={'#04b600'} />
                         </button>
-                        <button
-                          onClick={() =>
-                            cancelEdit(el.movieId, inputedComment)
-                          }>
+                      <button onClick={cancelEdit}>
                           <FaXmark color={'#ff002d'} />
                         </button>
                       </div>
-                    </>
+                  </div>
                   ) : (
-                    <>
-                      <p>コメント: {el.comment}</p>
-                      <button onClick={() => toggleEditMode(el.movieId)}>
+                  <div className="flex justify-between gap-2">
+                    <p>
+                      コメント:
+                      {edittingMovieId === el.movieId
+                        ? inputedComment
+                        : movieComments[el.movieId] || ''}
+                    </p>
+                    <button
+                      onClick={() => toggleEditMode(el.movieId, el.comment)}>
                         <FaPen />
                       </button>
-                    </>
+                  </div>
                   )}
-                </div>
               </li>
             ))}
           </ul>

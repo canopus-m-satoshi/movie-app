@@ -1,12 +1,24 @@
-import { getMovieDetails } from '@/api/movie/gethMovieDetails/route'
+'use client'
+
+import { getMovieDetails } from '@/api/movie/getMovieDetails/route'
+
+import useSWR from 'swr'
+import Loading from '../loading'
 
 type Props = {
   movieId: string
 }
 
-export default async function MovieDetails({ movieId }: Props) {
-  const res = await getMovieDetails(movieId)
-  const movieTitle = res.data.original_title
+const fetcher = async (url: string) => {
+  const res = await getMovieDetails(url)
+  return res.data
+}
 
-  return <p>{movieTitle}</p>
+export default function MovieTitle({ movieId }: Props) {
+  const { data, error } = useSWR(movieId, fetcher)
+
+  if (error) return <div>failed to load</div>
+  if (!data) return <Loading />
+
+  return <p>{data.original_title}</p>
 }

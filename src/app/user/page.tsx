@@ -3,13 +3,15 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { User } from '../types/User'
 import { AppDispatch, RootState } from '@/lib/store'
-import { Lists } from '../types/Lists'
+import { ListType, Lists } from '../types/Lists'
 import { useEffect, useState } from 'react'
-import { fetchUserLists } from '@/lib/features/lists/listsSlice'
+import { fetchUserLists, removeMovie } from '@/lib/features/lists/listsSlice'
 import Loading from '../loading'
 import MovieTitle from '../components/MovieTitle'
 import { FaCheck, FaPen } from 'react-icons/fa'
 import { FaXmark } from 'react-icons/fa6'
+import { toastConfig } from '@/lib/toastConfig'
+import { toast } from 'react-toastify'
 
 export default function Home() {
   const dispatch: AppDispatch = useDispatch()
@@ -19,17 +21,14 @@ export default function Home() {
   )
 
   const [edittingMovieId, setEdittingMovieId] = useState<string | null>(null)
-  const [inputedComment, setInputedComment] = useState('')
+  const [inputedComment, setInputedComment] = useState<string>('')
+  const [movieComments, setMovieComments] = useState<Record<string, string>>({}) // 各アイテムのコメント管理
 
   useEffect(() => {
     if (user) {
       dispatch(fetchUserLists(user.uid))
     }
   }, [user, dispatch])
-
-  if (!user) {
-    return <Loading />
-  }
 
   const toggleEditMode = (movieId: string) => {
     setEdittingMovieId((prevId) => (prevId === movieId ? null : movieId))
@@ -40,8 +39,13 @@ export default function Home() {
     console.log(comment)
   }
 
-  const cancelEdit = (movieId: string, comment: string) => {
-    console.log(comment)
+  
+  const removeItem = (listType: ListType, movieId: string, uid: string) => {
+    if (window.confirm('リストから削除しますか?')) {
+      dispatch(removeMovie({ listType, movieId, uid }))
+      dispatch(fetchUserLists(uid))
+    }
+    toast.success('削除しました', toastConfig)
   }
 
   const removeItem = () => {}
@@ -60,7 +64,9 @@ export default function Home() {
               <li
                 key={el.movieId}
                 className="relative border-2 border-green-600 rounded mt-2 p-4">
-                <button onClick={removeItem} className="absolute top-2 right-4">
+                <button
+                  onClick={() => removeItem('favorites', el.movieId, user.uid)}
+                  className="absolute top-2 right-4">
                   <FaXmark />
                 </button>
                 <MovieTitle movieId={el.movieId} />

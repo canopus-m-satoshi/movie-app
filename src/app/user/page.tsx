@@ -44,8 +44,8 @@ export default function Home() {
     if (window.confirm('リストから削除しますか?')) {
       dispatch(removeMovie({ listType, movieId, uid }))
       dispatch(fetchUserLists(uid))
+      toast.success('削除しました', toastConfig)
     }
-    toast.success('削除しました', toastConfig)
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

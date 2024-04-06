@@ -97,7 +97,8 @@ export default function Home() {
                     <textarea
                       className="textarea textarea-bordered w-full"
                       value={inputedComment}
-                      onChange={handleOnChange}></textarea>
+                      onChange={handleOnChange}
+                      wrap="hard"></textarea>
                     <div className="flex gap-2">
                       <button
                         onClick={() =>
@@ -112,7 +113,7 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="flex justify-between gap-2">
-                    <p>
+                    <p className="whitespace-pre-line">
                       コメント:
                       {edittingMovieId === el.movieId
                         ? inputedComment

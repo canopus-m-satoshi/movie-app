@@ -55,30 +55,28 @@ const initialState: ListsState = {
   error: undefined,
 }
 
-// FetchUserLists = Return type of the payload creator
-// string = First argument to the payload creator
+// 新規データベース構造 start
+export const fetchUserLists = createAsyncThunk<
+  { uid: string; movieListData: Record<string, MovieDetail> },
+  string,
+  { rejectValue: string }
+>('lists/fetchUserLists', async (uid, { rejectWithValue }) => {
+  try {
+    const userListRef = doc(db, 'users', uid)
+    const querySnapshot = await getDocs(collection(userListRef, 'lists'))
 
-export const fetchUserLists = createAsyncThunk<FetchUserLists, string>(
-  'lists/fetchUserLists',
+    const movieListData: Record<string, MovieDetail> = {}
 
-  async (uid, { rejectWithValue }) => {
-    try {
-      const listsRef = collection(db, 'users', uid, 'lists')
-      const snapShot = await getDocs(listsRef)
+    querySnapshot.forEach((doc) => {
+      movieListData[doc.id] = doc.data() as MovieDetail
+    })
 
-      const movieListData: Record<string, MovieDetail[]> = {}
-
-      snapShot.forEach((doc) => {
-        const data = doc.data()
-        movieListData[doc.id] = data.movies
-      })
-
-      return { uid, movieListData }
-    } catch (error: any) {
-      return rejectWithValue('Failed to fetch user lists')
-    }
-  },
-)
+    return { uid, movieListData }
+  } catch (error: any) {
+    return rejectWithValue('Failed to fetch user lists')
+  }
+})
+// 新規データベース構造 end
 
 export const toggleMovieInList = createAsyncThunk<
   ToggleMoviePayload,

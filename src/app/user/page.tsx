@@ -3,7 +3,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { User } from '../types/User'
 import { AppDispatch, RootState } from '@/lib/store'
-import { ListType, Lists, MovieItem } from '../types/Lists'
+import { ListType, Lists } from '../types/Lists'
 import { useEffect, useState } from 'react'
 import {
   fetchUserLists,
@@ -20,7 +20,8 @@ import { toast } from 'react-toastify'
 export default function Home() {
   const dispatch: AppDispatch = useDispatch()
   const user: User | null = useSelector((state: RootState) => state.auth.user)
-  const lists: Lists | undefined = useSelector((state: RootState) =>
+
+  const lists = useSelector((state: RootState) =>
     user ? state.lists.usersLists[user.uid] : undefined,
   )
 
@@ -77,57 +78,51 @@ export default function Home() {
         {user.displayName}さんのページ
       </h1>
 
-      {lists?.favorites && (
-        <div className="w-full mt-6">
-          <h2 className="font-bold text-2xl">お気に入りリスト</h2>
-          <ul className="p-2">
-            {lists.favorites.map((el) => (
-              <li
-                key={el.movieId}
-                className="relative border-2 border-green-600 rounded mt-2 p-4">
-                <button
-                  onClick={() => removeItem('favorites', el.movieId, user.uid)}
-                  className="absolute top-2 right-4">
-                  <FaXmark />
-                </button>
-                <MovieTitle movieId={el.movieId} />
-                <p>追加日: {el.addedAt}</p>
-                {edittingMovieId === el.movieId ? (
-                  <div className="md:flex justify-between items-end gap-2">
-                    <textarea
-                      className="textarea textarea-bordered w-full"
-                      value={inputedComment}
-                      onChange={handleOnChange}
-                      wrap="hard"></textarea>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() =>
-                          confirmEdit('favorites', el.movieId, user.uid)
-                        }>
-                        <FaCheck color={'#04b600'} />
-                      </button>
-                      <button onClick={cancelEdit}>
-                        <FaXmark color={'#ff002d'} />
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex justify-between gap-2">
-                    <p className="whitespace-pre-line">
-                      コメント:
-                      {edittingMovieId === el.movieId
-                        ? inputedComment
-                        : el.comment || ''}
-                    </p>
+      {lists && (
+        <div>
+          {Object.entries(lists).map(([movieId, movieDetail]) => (
+            <div
+              key={movieId}
+              className="relative border-2 border-green-600 rounded mt-2 p-4">
+              <p>Movie ID: {movieId}</p>
+              <MovieTitle movieId={movieId} />
+              {edittingMovieId === movieId ? (
+                <div className="md:flex justify-between items-end gap-2">
+                  <textarea
+                    className="textarea textarea-bordered w-full"
+                    value={inputedComment}
+                    onChange={handleOnChange}
+                    wrap="hard"></textarea>
+                  <div className="flex gap-2">
                     <button
-                      onClick={() => toggleEditMode(el.movieId, el.comment)}>
-                      <FaPen />
+                      onClick={() =>
+                        confirmEdit('favorites', movieId, user.uid)
+                      }>
+                      <FaCheck color={'#04b600'} />
+                    </button>
+                    <button onClick={cancelEdit}>
+                      <FaXmark color={'#ff002d'} />
                     </button>
                   </div>
-                )}
-              </li>
-            ))}
-          </ul>
+                </div>
+              ) : (
+                <div className="flex justify-between gap-2">
+                  <p className="whitespace-pre-line">
+                    コメント:
+                    {edittingMovieId === movieId
+                      ? inputedComment
+                      : movieDetail.comment || ''}
+                  </p>
+                  <button
+                    onClick={() =>
+                      toggleEditMode(movieId, movieDetail.comment)
+                    }>
+                    <FaPen />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

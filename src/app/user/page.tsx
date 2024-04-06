@@ -2,20 +2,16 @@
 
 import { useDispatch, useSelector } from 'react-redux'
 import { User } from '../types/User'
+import { ListType } from '../types/Lists'
 import { AppDispatch, RootState } from '@/lib/store'
-import { ListType, Lists } from '../types/Lists'
 import { useEffect, useState } from 'react'
-import {
-  fetchUserLists,
-  removeMovie,
-  updateComment,
-} from '@/lib/features/lists/listsSlice'
+import { fetchUserLists, updateComment } from '@/lib/features/lists/listsSlice'
 import Loading from '../loading'
-import MovieTitle from '../components/MovieTitle'
-import { FaCheck, FaPen } from 'react-icons/fa'
-import { FaXmark } from 'react-icons/fa6'
+
 import { toastConfig } from '@/lib/toastConfig'
 import { toast } from 'react-toastify'
+import Profile from '../components/Profile'
+import UserLists from '../components/UserLists'
 
 export default function Home() {
   const dispatch: AppDispatch = useDispatch()
@@ -56,14 +52,6 @@ export default function Home() {
     }
   }
 
-  const removeItem = (listType: ListType, movieId: string, uid: string) => {
-    if (window.confirm('リストから削除しますか?')) {
-      dispatch(removeMovie({ listType, movieId, uid }))
-      dispatch(fetchUserLists(uid))
-      toast.success('削除しました', toastConfig)
-    }
-  }
-
   const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputedComment(e.target.value)
   }
@@ -78,52 +66,17 @@ export default function Home() {
         {user.displayName}さんのページ
       </h1>
 
+      <Profile />
+
       {lists && (
-        <div>
-          {Object.entries(lists).map(([movieId, movieDetail]) => (
-            <div
-              key={movieId}
-              className="relative border-2 border-green-600 rounded mt-2 p-4">
-              <p>Movie ID: {movieId}</p>
-              <MovieTitle movieId={movieId} />
-              {edittingMovieId === movieId ? (
-                <div className="md:flex justify-between items-end gap-2">
-                  <textarea
-                    className="textarea textarea-bordered w-full"
-                    value={inputedComment}
-                    onChange={handleOnChange}
-                    wrap="hard"></textarea>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        confirmEdit('favorites', movieId, user.uid)
-                      }>
-                      <FaCheck color={'#04b600'} />
-                    </button>
-                    <button onClick={cancelEdit}>
-                      <FaXmark color={'#ff002d'} />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex justify-between gap-2">
-                  <p className="whitespace-pre-line">
-                    コメント:
-                    {edittingMovieId === movieId
-                      ? inputedComment
-                      : movieDetail.comment || ''}
-                  </p>
-                  <button
-                    onClick={() =>
-                      toggleEditMode(movieId, movieDetail.comment)
-                    }>
-                    <FaPen />
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+        <UserLists
+          edittingMovieId={edittingMovieId}
+          inputedComment={inputedComment}
+          handleOnChange={handleOnChange}
+          confirmEdit={confirmEdit}
+          cancelEdit={cancelEdit}
+          toggleEditMode={toggleEditMode}
+        />
       )}
     </div>
   )

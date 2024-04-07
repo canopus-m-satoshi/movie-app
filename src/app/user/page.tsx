@@ -18,7 +18,7 @@ export default function Home() {
   const user: User | null = useSelector((state: RootState) => state.auth.user)
 
   const lists = useSelector((state: RootState) =>
-    user ? state.lists.usersLists[user.uid] : undefined,
+    user ? state.lists.movieListData[user.uid] : undefined,
   )
 
   const [edittingMovieId, setEdittingMovieId] = useState<string | null>(null)

@@ -25,7 +25,7 @@ interface UserLists {
 }
 
 interface ListsState {
-  usersLists: Record<string, UserLists> // 各ユーザーのリストをuidをキーとして保持する
+  movieListData: Record<string, UserLists> // 各ユーザーのリストをuidをキーとして保持する
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | undefined
 }
@@ -50,7 +50,7 @@ interface FetchUserLists {
 }
 
 const initialState: ListsState = {
-  usersLists: {},
+  movieListData: {},
   status: 'idle',
   error: undefined,
 }
@@ -209,7 +209,7 @@ const listsSlice = createSlice({
       .addCase(fetchUserLists.fulfilled, (state, action) => {
         state.status = 'succeeded'
         const { uid, movieListData } = action.payload
-        state.usersLists[uid] = movieListData
+        state.movieListData[uid] = movieListData
       })
       .addCase(fetchUserLists.rejected, (state, action) => {
         state.status = 'failed'
@@ -226,14 +226,14 @@ const listsSlice = createSlice({
         state.status = 'succeeded'
         const { addedAt, listType, movieId, uid } = action.payload
 
-        if (state.usersLists[uid][listType].includes(movieId)) {
+        if (state.movieListData[uid][listType].includes(movieId)) {
           // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成
-          state.usersLists[uid][listType] = state.usersLists[uid][
+          state.movieListData[uid][listType] = state.movieListData[uid][
             listType
           ].filter((id) => id !== movieId)
         } else {
           // 映画IDがリスト内に存在しない場合、リストに追加
-          state.usersLists[uid][listType].push({
+          state.movieListData[uid][listType].push({
             movieId: movieId,
             addedAt: addedAt,
           })
@@ -251,13 +251,13 @@ const listsSlice = createSlice({
 
         const { comment, listType, movieId, uid } = action.payload
 
-        if (state.usersLists[uid] && state.usersLists[uid][listType]) {
-          const movieIndex = state.usersLists[uid][listType].findIndex(
+        if (state.movieListData[uid] && state.movieListData[uid][listType]) {
+          const movieIndex = state.movieListData[uid][listType].findIndex(
             (movie) => movie.movieId === movieId,
           )
 
           if (movieIndex !== -1) {
-            state.usersLists[uid][listType][movieIndex].comment = comment
+            state.movieListData[uid][listType][movieIndex].comment = comment
           }
         }
       })
@@ -272,9 +272,9 @@ const listsSlice = createSlice({
         state.status = 'succeeded'
         const { listType, movieId, uid } = action.payload
 
-        if (state.usersLists[uid][listType].includes(movieId)) {
+        if (state.movieListData[uid][listType].includes(movieId)) {
           // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成
-          state.usersLists[uid][listType] = state.usersLists[uid][
+          state.movieListData[uid][listType] = state.movieListData[uid][
             listType
           ].filter((id) => id !== movieId)
         }

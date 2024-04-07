@@ -22,8 +22,8 @@ const Tooltips = ({ movieId }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
-  const usersLists: Lists | undefined = useSelector(
-    (state: RootState) => state.lists.usersLists[uid],
+  const movieListData: Lists | undefined = useSelector(
+    (state: RootState) => state.lists.movieListData[uid],
   )
 
   const [isFavorite, setIsFavorite] = useState(false)
@@ -63,12 +63,16 @@ const Tooltips = ({ movieId }: Props) => {
   }, [uid, dispatch])
 
   useEffect(() => {
-    if (usersLists) {
-      setIsFavorite(usersLists.favorites?.some((el) => el.movieId === movieId))
-      setIsWatchlist(usersLists.watchlist?.some((el) => el.movieId === movieId))
-      setIsCustom(usersLists.custom?.some((el) => el.movieId === movieId))
+    if (movieListData) {
+      setIsFavorite(
+        movieListData.favorites?.some((el) => el.movieId === movieId),
+      )
+      setIsWatchlist(
+        movieListData.watchlist?.some((el) => el.movieId === movieId),
+      )
+      setIsCustom(movieListData.custom?.some((el) => el.movieId === movieId))
     }
-  }, [usersLists, movieId])
+  }, [movieListData, movieId])
 
   const onToggleLists = async (listType: ListType) => {
     await dispatch(toggleMovieInList({ listType, movieId, uid }))

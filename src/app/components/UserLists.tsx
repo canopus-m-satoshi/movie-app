@@ -26,7 +26,7 @@ const UserLists = ({
   const user: User | null = useSelector((state: RootState) => state.auth.user)
 
   const lists: Record<string, MovieItem> = useSelector((state: RootState) =>
-    user ? state.lists.usersLists[user.uid] : {},
+    user ? state.lists.movieListData[user.uid] : {},
   )
 
   return (

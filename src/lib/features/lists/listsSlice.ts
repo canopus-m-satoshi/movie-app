@@ -2,7 +2,6 @@ import { db } from '@/lib/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   arrayRemove,
-  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -12,20 +11,12 @@ import {
 } from 'firebase/firestore'
 
 import { format } from 'date-fns'
+import { MovieItem } from '@/app/types/Lists'
 
 type ListType = 'favorites' | 'watchlist' | 'custom'
 
-interface MovieDetail {
-  addedAt: string
-  movieId: string
-  comment: string
-}
-interface UserLists {
-  [listType: string]: MovieDetail[]
-}
-
 interface ListsState {
-  usersLists: Record<string, UserLists> // 各ユーザーのリストをuidをキーとして保持する
+  movieListData: Record<string, MovieItem> // 各ユーザーのリストをuidをキーとして保持する
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | undefined
 }
@@ -39,46 +30,38 @@ interface ToggleMoviePayload {
 
 interface updateCommentPayload {
   comment: string
-  listType: ListType
   movieId: string
   uid: string
 }
 
-interface FetchUserLists {
-  uid: string
-  movieListData: Record<string, string[]>
-}
-
 const initialState: ListsState = {
-  usersLists: {},
+  movieListData: {},
   status: 'idle',
   error: undefined,
 }
 
-// FetchUserLists = Return type of the payload creator
-// string = First argument to the payload creator
+// 新規データベース構造 start
+export const fetchUserLists = createAsyncThunk<
+  { uid: string; movieListData: Record<string, MovieItem> },
+  string,
+  { rejectValue: string }
+>('lists/fetchUserLists', async (uid, { rejectWithValue }) => {
+  try {
+    const userListRef = doc(db, 'users', uid)
+    const querySnapshot = await getDocs(collection(userListRef, 'lists'))
 
-export const fetchUserLists = createAsyncThunk<FetchUserLists, string>(
-  'lists/fetchUserLists',
+    const movieListData: Record<string, MovieItem> = {}
 
-  async (uid, { rejectWithValue }) => {
-    try {
-      const listsRef = collection(db, 'users', uid, 'lists')
-      const snapShot = await getDocs(listsRef)
+    querySnapshot.forEach((doc) => {
+      movieListData[doc.id] = doc.data() as MovieItem
+    })
 
-      const movieListData: Record<string, MovieDetail[]> = {}
-
-      snapShot.forEach((doc) => {
-        const data = doc.data()
-        movieListData[doc.id] = data.movies
-      })
-
-      return { uid, movieListData }
-    } catch (error: any) {
-      return rejectWithValue('Failed to fetch user lists')
-    }
-  },
-)
+    return { uid, movieListData }
+  } catch (error: any) {
+    return rejectWithValue('Failed to fetch user lists')
+  }
+})
+// 新規データベース構造 end
 
 export const toggleMovieInList = createAsyncThunk<
   ToggleMoviePayload,
@@ -88,32 +71,31 @@ export const toggleMovieInList = createAsyncThunk<
   'lists/toggleMovieInList',
   async ({ listType, movieId, uid }, { rejectWithValue }) => {
     try {
-      const listDocRef = doc(db, 'users', uid, 'lists', listType)
-      const docSnap = await getDoc(listDocRef)
+      const movieRef = doc(db, 'users', uid, 'lists', movieId)
+      const movieDoc = await getDoc(movieRef)
       const addedAt = format(new Date(), 'yyyy-MM-dd')
 
-      if (docSnap.exists()) {
-        const data = docSnap.data()
-        const hasMovieInList = data.movies.find(
-          (el: MovieDetail) => el.movieId === movieId,
-        )
+      let updatedData: Partial<MovieItem> = {}
 
-        if (hasMovieInList) {
-          // 映画がリストに既に存在する場合、削除
-          await updateDoc(listDocRef, {
-            movies: arrayRemove(hasMovieInList),
-          })
-        } else {
-          // 映画がリストに存在しない場合、追加
-          await updateDoc(listDocRef, {
-            movies: arrayUnion({ addedAt: addedAt, movieId: movieId }),
-          })
-        }
+      switch (listType) {
+        case 'favorites':
+          updatedData = {
+            isFavorite: !movieDoc.exists() || !movieDoc.data()?.isFavorite,
+            favoriteAddedAt: movieDoc.data()?.favoriteAddedAt ? '' : addedAt,
+          }
+          break
+        case 'watchlist':
+          updatedData = {
+            isWatchlist: !movieDoc.exists() || !movieDoc.data()?.isWatchlist,
+            watchlistAddedAt: movieDoc.data()?.watchlistAddedAt ? '' : addedAt,
+          }
+          break
+      }
+
+      if (movieDoc.exists()) {
+        await updateDoc(movieRef, updatedData)
       } else {
-        // ドキュメントが存在しない場合、新規作成して映画を追加
-        await setDoc(listDocRef, {
-          movies: [{ addedAt: addedAt, movieId: movieId }],
-        })
+        await setDoc(movieRef, { ...updatedData })
       }
 
       return { addedAt, listType, movieId, uid }
@@ -132,27 +114,19 @@ export const updateComment = createAsyncThunk<
   { rejectValue: string }
 >(
   'lists/updateComment',
-  async ({ comment, listType, movieId, uid }, { rejectWithValue }) => {
+  async ({ comment, movieId, uid }, { rejectWithValue }) => {
+    console.log('🚀 ~ comment:', comment)
     try {
-      const listDocRef = doc(db, 'users', uid, 'lists', listType)
+      const listDocRef = doc(db, 'users', uid, 'lists', movieId)
       const docSnap = await getDoc(listDocRef)
 
+      const data = docSnap.data()
+
+      const updatedMovies: Partial<MovieItem> = { ...data, comment: comment }
       if (docSnap.exists()) {
-        const data = docSnap.data()
-        const movieIndex = data.movies.findIndex(
-          (movie: MovieDetail) => movie.movieId === movieId,
-        )
-
-        if (movieIndex !== -1) {
-          const updatedMovies = [...data.movies]
-
-          updatedMovies[movieIndex] = {
-            ...updatedMovies[movieIndex],
-            comment,
-          }
-
-          await updateDoc(listDocRef, { movies: updatedMovies })
-        }
+        await updateDoc(listDocRef, updatedMovies)
+      } else {
+        await setDoc(listDocRef, updatedMovies)
       }
     } catch (error: any) {
       console.log('🚀 ~ error:', error)
@@ -160,44 +134,44 @@ export const updateComment = createAsyncThunk<
       return rejectWithValue('Failed to update comment')
     }
 
-    return { comment, listType, movieId, uid }
+    return { comment, movieId, uid }
   },
 )
 
-export const removeMovie = createAsyncThunk<
-  ToggleMoviePayload,
-  ToggleMoviePayload,
-  { rejectValue: string }
->(
-  'lists/removeMovie',
-  async ({ listType, movieId, uid }, { rejectWithValue }) => {
-    try {
-      const listDocRef = doc(db, 'users', uid, 'lists', listType)
-      const docSnap = await getDoc(listDocRef)
+// export const removeMovie = createAsyncThunk<
+//   ToggleMoviePayload,
+//   ToggleMoviePayload,
+//   { rejectValue: string }
+// >(
+//   'lists/removeMovie',
+//   async ({ listType, movieId, uid }, { rejectWithValue }) => {
+//     try {
+//       const listDocRef = doc(db, 'users', uid, 'lists', listType)
+//       const docSnap = await getDoc(listDocRef)
 
-      if (docSnap.exists()) {
-        const data = docSnap.data()
-        const hasMovieInList = data.movies.find(
-          (el: MovieDetail) => el.movieId === movieId,
-        )
+//       if (docSnap.exists()) {
+//         const data = docSnap.data()
+//         const hasMovieInList = data.movies.find(
+//           (el: MovieItem) => el.movieId === movieId,
+//         )
 
-        if (hasMovieInList) {
-          // 映画がリストに既に存在する場合、削除
-          await updateDoc(listDocRef, {
-            movies: arrayRemove(hasMovieInList),
-          })
-        }
-      }
+//         if (hasMovieInList) {
+//           // 映画がリストに既に存在する場合、削除
+//           await updateDoc(listDocRef, {
+//             movies: arrayRemove(hasMovieInList),
+//           })
+//         }
+//       }
 
-      return { listType, movieId, uid }
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message)
-      }
-      return rejectWithValue('An unknown error occurred')
-    }
-  },
-)
+//       return { listType, movieId, uid }
+//     } catch (error) {
+//       if (error instanceof Error) {
+//         return rejectWithValue(error.message)
+//       }
+//       return rejectWithValue('An unknown error occurred')
+//     }
+//   },
+// )
 
 const listsSlice = createSlice({
   name: 'lists',
@@ -211,7 +185,7 @@ const listsSlice = createSlice({
       .addCase(fetchUserLists.fulfilled, (state, action) => {
         state.status = 'succeeded'
         const { uid, movieListData } = action.payload
-        state.usersLists[uid] = movieListData
+        state.movieListData[uid] = movieListData
       })
       .addCase(fetchUserLists.rejected, (state, action) => {
         state.status = 'failed'
@@ -228,17 +202,31 @@ const listsSlice = createSlice({
         state.status = 'succeeded'
         const { addedAt, listType, movieId, uid } = action.payload
 
-        if (state.usersLists[uid][listType].includes(movieId)) {
-          // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成
-          state.usersLists[uid][listType] = state.usersLists[uid][
-            listType
-          ].filter((id) => id !== movieId)
+        if (state.movieListData[uid] && state.movieListData[uid][movieId]) {
+          const movieItem: MovieItem = state.movieListData[uid][movieId]
+          switch (listType) {
+            case 'favorites':
+              movieItem.isFavorite = !movieItem.isFavorite
+              movieItem.favoriteAddedAt = addedAt as string
+              break
+            case 'watchlist':
+              movieItem.isWatchlist = !movieItem.isWatchlist
+              movieItem.watchlistAddedAt = addedAt
+              break
+          }
         } else {
-          // 映画IDがリスト内に存在しない場合、リストに追加
-          state.usersLists[uid][listType].push({
-            movieId: movieId,
-            addedAt: addedAt,
-          })
+          if (!state.movieListData[uid]) {
+            state.movieListData[uid] = { [movieId]: {} }
+          }
+
+          state.movieListData[uid][movieId] = {
+            movieId,
+            addedAt,
+            isFavorite: listType === 'favorites',
+            favoriteAddedAt: listType === 'favorites' ? addedAt : '',
+            isWatchlist: listType === 'watchlist',
+            watchlistAddedAt: listType === 'watchlist' ? addedAt : '',
+          } as MovieItem
         }
       })
       .addCase(toggleMovieInList.rejected, (state, action) => {
@@ -251,40 +239,38 @@ const listsSlice = createSlice({
       .addCase(updateComment.fulfilled, (state, action) => {
         state.status = 'succeeded'
 
-        const { comment, listType, movieId, uid } = action.payload
+        const { comment, movieId, uid } = action.payload
 
-        if (state.usersLists[uid] && state.usersLists[uid][listType]) {
-          const movieIndex = state.usersLists[uid][listType].findIndex(
-            (movie) => movie.movieId === movieId,
-          )
-
-          if (movieIndex !== -1) {
-            state.usersLists[uid][listType][movieIndex].comment = comment
-          }
+        console.log(
+          '🚀 ~ .addCase ~ state.movieListData[uid] :',
+          state.movieListData[uid],
+        )
+        if (state.movieListData[uid][movieId]) {
+          state.movieListData[uid][movieId].comment = comment
         }
       })
       .addCase(updateComment.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.payload
       })
-      .addCase(removeMovie.pending, (state) => {
-        state.status = 'loading'
-      })
-      .addCase(removeMovie.fulfilled, (state, action) => {
-        state.status = 'succeeded'
-        const { listType, movieId, uid } = action.payload
+    // .addCase(removeMovie.pending, (state) => {
+    //   state.status = 'loading'
+    // })
+    // .addCase(removeMovie.fulfilled, (state, action) => {
+    //   state.status = 'succeeded'
+    //   const { listType, movieId, uid } = action.payload
 
-        if (state.usersLists[uid][listType].includes(movieId)) {
-          // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成
-          state.usersLists[uid][listType] = state.usersLists[uid][
-            listType
-          ].filter((id) => id !== movieId)
-        }
-      })
-      .addCase(removeMovie.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.payload
-      })
+    //   if (state.movieListData[uid][listType].includes(movieId)) {
+    //     // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成
+    //     state.movieListData[uid][listType] = state.movieListData[uid][
+    //       listType
+    //     ].filter((id) => id !== movieId)
+    //   }
+    // })
+    // .addCase(removeMovie.rejected, (state, action) => {
+    //   state.status = 'failed'
+    //   state.error = action.payload
+    // })
   },
 })
 

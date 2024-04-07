@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { toastConfig } from '@/lib/toastConfig'
 
-import { Lists, ListType } from '../types/Lists'
+import { ListType, MovieItem } from '../types/Lists'
 
 type Props = {
   movieId: string
@@ -22,8 +22,8 @@ const Tooltips = ({ movieId }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
-  const usersLists: Lists | undefined = useSelector(
-    (state: RootState) => state.lists.usersLists[uid],
+  const movieListData: MovieItem | undefined = useSelector(
+    (state: RootState) => state.lists.movieListData[uid],
   )
 
   const [isFavorite, setIsFavorite] = useState(false)
@@ -63,12 +63,12 @@ const Tooltips = ({ movieId }: Props) => {
   }, [uid, dispatch])
 
   useEffect(() => {
-    if (usersLists) {
-      setIsFavorite(usersLists.favorites?.some((el) => el.movieId === movieId))
-      setIsWatchlist(usersLists.watchlist?.some((el) => el.movieId === movieId))
-      setIsCustom(usersLists.custom?.some((el) => el.movieId === movieId))
+    if (uid && movieListData) {
+      setIsFavorite(movieListData[movieId]?.isFavorite)
+      setIsWatchlist(movieListData[movieId]?.isWatchlist)
+      setIsCustom(movieListData[movieId]?.isCustom)
     }
-  }, [usersLists, movieId])
+  }, [movieListData, movieId, uid])
 
   const onToggleLists = async (listType: ListType) => {
     await dispatch(toggleMovieInList({ listType, movieId, uid }))

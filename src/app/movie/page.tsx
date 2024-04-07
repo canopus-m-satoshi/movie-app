@@ -59,7 +59,7 @@ export default function Home() {
     <main className="mt-5">
       <div className="container mx-auto py-8 px-3 md:px-0">
         <h2 className="text-center font-bold  text-xl md:text-4xl">
-          映画を検索 名探偵コナン
+          映画を検索
         </h2>
         <div className="flex justify-center flex-wrap gap-2 mt-5 w-fit mx-auto">
           <div className="flex-grow">

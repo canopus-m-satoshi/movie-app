@@ -30,7 +30,7 @@ const UserLists = ({
   )
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-10 gap-x-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-4 gap-x-4">
       {Object.entries(lists).map(
         ([movieId, movieDetail]: [string, MovieItem]) => (
           <div

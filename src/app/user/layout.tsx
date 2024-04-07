@@ -3,5 +3,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return <div className="container mx-auto">{children}</div>
+  return <div className="container mx-auto mb-6">{children}</div>
 }

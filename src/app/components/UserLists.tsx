@@ -10,7 +10,7 @@ type Props = {
   edittingMovieId: string | null
   inputedComment: string
   handleOnChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-  confirmEdit: (listType: ListType, movieId: string, uid: string) => void
+  confirmEdit: (movieId: string, uid: string) => void
   cancelEdit: () => void
   toggleEditMode: (movieId: string, comment: string | undefined) => void
 }
@@ -46,8 +46,7 @@ const UserLists = ({
                   onChange={handleOnChange}
                   wrap="hard"></textarea>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => confirmEdit('favorites', movieId, user.uid)}>
+                  <button onClick={() => confirmEdit(movieId, user.uid)}>
                     <FaCheck color={'#04b600'} />
                   </button>
                   <button onClick={cancelEdit}>

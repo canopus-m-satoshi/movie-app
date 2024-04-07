@@ -35,10 +35,10 @@ export default function Home() {
     setInputedComment(comment || '')
   }
 
-  const confirmEdit = (listType: ListType, movieId: string, uid: string) => {
+  const confirmEdit = (movieId: string, uid: string) => {
     setEdittingMovieId(null)
 
-    dispatch(updateComment({ listType, movieId, uid, comment: inputedComment }))
+    dispatch(updateComment({ movieId, uid, comment: inputedComment }))
     toast.success('コメントを編集しました', toastConfig)
   }
 

@@ -34,7 +34,6 @@ interface ToggleMoviePayload {
 
 interface updateCommentPayload {
   comment: string
-  listType: ListType
   movieId: string
   uid: string
 }
@@ -119,27 +118,19 @@ export const updateComment = createAsyncThunk<
   { rejectValue: string }
 >(
   'lists/updateComment',
-  async ({ comment, listType, movieId, uid }, { rejectWithValue }) => {
+  async ({ comment, movieId, uid }, { rejectWithValue }) => {
+    console.log('🚀 ~ comment:', comment)
     try {
-      const listDocRef = doc(db, 'users', uid, 'lists', listType)
+      const listDocRef = doc(db, 'users', uid, 'lists', movieId)
       const docSnap = await getDoc(listDocRef)
 
+      const data = docSnap.data()
+
+      const updatedMovies: Partial<MovieItem> = { ...data, comment: comment }
       if (docSnap.exists()) {
-        const data = docSnap.data()
-        const movieIndex = data.movies.findIndex(
-          (movie: MovieItem) => movie.movieId === movieId,
-        )
-
-        if (movieIndex !== -1) {
-          const updatedMovies = [...data.movies]
-
-          updatedMovies[movieIndex] = {
-            ...updatedMovies[movieIndex],
-            comment,
-          }
-
-          await updateDoc(listDocRef, { movies: updatedMovies })
-        }
+        await updateDoc(listDocRef, updatedMovies)
+      } else {
+        await setDoc(listDocRef, updatedMovies)
       }
     } catch (error: any) {
       console.log('🚀 ~ error:', error)
@@ -147,7 +138,7 @@ export const updateComment = createAsyncThunk<
       return rejectWithValue('Failed to update comment')
     }
 
-    return { comment, listType, movieId, uid }
+    return { comment, movieId, uid }
   },
 )
 
@@ -252,16 +243,14 @@ const listsSlice = createSlice({
       .addCase(updateComment.fulfilled, (state, action) => {
         state.status = 'succeeded'
 
-        const { comment, listType, movieId, uid } = action.payload
+        const { comment, movieId, uid } = action.payload
 
-        if (state.movieListData[uid] && state.movieListData[uid][listType]) {
-          const movieIndex = state.movieListData[uid][listType].findIndex(
-            (movie) => movie.movieId === movieId,
-          )
-
-          if (movieIndex !== -1) {
-            state.movieListData[uid][listType][movieIndex].comment = comment
-          }
+        console.log(
+          '🚀 ~ .addCase ~ state.movieListData[uid] :',
+          state.movieListData[uid],
+        )
+        if (state.movieListData[uid][movieId]) {
+          state.movieListData[uid][movieId].comment = comment
         }
       })
       .addCase(updateComment.rejected, (state, action) => {

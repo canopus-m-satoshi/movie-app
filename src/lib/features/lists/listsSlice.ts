@@ -2,7 +2,6 @@ import { db } from '@/lib/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   arrayRemove,
-  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -12,16 +11,12 @@ import {
 } from 'firebase/firestore'
 
 import { format } from 'date-fns'
+import { MovieItem } from '@/app/types/Lists'
 
 type ListType = 'favorites' | 'watchlist' | 'custom'
 
-interface MovieDetail {
-  addedAt: string
-  movieId: string
-  comment: string
-}
 interface UserLists {
-  [listType: string]: MovieDetail[]
+  [listType: string]: MovieItem[]
 }
 
 interface ListsState {
@@ -44,11 +39,6 @@ interface updateCommentPayload {
   uid: string
 }
 
-interface FetchUserLists {
-  uid: string
-  movieListData: Record<string, string[]>
-}
-
 const initialState: ListsState = {
   movieListData: {},
   status: 'idle',
@@ -57,7 +47,7 @@ const initialState: ListsState = {
 
 // 新規データベース構造 start
 export const fetchUserLists = createAsyncThunk<
-  { uid: string; movieListData: Record<string, MovieDetail> },
+  { uid: string; movieListData: Record<string, MovieItem> },
   string,
   { rejectValue: string }
 >('lists/fetchUserLists', async (uid, { rejectWithValue }) => {
@@ -65,10 +55,10 @@ export const fetchUserLists = createAsyncThunk<
     const userListRef = doc(db, 'users', uid)
     const querySnapshot = await getDocs(collection(userListRef, 'lists'))
 
-    const movieListData: Record<string, MovieDetail> = {}
+    const movieListData: Record<string, MovieItem> = {}
 
     querySnapshot.forEach((doc) => {
-      movieListData[doc.id] = doc.data() as MovieDetail
+      movieListData[doc.id] = doc.data() as MovieItem
     })
 
     return { uid, movieListData }
@@ -86,32 +76,31 @@ export const toggleMovieInList = createAsyncThunk<
   'lists/toggleMovieInList',
   async ({ listType, movieId, uid }, { rejectWithValue }) => {
     try {
-      const listDocRef = doc(db, 'users', uid, 'lists', listType)
-      const docSnap = await getDoc(listDocRef)
+      const movieRef = doc(db, 'users', uid, 'lists', movieId)
+      const movieDoc = await getDoc(movieRef)
       const addedAt = format(new Date(), 'yyyy-MM-dd')
 
-      if (docSnap.exists()) {
-        const data = docSnap.data()
-        const hasMovieInList = data.movies.find(
-          (el: MovieDetail) => el.movieId === movieId,
-        )
+      let updatedData: Partial<MovieItem> = {}
 
-        if (hasMovieInList) {
-          // 映画がリストに既に存在する場合、削除
-          await updateDoc(listDocRef, {
-            movies: arrayRemove(hasMovieInList),
-          })
-        } else {
-          // 映画がリストに存在しない場合、追加
-          await updateDoc(listDocRef, {
-            movies: arrayUnion({ addedAt: addedAt, movieId: movieId }),
-          })
-        }
+      switch (listType) {
+        case 'favorites':
+          updatedData = {
+            isFavorite: !movieDoc.exists() || !movieDoc.data()?.isFavorite,
+            favoriteAddedAt: movieDoc.data()?.favoriteAddedAt ? '' : addedAt,
+          }
+          break
+        case 'watchlist':
+          updatedData = {
+            isWatchlist: !movieDoc.exists() || !movieDoc.data()?.isWatchlist,
+            watchlistAddedAt: movieDoc.data()?.watchlistAddedAt ? '' : addedAt,
+          }
+          break
+      }
+
+      if (movieDoc.exists()) {
+        await updateDoc(movieRef, updatedData)
       } else {
-        // ドキュメントが存在しない場合、新規作成して映画を追加
-        await setDoc(listDocRef, {
-          movies: [{ addedAt: addedAt, movieId: movieId }],
-        })
+        await setDoc(movieRef, { ...updatedData })
       }
 
       return { addedAt, listType, movieId, uid }
@@ -138,7 +127,7 @@ export const updateComment = createAsyncThunk<
       if (docSnap.exists()) {
         const data = docSnap.data()
         const movieIndex = data.movies.findIndex(
-          (movie: MovieDetail) => movie.movieId === movieId,
+          (movie: MovieItem) => movie.movieId === movieId,
         )
 
         if (movieIndex !== -1) {
@@ -176,7 +165,7 @@ export const removeMovie = createAsyncThunk<
       if (docSnap.exists()) {
         const data = docSnap.data()
         const hasMovieInList = data.movies.find(
-          (el: MovieDetail) => el.movieId === movieId,
+          (el: MovieItem) => el.movieId === movieId,
         )
 
         if (hasMovieInList) {
@@ -226,17 +215,31 @@ const listsSlice = createSlice({
         state.status = 'succeeded'
         const { addedAt, listType, movieId, uid } = action.payload
 
-        if (state.movieListData[uid][listType].includes(movieId)) {
-          // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成
-          state.movieListData[uid][listType] = state.movieListData[uid][
-            listType
-          ].filter((id) => id !== movieId)
+        if (state.movieListData[uid] && state.movieListData[uid][movieId]) {
+          const movieItem: MovieItem = state.movieListData[uid][movieId]
+          switch (listType) {
+            case 'favorites':
+              movieItem.isFavorite = !movieItem.isFavorite
+              movieItem.favoriteAddedAt = addedAt
+              break
+            case 'watchlist':
+              movieItem.isWatchlist = !movieItem.isWatchlist
+              movieItem.watchlistAddedAt = addedAt
+              break
+          }
         } else {
-          // 映画IDがリスト内に存在しない場合、リストに追加
-          state.movieListData[uid][listType].push({
-            movieId: movieId,
-            addedAt: addedAt,
-          })
+          if (!state.movieListData[uid]) {
+            state.movieListData[uid] = { [movieId]: {} }
+          }
+
+          state.movieListData[uid][movieId] = {
+            movieId,
+            addedAt,
+            isFavorite: listType === 'favorites',
+            favoriteAddedAt: listType === 'favorites' ? addedAt : '',
+            isWatchlist: listType === 'watchlist',
+            watchlistAddedAt: listType === 'watchlist' ? addedAt : '',
+          } as MovieItem
         }
       })
       .addCase(toggleMovieInList.rejected, (state, action) => {

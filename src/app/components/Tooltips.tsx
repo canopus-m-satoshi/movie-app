@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { toastConfig } from '@/lib/toastConfig'
 
-import { Lists, ListType } from '../types/Lists'
+import { ListType, MovieItem } from '../types/Lists'
 
 type Props = {
   movieId: string
@@ -22,7 +22,7 @@ const Tooltips = ({ movieId }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
-  const movieListData: Lists | undefined = useSelector(
+  const movieListData: MovieItem | undefined = useSelector(
     (state: RootState) => state.lists.movieListData[uid],
   )
 
@@ -63,14 +63,10 @@ const Tooltips = ({ movieId }: Props) => {
   }, [uid, dispatch])
 
   useEffect(() => {
-    if (movieListData) {
-      setIsFavorite(
-        movieListData.favorites?.some((el) => el.movieId === movieId),
-      )
-      setIsWatchlist(
-        movieListData.watchlist?.some((el) => el.movieId === movieId),
-      )
-      setIsCustom(movieListData.custom?.some((el) => el.movieId === movieId))
+    if (uid && movieListData) {
+      setIsFavorite(movieListData[movieId]?.isFavorite)
+      setIsWatchlist(movieListData[movieId]?.isWatchlist)
+      setIsCustom(movieListData[movieId]?.isCustom)
     }
   }, [movieListData, movieId])
 

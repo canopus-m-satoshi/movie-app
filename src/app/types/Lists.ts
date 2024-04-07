@@ -7,7 +7,13 @@ export interface Lists {
 }
 
 export interface MovieItem {
+  [key: string]: any // 任意の文字列をキーとして値を設定
   movieId: string
   addedAt: string
   comment?: string
+  favoriteAddedAt: string
+  isFavorite?: boolean
+  isWatchlist?: boolean
+  watchedAt?: string
+  watchlistAddedAt?: string
 }

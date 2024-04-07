@@ -70,7 +70,12 @@ const Tooltips = ({ movieId }: Props) => {
     }
   }, [movieListData, movieId, uid])
 
-  const onToggleLists = async (listType: ListType) => {
+  const onToggleLists = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    listType: ListType,
+  ) => {
+    event.preventDefault()
+
     await dispatch(toggleMovieInList({ listType, movieId, uid }))
 
     let message = ''
@@ -106,17 +111,17 @@ const Tooltips = ({ movieId }: Props) => {
       <TooltipButton
         icon={isFavorite ? <FaHeart color={'#ff002d'} /> : <FaHeart />}
         tip={favoriteTip}
-        onClick={() => onToggleLists('favorites')}
+        onClick={(event) => onToggleLists(event, 'favorites')}
       />
       <TooltipButton
         icon={isWatchlist ? <FaBookmark color={'#ffe200'} /> : <FaBookmark />}
         tip={watchTip}
-        onClick={() => onToggleLists('watchlist')}
+        onClick={(event) => onToggleLists(event, 'watchlist')}
       />
       <TooltipButton
         icon={isCustom ? <FaList color={'#04b600'} /> : <FaList />}
         tip={customTip}
-        onClick={() => onToggleLists('custom')}
+        onClick={(event) => onToggleLists(event, 'custom')}
       />
     </div>
   )

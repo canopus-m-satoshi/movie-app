@@ -3,6 +3,7 @@ import { posterURL } from '@/constants/posterURL'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Movie } from '../types/Movie'
+import Tooltips from './Tooltips'
 
 type Props = {
   movies: Movie[]
@@ -27,6 +28,9 @@ const MovieList = ({ movies, query, page }: Props) => {
             width={300}
             height={440}
           />
+          <div className="my-3">
+            <Tooltips movieId={movie.id.toString()} />
+          </div>
           <h3 className="font-bold text-lg lg:text-2xl mt-3">{movie.title}</h3>
           <p>
             公開日:

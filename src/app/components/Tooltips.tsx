@@ -68,7 +68,7 @@ const Tooltips = ({ movieId }: Props) => {
       setIsWatchlist(movieListData[movieId]?.isWatchlist)
       setIsCustom(movieListData[movieId]?.isCustom)
     }
-  }, [movieListData, movieId])
+  }, [movieListData, movieId, uid])
 
   const onToggleLists = async (listType: ListType) => {
     await dispatch(toggleMovieInList({ listType, movieId, uid }))

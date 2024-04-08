@@ -1,4 +1,4 @@
-export type ListType = 'favorites' | 'watchlist' | 'custom'
+export type ListType = 'favorites' | 'watchlist' | 'custom' | 'watched'
 
 export interface Lists {
   custom: MovieItem[]

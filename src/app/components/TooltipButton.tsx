@@ -1,7 +1,8 @@
 type Props = {
   icon: React.ReactNode
   tip: string
-  onClick: () => void
+  // onClick: () => void
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 const TooltipButton = ({ icon, tip, onClick }: Props) => {

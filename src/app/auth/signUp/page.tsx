@@ -11,8 +11,10 @@ import { FcGoogle } from 'react-icons/fc'
 import { IoIosEyeOff, IoMdEye, IoMdMail } from 'react-icons/io'
 import { IoKey } from 'react-icons/io5'
 import { MdKeyboardArrowRight } from 'react-icons/md'
+import { toast } from 'react-toastify'
 
 import { auth } from '@/lib/firebase'
+import { toastConfig } from '@/lib/toastConfig'
 
 const SignUp = () => {
   const [emailInput, setEmailInput] = useState('')
@@ -34,9 +36,9 @@ const SignUp = () => {
   const signUpWithEmail = async () => {
     try {
       await createUserWithEmailAndPassword(auth, emailInput, passwordInput)
-      console.log('アカウント作成成功')
+      toast.success('アカウント作成成功', toastConfig)
     } catch (error) {
-      console.error('アカウント作成失敗', error)
+      toast.error('アカウント作成失敗', toastConfig)
     }
   }
 

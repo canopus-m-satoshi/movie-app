@@ -34,6 +34,13 @@ interface updateCommentPayload {
   uid: string
 }
 
+interface RegisterWatchedDate {
+  formattedDate: string
+  movieId: string
+  uid: string
+  isWatched: boolean
+}
+
 const initialState: ListsState = {
   movieListData: {},
   status: 'idle',
@@ -135,6 +142,39 @@ export const updateComment = createAsyncThunk<
     }
 
     return { comment, movieId, uid }
+  },
+)
+
+export const registerWatchedDate = createAsyncThunk<
+  RegisterWatchedDate,
+  RegisterWatchedDate,
+  { rejectValue: string }
+>(
+  'lists/registerWatchedDate',
+  async ({ movieId, uid, formattedDate, isWatched }, { rejectWithValue }) => {
+    try {
+      const listDocRef = doc(db, 'users', uid, 'lists', movieId)
+      const docSnap = await getDoc(listDocRef)
+
+      const data = docSnap.data()
+
+      const updatedMovies: Partial<MovieItem> = {
+        ...data,
+        watchedDate: formattedDate,
+        isWatched: isWatched,
+      }
+
+      if (docSnap.exists()) {
+        await updateDoc(listDocRef, updatedMovies)
+      } else {
+        await setDoc(listDocRef, updatedMovies)
+      }
+    } catch (error: any) {
+      console.log('🚀 ~ async ~ error:', error)
+      console.log('🚀 ~ rejectWithValue:', rejectWithValue)
+    }
+
+    return { movieId, uid, formattedDate, isWatched }
   },
 )
 
@@ -250,6 +290,33 @@ const listsSlice = createSlice({
         }
       })
       .addCase(updateComment.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.payload
+      })
+      .addCase(registerWatchedDate.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(registerWatchedDate.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+
+        const { movieId, uid, formattedDate, isWatched } = action.payload
+
+        if (state.movieListData[uid] && state.movieListData[uid][movieId]) {
+          state.movieListData[uid][movieId].watchedDate = formattedDate
+          state.movieListData[uid][movieId].isWatched = isWatched
+        } else {
+          if (!state.movieListData[uid]) {
+            state.movieListData[uid] = { [movieId]: {} }
+          }
+
+          state.movieListData[uid][movieId] = {
+            ...state.movieListData[uid][movieId],
+            watchedDate: formattedDate,
+            isWatched: isWatched,
+          }
+        }
+      })
+      .addCase(registerWatchedDate.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.payload
       })

@@ -1,18 +1,23 @@
 'use client'
 
 import TooltipButton from './TooltipButton'
-import { FaBookmark, FaHeart, FaList } from 'react-icons/fa'
+import { FaBookmark, FaEye, FaHeart, FaList } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/lib/store'
 import {
   fetchUserLists,
   toggleMovieInList,
 } from '@/lib/features/lists/listsSlice'
-import { useEffect, useState } from 'react'
+
+import { toggle as handleModal } from '@/lib/features/modal/modalSlice'
+
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+
 import { toastConfig } from '@/lib/toastConfig'
 
 import { ListType, MovieItem } from '../types/Lists'
+import Modal from './Modal'
 
 type Props = {
   movieId: string
@@ -22,17 +27,19 @@ const Tooltips = ({ movieId }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
-  const movieListData: MovieItem | undefined = useSelector(
+  const movieListData: MovieItem | null = useSelector(
     (state: RootState) => state.lists.movieListData[uid],
   )
 
   const [isFavorite, setIsFavorite] = useState(false)
   const [isWatchlist, setIsWatchlist] = useState(false)
   const [isCustom, setIsCustom] = useState(false)
+  const [isWatched, setIsWatched] = useState(false)
 
   const [favoriteTip, setFavoriteTip] = useState('')
   const [watchTip, setWatchTip] = useState('')
   const [customTip, setCustomTip] = useState('')
+  const [watchedTip, setWatchedTip] = useState('')
 
   const [toastMessage, setToastMessage] = useState('')
 
@@ -54,7 +61,10 @@ const Tooltips = ({ movieId }: Props) => {
     setCustomTip(
       isCustom ? 'カスタムリストから削除する' : 'カスタムリストに追加する',
     )
-  }, [isFavorite, isWatchlist, isCustom])
+    setWatchedTip(
+      isWatched ? '鑑賞済みリストから削除する' : '鑑賞済みリストに追加する',
+    )
+  }, [isFavorite, isWatchlist, isCustom, isWatched])
 
   useEffect(() => {
     if (uid) {
@@ -67,6 +77,7 @@ const Tooltips = ({ movieId }: Props) => {
       setIsFavorite(movieListData[movieId]?.isFavorite)
       setIsWatchlist(movieListData[movieId]?.isWatchlist)
       setIsCustom(movieListData[movieId]?.isCustom)
+      setIsWatched(movieListData[movieId]?.isWatched)
     }
   }, [movieListData, movieId, uid])
 
@@ -101,9 +112,27 @@ const Tooltips = ({ movieId }: Props) => {
           : 'カスタムリストに追加しました'
 
         break
+      case 'watched':
+        setIsWatched(!isWatched)
+        message = isWatched
+          ? '鑑賞済みリストから削除しました'
+          : '鑑賞済みリストに追加しました'
+
+        break
     }
 
     setToastMessage(message)
+  }
+
+  const openModal = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    event.preventDefault()
+    dispatch(handleModal())
+  }
+
+  const closeModal = () => {
+    dispatch(handleModal())
   }
 
   return (
@@ -123,6 +152,12 @@ const Tooltips = ({ movieId }: Props) => {
         tip={customTip}
         onClick={(event) => onToggleLists(event, 'custom')}
       />
+      <TooltipButton
+        icon={<FaEye color={isWatched ? '#0027eb' : 'inherit'} />}
+        tip={watchedTip}
+        onClick={(event) => openModal(event)}
+      />
+      <Modal movieId={movieId} onRequestClose={closeModal} />
     </div>
   )
 }

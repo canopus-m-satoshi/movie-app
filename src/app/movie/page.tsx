@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react'
 
-import Loading from '../components/Loading'
-import { Movie } from '../types/Movie'
+import Loading from '../../components/Loading'
+import { Movie } from '../../types/Movie'
 
 import { useCustomFetch } from '@/hooks/useMovieFetch'
 import { useRouter, useSearchParams } from 'next/navigation'
-import MovieList from '../components/MovieList'
-import Pagination from '../components/Pagination'
+import MovieList from '../../components/MovieList'
+import Pagination from '../../components/Pagination'
 
 export default function Home() {
   const router = useRouter()

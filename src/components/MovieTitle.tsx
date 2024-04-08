@@ -3,7 +3,7 @@
 import { getMovieDetails } from '@/api/movie/getMovieDetails/route'
 
 import useSWR from 'swr'
-import Loading from '../loading'
+import Loading from '../app/loading'
 
 type Props = {
   movieId: string

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import StoreProvider from './provider/StoreProvider'
-import AuthProvider from './provider/AuthProvider'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import StoreProvider from '../provider/StoreProvider'
+import AuthProvider from '../provider/AuthProvider'
 import { ToastContainer } from 'react-toastify'
 
 export const metadata: Metadata = {

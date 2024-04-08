@@ -1,4 +1,4 @@
-import { AuthState, User } from '@/app/types/User'
+import { AuthState, User } from '@/types/User'
 import { auth, db } from '@/lib/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {

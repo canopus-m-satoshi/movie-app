@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore'
 
 import { format } from 'date-fns'
-import { MovieItem } from '@/app/types/Lists'
+import { MovieItem } from '@/types/Lists'
 
 type ListType = 'favorites' | 'watchlist' | 'custom'
 

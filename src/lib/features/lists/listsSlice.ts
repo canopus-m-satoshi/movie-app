@@ -178,41 +178,6 @@ export const registerWatchedDate = createAsyncThunk<
   },
 )
 
-// export const removeMovie = createAsyncThunk<
-//   ToggleMoviePayload,
-//   ToggleMoviePayload,
-//   { rejectValue: string }
-// >(
-//   'lists/removeMovie',
-//   async ({ listType, movieId, uid }, { rejectWithValue }) => {
-//     try {
-//       const listDocRef = doc(db, 'users', uid, 'lists', listType)
-//       const docSnap = await getDoc(listDocRef)
-
-//       if (docSnap.exists()) {
-//         const data = docSnap.data()
-//         const hasMovieInList = data.movies.find(
-//           (el: MovieItem) => el.movieId === movieId,
-//         )
-
-//         if (hasMovieInList) {
-//           // 映画がリストに既に存在する場合、削除
-//           await updateDoc(listDocRef, {
-//             movies: arrayRemove(hasMovieInList),
-//           })
-//         }
-//       }
-
-//       return { listType, movieId, uid }
-//     } catch (error) {
-//       if (error instanceof Error) {
-//         return rejectWithValue(error.message)
-//       }
-//       return rejectWithValue('An unknown error occurred')
-//     }
-//   },
-// )
-
 const listsSlice = createSlice({
   name: 'lists',
   initialState,
@@ -320,24 +285,6 @@ const listsSlice = createSlice({
         state.status = 'failed'
         state.error = action.payload
       })
-    // .addCase(removeMovie.pending, (state) => {
-    //   state.status = 'loading'
-    // })
-    // .addCase(removeMovie.fulfilled, (state, action) => {
-    //   state.status = 'succeeded'
-    //   const { listType, movieId, uid } = action.payload
-
-    //   if (state.movieListData[uid][listType].includes(movieId)) {
-    //     // 映画IDがリスト内に存在する場合、そのIDを除外した新しい配列を作成
-    //     state.movieListData[uid][listType] = state.movieListData[uid][
-    //       listType
-    //     ].filter((id) => id !== movieId)
-    //   }
-    // })
-    // .addCase(removeMovie.rejected, (state, action) => {
-    //   state.status = 'failed'
-    //   state.error = action.payload
-    // })
   },
 })
 

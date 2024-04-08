@@ -36,8 +36,13 @@ const UserLists = ({
           <div
             key={movieId}
             className="relative border-2 border-green-600 rounded mt-2 p-4">
-            <p>Movie ID: {movieId}</p>
             <MovieTitle movieId={movieId} />
+            <p>
+              鑑賞日:
+              {lists[movieId].watchedDate
+                ? lists[movieId].watchedDate
+                : ' 未登録'}
+            </p>
             {edittingMovieId === movieId ? (
               <div className="md:flex justify-between items-end gap-2">
                 <textarea

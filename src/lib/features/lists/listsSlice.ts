@@ -122,7 +122,6 @@ export const updateComment = createAsyncThunk<
 >(
   'lists/updateComment',
   async ({ comment, movieId, uid }, { rejectWithValue }) => {
-    console.log('🚀 ~ comment:', comment)
     try {
       const listDocRef = doc(db, 'users', uid, 'lists', movieId)
       const docSnap = await getDoc(listDocRef)
@@ -170,7 +169,6 @@ export const registerWatchedDate = createAsyncThunk<
         await setDoc(listDocRef, updatedMovies)
       }
     } catch (error: any) {
-      console.log('🚀 ~ async ~ error:', error)
       console.log('🚀 ~ rejectWithValue:', rejectWithValue)
     }
 
@@ -246,10 +244,6 @@ const listsSlice = createSlice({
 
         const { comment, movieId, uid } = action.payload
 
-        console.log(
-          '🚀 ~ .addCase ~ state.movieListData[uid] :',
-          state.movieListData[uid],
-        )
         if (state.movieListData[uid][movieId]) {
           state.movieListData[uid][movieId].comment = comment
         }

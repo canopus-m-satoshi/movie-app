@@ -109,17 +109,17 @@ const Tooltips = ({ movieId }: Props) => {
   return (
     <div className="md:col-span-2 md:row-span-1 flex gap-4 ml-0 mr-auto w-fit">
       <TooltipButton
-        icon={isFavorite ? <FaHeart color={'#ff002d'} /> : <FaHeart />}
+        icon={<FaHeart color={isFavorite ? '#ff002d' : 'inherit'} />}
         tip={favoriteTip}
         onClick={(event) => onToggleLists(event, 'favorites')}
       />
       <TooltipButton
-        icon={isWatchlist ? <FaBookmark color={'#ffe200'} /> : <FaBookmark />}
+        icon={<FaBookmark color={isWatchlist ? '#ffe200' : 'inherit'} />}
         tip={watchTip}
         onClick={(event) => onToggleLists(event, 'watchlist')}
       />
       <TooltipButton
-        icon={isCustom ? <FaList color={'#04b600'} /> : <FaList />}
+        icon={<FaList color={isCustom ? '#04b600' : 'inherit'} />}
         tip={customTip}
         onClick={(event) => onToggleLists(event, 'custom')}
       />

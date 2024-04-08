@@ -1,8 +1,9 @@
 'use client'
 
+import useSWR from 'swr'
+
 import { getMovieDetails } from '@/api/movie/getMovieDetails/route'
 
-import useSWR from 'swr'
 import Loading from '../app/loading'
 
 type Props = {

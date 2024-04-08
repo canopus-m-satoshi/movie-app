@@ -1,10 +1,12 @@
 import { FaCheck, FaPen } from 'react-icons/fa'
 import { FaXmark } from 'react-icons/fa6'
-import MovieTitle from './MovieTitle'
 import { useSelector } from 'react-redux'
+
 import { RootState } from '@/lib/store'
-import { User } from '../types/User'
+
 import { ListType, MovieItem } from '../types/Lists'
+import { User } from '../types/User'
+import MovieTitle from './MovieTitle'
 
 type Props = {
   edittingMovieId: string | null

@@ -1,5 +1,5 @@
-import { db } from '@/lib/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { format } from 'date-fns'
 import {
   arrayRemove,
   collection,
@@ -10,7 +10,7 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 
-import { format } from 'date-fns'
+import { db } from '@/lib/firebase'
 import { MovieItem } from '@/types/Lists'
 
 type ListType = 'favorites' | 'watchlist' | 'custom'

@@ -1,12 +1,13 @@
 'use client'
 
-import ReactModal from 'react-modal'
 import { RxCross2 } from 'react-icons/rx'
-import DatePicker from './DatePicker'
+import ReactModal from 'react-modal'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/lib/store'
 
 import { toggle as handleModal } from '@/lib/features/modal/modalSlice'
+import { RootState } from '@/lib/store'
+
+import DatePicker from './DatePicker'
 
 type Props = {
   movieId: string

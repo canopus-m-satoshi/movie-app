@@ -1,17 +1,18 @@
 'use client'
 
-import { registerWatchedDate } from '@/lib/features/lists/listsSlice'
-import { toastConfig } from '@/lib/toastConfig'
 import { format, parse } from 'date-fns'
 import { useEffect, useState } from 'react'
 import ReactDatePicker from 'react-datepicker'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { User } from '../types/User'
-import { RootState } from '@/lib/store'
 
+import { registerWatchedDate } from '@/lib/features/lists/listsSlice'
 import { toggle as handleModal } from '@/lib/features/modal/modalSlice'
+import { RootState } from '@/lib/store'
+import { toastConfig } from '@/lib/toastConfig'
+
 import { MovieItem } from '../types/Lists'
+import { User } from '../types/User'
 
 type Props = {
   movieId: string

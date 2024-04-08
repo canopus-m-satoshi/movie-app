@@ -1,4 +1,4 @@
-import { ToastOptions, Bounce } from 'react-toastify'
+import { Bounce, ToastOptions } from 'react-toastify'
 
 // 共通のトースト設定
 export const toastConfig: ToastOptions = {

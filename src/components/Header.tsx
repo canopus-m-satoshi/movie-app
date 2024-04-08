@@ -3,8 +3,9 @@
 import Link from 'next/link'
 import { CgProfile } from 'react-icons/cg'
 import { useDispatch, useSelector } from 'react-redux'
-import { signOutUser } from '@/lib/features/auth/authSlice'
 import { toast } from 'react-toastify'
+
+import { signOutUser } from '@/lib/features/auth/authSlice'
 import { AppDispatch } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 

@@ -6,19 +6,18 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 import { IoIosEyeOff, IoMdEye, IoMdMail } from 'react-icons/io'
 import { IoKey } from 'react-icons/io5'
 import { MdKeyboardArrowRight } from 'react-icons/md'
-
+import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import { auth } from '@/lib/firebase'
 import { signInWithGoogle } from '@/lib/features/auth/authSlice'
-import { useDispatch } from 'react-redux'
+import { auth } from '@/lib/firebase'
 import { AppDispatch } from '@/lib/store'
-import { useRouter } from 'next/navigation'
 import { toastConfig } from '@/lib/toastConfig'
 const SignIn = () => {
   const [emailInput, setEmailInput] = useState('')
@@ -42,9 +41,9 @@ const SignIn = () => {
   const signInWithEmail = async () => {
     try {
       await signInWithEmailAndPassword(auth, emailInput, passwordInput)
-      console.log('ログイン成功')
+      toast.success('ログイン成功', toastConfig)
     } catch (error) {
-      console.error('ログイン失敗', error)
+      toast.success('ログイン失敗', toastConfig)
     }
   }
 

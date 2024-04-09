@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import { fetchUserLists, updateComment } from '@/lib/features/lists/listsSlice'
+import {
+  fetchUserLists,
+  // updateComment,
+} from '@/lib/features/movies/moviesSlice'
 import { AppDispatch, RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 
@@ -18,8 +21,8 @@ export default function Home() {
   const dispatch: AppDispatch = useDispatch()
   const user: User | null = useSelector((state: RootState) => state.auth.user)
 
-  const lists = useSelector((state: RootState) =>
-    user ? state.lists.movieListData[user.uid] : undefined,
+  const movies = useSelector((state: RootState) =>
+    user ? state.movies.movieListData[user.uid] : undefined,
   )
 
   const [edittingMovieId, setEdittingMovieId] = useState<string | null>(null)
@@ -39,7 +42,7 @@ export default function Home() {
   const confirmEdit = (movieId: string, uid: string) => {
     setEdittingMovieId(null)
 
-    dispatch(updateComment({ movieId, uid, comment: inputedComment }))
+    // dispatch(updateComment({ movieId, uid, comment: inputedComment }))
     toast.success('コメントを編集しました', toastConfig)
   }
 
@@ -69,7 +72,7 @@ export default function Home() {
 
       <Profile />
 
-      {lists && (
+      {movies && (
         <UserLists
           edittingMovieId={edittingMovieId}
           inputedComment={inputedComment}

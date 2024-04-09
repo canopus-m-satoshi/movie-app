@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore'
+
 export type ListType = 'favorites' | 'watchlist' | 'custom' | 'watched'
 
 export interface Lists {
@@ -11,9 +13,5 @@ export interface MovieItem {
   movieId: string
   addedAt: string
   comment?: string
-  favoriteAddedAt: string
-  isFavorite?: boolean
-  isWatchlist?: boolean
-  watchedAt?: string
-  watchlistAddedAt?: string
+  watchedAt?: Timestamp | null
 }

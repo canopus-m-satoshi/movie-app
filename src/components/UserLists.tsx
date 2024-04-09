@@ -27,13 +27,13 @@ const UserLists = ({
 }: Props) => {
   const user: User | null = useSelector((state: RootState) => state.auth.user)
 
-  const lists: Record<string, MovieItem> = useSelector((state: RootState) =>
-    user ? state.lists.movieListData[user.uid] : {},
+  const movies: Record<string, MovieItem> = useSelector((state: RootState) =>
+    user ? state.movies.movieListData[user.uid] : {},
   )
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-4 gap-x-4">
-      {Object.entries(lists).map(
+      {Object.entries(movies).map(
         ([movieId, movieDetail]: [string, MovieItem]) => (
           <div
             key={movieId}
@@ -41,9 +41,8 @@ const UserLists = ({
             <MovieTitle movieId={movieId} />
             <p>
               鑑賞日:
-              {lists[movieId].watchedDate
-                ? lists[movieId].watchedDate
-                : ' 未登録'}
+              {/* {movieDetail.watchedAt} */}
+              {movieDetail.watchedAt ? movieDetail.watchedAt : ' 未登録'}
             </p>
             {edittingMovieId === movieId ? (
               <div className="md:flex justify-between items-end gap-2">

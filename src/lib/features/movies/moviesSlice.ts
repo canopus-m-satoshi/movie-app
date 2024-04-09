@@ -14,8 +14,6 @@ import { watch } from 'fs'
 import { db } from '@/lib/firebase'
 import { MovieItem } from '@/types/Lists'
 
-type ListType = 'favorites' | 'watchlist' | 'custom'
-
 interface moviesState {
   movieListData: Record<string, MovieItem> // 各ユーザーのリストをuidをキーとして保持する
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
@@ -30,7 +28,7 @@ const initialState: moviesState = {
 
 // 新規データベース構造 start
 export const fetchUserLists = createAsyncThunk<
-  { uid: string; movieListData: Record<string, MovieItem> },
+  Record<string, MovieItem>,
   string,
   { rejectValue: { message: string; error?: any } }
 >('movies/fetchUserLists', async (uid, { rejectWithValue }) => {
@@ -59,7 +57,7 @@ export const fetchUserLists = createAsyncThunk<
       }
     })
 
-    return { uid, movieListData }
+    return movieListData
   } catch (error: any) {
     return rejectWithValue({ message: 'Failed to fetch user lists', error })
   }
@@ -77,14 +75,12 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchUserLists.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        const { uid, movieListData } = action.payload
-        state.movieListData[uid] = movieListData
+        state.movieListData = action.payload
       })
       .addCase(fetchUserLists.rejected, (state, action) => {
         state.status = 'failed'
         if (action.payload) {
           state.error = action.payload.message
-          console.error('Fetch user lists error:', action.payload.error)
         } else {
           state.error = action.error.message
         }

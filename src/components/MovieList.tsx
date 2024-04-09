@@ -5,9 +5,7 @@ import { useSelector } from 'react-redux'
 import { posterURL } from '@/constants/posterURL'
 import { RootState } from '@/lib/store'
 
-import { MovieItem } from '../types/Lists'
 import { Movie } from '../types/Movie'
-import { User } from '../types/User'
 import Tooltips from './Tooltips'
 
 type Props = {
@@ -17,10 +15,8 @@ type Props = {
 }
 
 const MovieList = ({ movies, query, page }: Props) => {
-  const user: User | null = useSelector((state: RootState) => state.auth.user)
-
-  const lists: Record<string, MovieItem> = useSelector((state: RootState) =>
-    user ? state.lists.movieListData[user.uid] : {},
+  const movieListData = useSelector(
+    (state: RootState) => state.movies.movieListData,
   )
 
   return (
@@ -47,9 +43,11 @@ const MovieList = ({ movies, query, page }: Props) => {
             公開日:
             {movie.release_date ? movie.release_date : ' 不明'}
           </p>
-          {lists && lists[movie.id] && lists[movie.id].watchedDate && (
-            <p>鑑賞日: {lists[movie.id].watchedDate}</p>
-          )}
+          {movieListData &&
+            movieListData[movie.id] &&
+            movieListData[movie.id].watchedAt && (
+              <p>鑑賞日: {movieListData[movie.id].watchedAt}</p>
+            )}
         </Link>
       ))}
     </div>

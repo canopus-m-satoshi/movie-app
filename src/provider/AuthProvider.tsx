@@ -1,8 +1,9 @@
 'use client'
 
-import { checkAuthStatus } from '@/lib/features/auth/authSlice'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+
+import { checkAuthStatus } from '@/lib/features/auth/authSlice'
 
 export default function AuthProvider({
   children,

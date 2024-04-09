@@ -1,10 +1,12 @@
-import type { Metadata } from 'next'
 import './globals.css'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import StoreProvider from './provider/StoreProvider'
-import AuthProvider from './provider/AuthProvider'
+
+import type { Metadata } from 'next'
 import { ToastContainer } from 'react-toastify'
+
+import Footer from '../components/Footer'
+import Header from '../components/Header'
+import AuthProvider from '../provider/AuthProvider'
+import StoreProvider from '../provider/StoreProvider'
 
 export const metadata: Metadata = {
   title: 'Movie App',

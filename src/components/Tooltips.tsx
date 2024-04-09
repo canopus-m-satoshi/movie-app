@@ -1,23 +1,21 @@
 'use client'
 
-import TooltipButton from './TooltipButton'
+import React, { useEffect, useState } from 'react'
 import { FaBookmark, FaEye, FaHeart, FaList } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/lib/store'
+import { toast } from 'react-toastify'
+
 import {
   fetchUserLists,
   toggleMovieInList,
 } from '@/lib/features/lists/listsSlice'
-
 import { toggle as handleModal } from '@/lib/features/modal/modalSlice'
-
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-
+import { AppDispatch, RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 
 import { ListType, MovieItem } from '../types/Lists'
 import Modal from './Modal'
+import TooltipButton from './TooltipButton'
 
 type Props = {
   movieId: string

@@ -1,15 +1,16 @@
-import { AuthState, User } from '@/app/types/User'
-import { auth, db } from '@/lib/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
-  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   getAuth,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
+
+import { auth, db } from '@/lib/firebase'
+import { AuthState, User } from '@/types/User'
 
 const initialState: AuthState = { user: null, status: 'idle', error: undefined }
 

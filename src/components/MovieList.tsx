@@ -1,14 +1,14 @@
-import { posterURL } from '@/constants/posterURL'
-
 import Image from 'next/image'
 import Link from 'next/link'
-import { Movie } from '../types/Movie'
-import Tooltips from './Tooltips'
-
 import { useSelector } from 'react-redux'
+
+import { posterURL } from '@/constants/posterURL'
 import { RootState } from '@/lib/store'
-import { User } from '../types/User'
+
 import { MovieItem } from '../types/Lists'
+import { Movie } from '../types/Movie'
+import { User } from '../types/User'
+import Tooltips from './Tooltips'
 
 type Props = {
   movies: Movie[]

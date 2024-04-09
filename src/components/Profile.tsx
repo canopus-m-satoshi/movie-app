@@ -1,7 +1,9 @@
-import { RootState } from '@/lib/store'
-import { useSelector } from 'react-redux'
-import { User } from '../types/User'
 import { CgProfile } from 'react-icons/cg'
+import { useSelector } from 'react-redux'
+
+import { RootState } from '@/lib/store'
+
+import { User } from '../types/User'
 import StatsItem from './StatsItem'
 
 const Profile = () => {

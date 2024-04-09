@@ -1,17 +1,18 @@
 'use client'
 
-import { useDispatch, useSelector } from 'react-redux'
-import { User } from '../../types/User'
-import { ListType } from '../../types/Lists'
-import { AppDispatch, RootState } from '@/lib/store'
 import { useEffect, useState } from 'react'
-import { fetchUserLists, updateComment } from '@/lib/features/lists/listsSlice'
-import Loading from '../loading'
-
-import { toastConfig } from '@/lib/toastConfig'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+
+import { fetchUserLists, updateComment } from '@/lib/features/lists/listsSlice'
+import { AppDispatch, RootState } from '@/lib/store'
+import { toastConfig } from '@/lib/toastConfig'
+
 import Profile from '../../components/Profile'
 import UserLists from '../../components/UserLists'
+import { ListType } from '../../types/Lists'
+import { User } from '../../types/User'
+import Loading from '../loading'
 
 export default function Home() {
   const dispatch: AppDispatch = useDispatch()

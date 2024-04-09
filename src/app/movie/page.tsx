@@ -1,14 +1,14 @@
 'use client'
 
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-import Loading from '../../components/Loading'
-import { Movie } from '../../types/Movie'
-
 import { useCustomFetch } from '@/hooks/useMovieFetch'
-import { useRouter, useSearchParams } from 'next/navigation'
+
+import Loading from '../../components/Loading'
 import MovieList from '../../components/MovieList'
 import Pagination from '../../components/Pagination'
+import { Movie } from '../../types/Movie'
 
 export default function Home() {
   const router = useRouter()

@@ -3,9 +3,7 @@ import { Timestamp } from 'firebase/firestore'
 export type ListType = 'favorites' | 'watchlist' | 'custom' | 'watched'
 
 export interface Lists {
-  custom: MovieItem[]
-  favorites: MovieItem[]
-  watchlist: MovieItem[]
+  [key: string]: string
 }
 
 export interface MovieItem {

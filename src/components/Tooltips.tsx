@@ -5,15 +5,13 @@ import { FaBookmark, FaEye, FaHeart, FaList } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import {
-  fetchUserLists,
-  toggleMovieInList,
-} from '@/lib/features/lists/listsSlice'
+import { toggleMovieInList } from '@/lib/features/lists/listsSlice'
 import { toggle as handleModal } from '@/lib/features/modal/modalSlice'
+import { fetchLists, fetchUserLists } from '@/lib/features/movies/moviesSlice'
 import { AppDispatch, RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 
-import { ListType, MovieItem } from '../types/Lists'
+import { Lists, ListType } from '../types/Lists'
 import Modal from './Modal'
 import TooltipButton from './TooltipButton'
 
@@ -25,8 +23,13 @@ const Tooltips = ({ movieId }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
-  const movieListData: MovieItem | null = useSelector(
-    (state: RootState) => state.lists.movieListData[uid],
+
+  const favorites: Lists = useSelector(
+    (state: RootState) => state.movies.favorites,
+  )
+
+  const watchlists: Lists = useSelector(
+    (state: RootState) => state.movies.watchlists,
   )
 
   const [isFavorite, setIsFavorite] = useState(false)
@@ -67,17 +70,19 @@ const Tooltips = ({ movieId }: Props) => {
   useEffect(() => {
     if (uid) {
       dispatch(fetchUserLists(uid))
+      dispatch(fetchLists({ uid: uid, listType: 'favorites' }))
+      dispatch(fetchLists({ uid: uid, listType: 'watchlists' }))
     }
   }, [uid, dispatch])
 
   useEffect(() => {
-    if (uid && movieListData) {
-      setIsFavorite(movieListData[movieId]?.isFavorite)
-      setIsWatchlist(movieListData[movieId]?.isWatchlist)
-      setIsCustom(movieListData[movieId]?.isCustom)
-      setIsWatched(movieListData[movieId]?.isWatched)
+    if (uid && favorites) {
+      setIsFavorite(movieId in favorites)
     }
-  }, [movieListData, movieId, uid])
+    if (uid && watchlists) {
+      setIsWatchlist(movieId in watchlists)
+    }
+  }, [favorites, watchlists, movieId, uid])
 
   const onToggleLists = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,

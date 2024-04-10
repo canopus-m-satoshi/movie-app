@@ -41,11 +41,11 @@ const initialState: moviesState = {
 }
 
 // 新規データベース構造 start
-export const fetchUserLists = createAsyncThunk<
+export const fetchRegisteredMovies = createAsyncThunk<
   Record<string, MovieItem>,
   string,
   { rejectValue: { message: string; error?: any } }
->('movies/fetchUserLists', async (uid, { rejectWithValue }) => {
+>('movies/fetchRegisteredMovies', async (uid, { rejectWithValue }) => {
   try {
     const userListRef = doc(db, 'users', uid)
     const querySnapshot = await getDocs(collection(userListRef, 'movies'))
@@ -173,14 +173,14 @@ const moviesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserLists.pending, (state) => {
+      .addCase(fetchRegisteredMovies.pending, (state) => {
         state.status = 'loading'
       })
-      .addCase(fetchUserLists.fulfilled, (state, action) => {
+      .addCase(fetchRegisteredMovies.fulfilled, (state, action) => {
         state.status = 'succeeded'
         state.movieListData = action.payload
       })
-      .addCase(fetchUserLists.rejected, (state, action) => {
+      .addCase(fetchRegisteredMovies.rejected, (state, action) => {
         state.status = 'failed'
         if (action.payload) {
           state.error = action.payload.message

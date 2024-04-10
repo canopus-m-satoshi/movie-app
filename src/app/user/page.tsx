@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { fetchUserLists } from '@/lib/features/movies/moviesSlice'
+import { fetchRegisteredMovies } from '@/lib/features/movies/moviesSlice'
 import { AppDispatch, RootState } from '@/lib/store'
 
 import Profile from '../../components/Profile'
@@ -17,7 +17,7 @@ export default function Home() {
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchUserLists(user.uid))
+      dispatch(fetchRegisteredMovies(user.uid))
     }
   }, [user, dispatch])
 

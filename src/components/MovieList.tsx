@@ -8,7 +8,10 @@ import { AppDispatch, RootState } from '@/lib/store'
 import { Movie } from '../types/Movie'
 import Tooltips from './Tooltips'
 import { useEffect } from 'react'
-import { fetchLists, fetchUserLists } from '@/lib/features/movies/moviesSlice'
+import {
+  fetchLists,
+  fetchRegisteredMovies,
+} from '@/lib/features/movies/moviesSlice'
 
 type Props = {
   movies: Movie[]
@@ -26,7 +29,7 @@ const MovieList = ({ movies, query, page }: Props) => {
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
   useEffect(() => {
     if (uid) {
-      dispatch(fetchUserLists(uid))
+      dispatch(fetchRegisteredMovies(uid))
       dispatch(fetchLists({ uid: uid, listType: 'favorites' }))
       dispatch(fetchLists({ uid: uid, listType: 'watchlists' }))
     }

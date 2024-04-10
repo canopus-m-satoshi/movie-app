@@ -9,7 +9,7 @@ import { Movie } from '../types/Movie'
 import Tooltips from './Tooltips'
 import { useEffect } from 'react'
 import {
-  fetchLists,
+  fetchRegisteredLists,
   fetchRegisteredMovies,
 } from '@/lib/features/movies/moviesSlice'
 
@@ -30,8 +30,8 @@ const MovieList = ({ movies, query, page }: Props) => {
   useEffect(() => {
     if (uid) {
       dispatch(fetchRegisteredMovies(uid))
-      dispatch(fetchLists({ uid: uid, listType: 'favorites' }))
-      dispatch(fetchLists({ uid: uid, listType: 'watchlists' }))
+      dispatch(fetchRegisteredLists({ uid: uid, listType: 'favorites' }))
+      dispatch(fetchRegisteredLists({ uid: uid, listType: 'watchlists' }))
     }
   }, [uid, dispatch])
 

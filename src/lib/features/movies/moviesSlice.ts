@@ -77,41 +77,47 @@ export const fetchRegisteredMovies = createAsyncThunk<
   }
 })
 
-export const fetchLists = createAsyncThunk<
+export const fetchRegisteredLists = createAsyncThunk<
   Record<string, MovieItem>,
   { uid: string; listType: string },
   { rejectValue: { message: string; error?: any } }
->('movies/fetchLists', async ({ uid, listType }, { rejectWithValue }) => {
-  try {
-    const userListRef = doc(db, 'users', uid)
-    const querySnapshot = await getDocs(collection(userListRef, listType))
+>(
+  'movies/fetchRegisteredLists',
+  async ({ uid, listType }, { rejectWithValue }) => {
+    try {
+      const userListRef = doc(db, 'users', uid)
+      const querySnapshot = await getDocs(collection(userListRef, listType))
 
-    const listData: Record<string, MovieItem> = {}
+      const listData: Record<string, MovieItem> = {}
 
-    querySnapshot.forEach((doc) => {
-      const data = doc.data() as MovieItem
+      querySnapshot.forEach((doc) => {
+        const data = doc.data() as MovieItem
 
-      if (data.createdAt) {
-        const createdAt = data.createdAt.toDate()
+        if (data.createdAt) {
+          const createdAt = data.createdAt.toDate()
 
-        const formattedWatchedAt = createdAt
-          ? format(createdAt, 'yyyy-MM-dd')
-          : null
+          const formattedWatchedAt = createdAt
+            ? format(createdAt, 'yyyy-MM-dd')
+            : null
 
-        listData[doc.id] = {
-          ...data,
-          createdAt: formattedWatchedAt,
+          listData[doc.id] = {
+            ...data,
+            createdAt: formattedWatchedAt,
+          }
+        } else {
+          listData[doc.id] = data
         }
-      } else {
-        listData[doc.id] = data
-      }
-    })
+      })
 
-    return { listData, listType }
-  } catch (error: any) {
-    return rejectWithValue({ message: 'Failed to fetch favorites list', error })
-  }
-})
+      return { listData, listType }
+    } catch (error: any) {
+      return rejectWithValue({
+        message: 'Failed to fetch favorites list',
+        error,
+      })
+    }
+  },
+)
 
 export const toggleFavorites = createAsyncThunk<
   TogglePayload,
@@ -188,10 +194,10 @@ const moviesSlice = createSlice({
           state.error = action.error.message
         }
       })
-      .addCase(fetchLists.pending, (state) => {
+      .addCase(fetchRegisteredLists.pending, (state) => {
         state.status = 'loading'
       })
-      .addCase(fetchLists.fulfilled, (state, action) => {
+      .addCase(fetchRegisteredLists.fulfilled, (state, action) => {
         state.status = 'succeeded'
 
         const { listData, listType } = action.payload
@@ -206,7 +212,7 @@ const moviesSlice = createSlice({
             break
         }
       })
-      .addCase(fetchLists.rejected, (state, action) => {
+      .addCase(fetchRegisteredLists.rejected, (state, action) => {
         state.status = 'failed'
         if (action.payload) {
           state.error = action.payload.message

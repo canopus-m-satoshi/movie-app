@@ -1,6 +1,6 @@
 import { Timestamp } from 'firebase/firestore'
 
-export type ListType = 'favorites' | 'watchlist' | 'custom' | 'watched'
+export type ListType = 'favorites' | 'watchlist' | 'watched'
 
 export interface Lists {
   [key: string]: string

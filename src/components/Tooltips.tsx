@@ -8,8 +8,6 @@ import { toast } from 'react-toastify'
 import { toggleMovieInList } from '@/lib/features/lists/listsSlice'
 import { toggle as handleModal } from '@/lib/features/modal/modalSlice'
 import {
-  fetchLists,
-  fetchUserLists,
   toggleFavorites,
   toggleWatchlists,
 } from '@/lib/features/movies/moviesSlice'
@@ -27,18 +25,15 @@ type Props = {
 const Tooltips = ({ movieId }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
+  const isFavorite = useSelector(
+    (state: RootState) => movieId in state.movies.favorites,
+  )
+  const isWatchlist = useSelector(
+    (state: RootState) => movieId in state.movies.watchlists,
+  )
+
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
 
-  const favorites: Lists = useSelector(
-    (state: RootState) => state.movies.favorites,
-  )
-
-  const watchlists: Lists = useSelector(
-    (state: RootState) => state.movies.watchlists,
-  )
-
-  const [isFavorite, setIsFavorite] = useState(false)
-  const [isWatchlist, setIsWatchlist] = useState(false)
   const [isCustom, setIsCustom] = useState(false)
   const [isWatched, setIsWatched] = useState(false)
 
@@ -71,26 +66,6 @@ const Tooltips = ({ movieId }: Props) => {
       isWatched ? '鑑賞済みリストから削除する' : '鑑賞済みリストに追加する',
     )
   }, [isFavorite, isWatchlist, isCustom, isWatched])
-
-  useEffect(() => {
-    if (uid) {
-      dispatch(fetchUserLists(uid))
-      dispatch(fetchLists({ uid: uid, listType: 'favorites' }))
-      dispatch(fetchLists({ uid: uid, listType: 'watchlists' }))
-    }
-  }, [uid, dispatch])
-
-  useEffect(() => {
-    if (uid && favorites) {
-      setIsFavorite(movieId in favorites)
-    }
-  }, [favorites, movieId, uid])
-
-  useEffect(() => {
-    if (uid && watchlists) {
-      setIsWatchlist(movieId in watchlists)
-    }
-  }, [watchlists, movieId, uid])
 
   const onToggleLists = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -142,7 +117,6 @@ const Tooltips = ({ movieId }: Props) => {
     if (!uid) return false
 
     await dispatch(toggleFavorites({ movieId, uid }))
-    setIsFavorite(!isFavorite)
     setToastMessage(
       isFavorite
         ? 'お気に入りリストから削除しました'
@@ -157,7 +131,6 @@ const Tooltips = ({ movieId }: Props) => {
     if (!uid) return false
 
     await dispatch(toggleWatchlists({ movieId, uid }))
-    setIsWatchlist(!isWatchlist)
     setToastMessage(
       isWatchlist
         ? 'ウォッチリストから削除しました'

@@ -1,12 +1,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { posterURL } from '@/constants/posterURL'
-import { RootState } from '@/lib/store'
+import { AppDispatch, RootState } from '@/lib/store'
 
 import { Movie } from '../types/Movie'
 import Tooltips from './Tooltips'
+import { useEffect } from 'react'
+import { fetchLists, fetchUserLists } from '@/lib/features/movies/moviesSlice'
 
 type Props = {
   movies: Movie[]
@@ -15,9 +17,20 @@ type Props = {
 }
 
 const MovieList = ({ movies, query, page }: Props) => {
+  const dispatch: AppDispatch = useDispatch()
+
   const movieListData = useSelector(
     (state: RootState) => state.movies.movieListData,
   )
+
+  const uid = useSelector((state: RootState) => state.auth.user?.uid)
+  useEffect(() => {
+    if (uid) {
+      dispatch(fetchUserLists(uid))
+      dispatch(fetchLists({ uid: uid, listType: 'favorites' }))
+      dispatch(fetchLists({ uid: uid, listType: 'watchlists' }))
+    }
+  }, [uid, dispatch])
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-4">

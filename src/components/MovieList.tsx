@@ -1,17 +1,17 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { posterURL } from '@/constants/posterURL'
-import { AppDispatch, RootState } from '@/lib/store'
-
-import { Movie } from '../types/Movie'
-import Tooltips from './Tooltips'
-import { useEffect } from 'react'
 import {
   fetchRegisteredLists,
   fetchRegisteredMovies,
 } from '@/lib/features/movies/moviesSlice'
+import { AppDispatch, RootState } from '@/lib/store'
+
+import { Movie } from '../types/Movie'
+import Tooltips from './Tooltips'
 
 type Props = {
   movies: Movie[]

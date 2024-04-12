@@ -18,27 +18,19 @@ import TooltipButton from './TooltipButton'
 
 type Props = {
   movieId: string
+  isFavorite: boolean
+  isWatchlist: boolean
 }
+// APIを作成してfirestoreから値を取れる様になったが、Tooltiipのトグルがうまくいかなくなったのでそこから対応する
 
-const Tooltips = ({ movieId }: Props) => {
+const Tooltips = ({ movieId, isFavorite, isWatchlist }: Props) => {
   const dispatch: AppDispatch = useDispatch()
-
-  const isFavorite = useSelector(
-    (state: RootState) => movieId in state.movies.favorites,
-  )
-  const isWatchlist = useSelector(
-    (state: RootState) => movieId in state.movies.watchlists,
-  )
-  const isWatched = useSelector(
-    (state: RootState) => movieId in state.movies.movieDetails,
-  )
-  console.log('🚀 ~ Tooltips ~ isWatched:', isWatched)
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
 
   const [favoriteTip, setFavoriteTip] = useState('')
   const [watchTip, setWatchTip] = useState('')
-  const [watchedTip, setWatchedTip] = useState('')
+  // const [watchedTip, setWatchedTip] = useState('')
 
   const [toastMessage, setToastMessage] = useState('')
 
@@ -57,10 +49,10 @@ const Tooltips = ({ movieId }: Props) => {
     setWatchTip(
       isWatchlist ? 'ウォッチリストから削除する' : 'ウォッチリストに追加する',
     )
-    setWatchedTip(
-      isWatched ? '鑑賞済みリストから削除する' : '鑑賞済みリストに追加する',
-    )
-  }, [isFavorite, isWatchlist, isWatched])
+    // setWatchedTip(
+    //   isWatched ? '鑑賞済みリストから削除する' : '鑑賞済みリストに追加する',
+    // )
+  }, [isFavorite, isWatchlist])
 
   const onToggleFavorites = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -113,11 +105,11 @@ const Tooltips = ({ movieId }: Props) => {
         tip={watchTip}
         onClick={(event) => onToggleWatchlists(event)}
       />
-      <TooltipButton
+      {/* <TooltipButton
         icon={<FaEye color={isWatched ? '#0027eb' : 'inherit'} />}
         tip={watchedTip}
         onClick={(event) => openModal(event)}
-      />
+      /> */}
       <Modal movieId={movieId} onRequestClose={closeModal} />
     </div>
   )

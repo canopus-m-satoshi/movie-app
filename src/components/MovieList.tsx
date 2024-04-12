@@ -27,6 +27,9 @@ const MovieList = ({ movies, query, page }: Props) => {
   )
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
+  const favorites = useSelector((state: RootState) => state.movies.favorites)
+  const watchlists = useSelector((state: RootState) => state.movies.watchlists)
+
   useEffect(() => {
     if (uid) {
       dispatch(fetchRegisteredMovies(uid))
@@ -37,35 +40,46 @@ const MovieList = ({ movies, query, page }: Props) => {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-4">
-      {movies.map((movie) => (
-        <Link
-          key={movie.id}
-          href={`/movie/${movie.id}?query=${query}&page=${page}`}>
-          <Image
-            src={
-              movie.poster_path
-                ? `${posterURL}${movie.poster_path}`
-                : '/dummy-image.png'
-            }
-            alt={movie.poster_path ? movie.title : 'ダミー画像'}
-            width={300}
-            height={440}
-          />
-          <div className="my-3">
-            <Tooltips movieId={movie.id.toString()} />
-          </div>
-          <h3 className="font-bold text-lg lg:text-2xl mt-3">{movie.title}</h3>
-          <p>
-            公開日:
-            {movie.release_date ? movie.release_date : ' 不明'}
-          </p>
-          {movieListData &&
-            movieListData[movie.id] &&
-            movieListData[movie.id].watchedAt && (
-              <p>鑑賞日: {movieListData[movie.id].watchedAt}</p>
-            )}
-        </Link>
-      ))}
+      {movies.map((movie) => {
+        const isFavorite = movie.id in favorites
+        const isWatchlist = movie.id in watchlists
+
+        return (
+          <Link
+            key={movie.id}
+            href={`/movie/${movie.id}?query=${query}&page=${page}`}>
+            <Image
+              src={
+                movie.poster_path
+                  ? `${posterURL}${movie.poster_path}`
+                  : '/dummy-image.png'
+              }
+              alt={movie.poster_path ? movie.title : 'ダミー画像'}
+              width={300}
+              height={440}
+            />
+            <div className="my-3">
+              <Tooltips
+                movieId={movie.id.toString()}
+                isFavorite={isFavorite}
+                isWatchlist={isWatchlist}
+              />
+            </div>
+            <h3 className="font-bold text-lg lg:text-2xl mt-3">
+              {movie.title}
+            </h3>
+            <p>
+              公開日:
+              {movie.release_date ? movie.release_date : ' 不明'}
+            </p>
+            {movieListData &&
+              movieListData[movie.id] &&
+              movieListData[movie.id].watchedAt && (
+                <p>鑑賞日: {movieListData[movie.id].watchedAt}</p>
+              )}
+          </Link>
+        )
+      })}
     </div>
   )
 }

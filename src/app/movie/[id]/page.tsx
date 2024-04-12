@@ -1,10 +1,15 @@
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Image from 'next/image'
 import Link from 'next/link'
 import { IoCaretBackOutline } from 'react-icons/io5'
+import { useSelector } from 'react-redux'
 
+import { checkIsFavorite, getUid } from '@/api/movie/checkIsFavorite/route'
+import { checkIsWatchlist } from '@/api/movie/checkIsWatchlist/route'
 import { getMovieDetails } from '@/api/movie/getMovieDetails/route'
 import Tooltips from '@/components/Tooltips'
 import { posterURL } from '@/constants/posterURL'
+import { RootState } from '@/lib/store'
 import { Movie } from '@/types/Movie'
 
 type Genres = Pick<Movie, 'genres'>
@@ -16,6 +21,15 @@ export default async function MovieDetails({
   params: { id: string }
   searchParams: { query: string; page: number }
 }) {
+  const isFavorite = await checkIsFavorite(
+    params.id,
+    '4czTwyvJzsXORmRn9EJGl79rGlS2',
+  )
+  const isWatchlist = await checkIsWatchlist(
+    params.id,
+    '4czTwyvJzsXORmRn9EJGl79rGlS2',
+  )
+
   const res = await getMovieDetails(params.id)
   const movie = res.data
   const { query, page } = searchParams
@@ -51,7 +65,7 @@ export default async function MovieDetails({
             </ul>
           </div>
 
-          <Tooltips movieId={params.id} />
+          <Tooltips movieId={params.id} isFavorite isWatchlist />
 
           <div className="md:col-span-3 xl:col-span-2">
             <p>{movie.overview}</p>

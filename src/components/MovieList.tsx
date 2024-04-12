@@ -41,9 +41,6 @@ const MovieList = ({ movies, query, page }: Props) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-4">
       {movies.map((movie) => {
-        const isFavorite = movie.id in favorites
-        const isWatchlist = movie.id in watchlists
-
         return (
           <Link
             key={movie.id}
@@ -58,13 +55,9 @@ const MovieList = ({ movies, query, page }: Props) => {
               width={300}
               height={440}
             />
-            <div className="my-3">
-              <Tooltips
-                movieId={movie.id.toString()}
-                isFavorite={isFavorite}
-                isWatchlist={isWatchlist}
-              />
-            </div>
+            {/* <div className="my-3">
+              <Tooltips movieId={movie.id.toString()} isLists={} />
+            </div> */}
             <h3 className="font-bold text-lg lg:text-2xl mt-3">
               {movie.title}
             </h3>

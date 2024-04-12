@@ -13,13 +13,22 @@ export const getUid = async (): Promise<string | null> => {
   }
 }
 
-export const checkIsFavorite = async (movieId: string, uid: string) => {
+export const checkIsLists = async (movieId: string, uid: string) => {
   try {
     const userListRef = doc(db, 'users', uid)
+
     const favoritesRef = doc(userListRef, 'favorites', movieId)
     const favoritesDoc = await getDoc(favoritesRef)
 
-    return await favoritesDoc.exists()
+    const watchlistsRef = doc(userListRef, 'watchlists', movieId)
+    const watchlistsDoc = await getDoc(watchlistsRef)
+
+    const isLists = {
+      favorite: favoritesDoc.exists(),
+      watchlist: watchlistsDoc.exists(),
+    }
+
+    return await isLists
   } catch (error) {
     throw new Error('Failed to fetch search results')
   }

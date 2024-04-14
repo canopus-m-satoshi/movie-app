@@ -15,7 +15,8 @@ import { MdKeyboardArrowRight } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import { signInWithGoogle } from '@/lib/features/auth/authSlice'
+import { signInWithGoogle } from '@/lib/firebase/auth'
+// import { signInWithGoogle } from '@/lib/features/auth/authSlice'
 import { auth } from '@/lib/firebase/firebase'
 import { AppDispatch } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
@@ -48,11 +49,22 @@ const SignIn = () => {
   }
 
   const handleGoogleSignIn = async () => {
-    await dispatch(signInWithGoogle())
+    // await dispatch(signInWithGoogle())
 
-    await router.push('/movie')
+    // await router.push('/movie')
 
-    toast.success('ログインしました', toastConfig)
+    try {
+      const signInSuccess = await signInWithGoogle()
+      if (signInSuccess) {
+        await router.push('/movie')
+        toast.success('ログインしました', toastConfig)
+      } else {
+        toast.error('ログインに失敗しました', toastConfig)
+      }
+    } catch (error) {
+      console.error('Error signing in with Google:', error)
+      toast.error('ログインに失敗しました', toastConfig)
+    }
   }
 
   return (

@@ -13,7 +13,7 @@ import { IoKey } from 'react-icons/io5'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 import { toast } from 'react-toastify'
 
-import { auth } from '@/lib/firebase'
+import { auth } from '@/lib/firebase/firebase'
 import { toastConfig } from '@/lib/toastConfig'
 
 const SignUp = () => {

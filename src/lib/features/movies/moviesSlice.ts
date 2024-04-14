@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore'
 import { watch } from 'fs'
 
-import { db } from '@/lib/firebase'
+import { db } from '@/lib/firebase/firebase'
 import { MovieItem } from '@/types/Lists'
 
 interface moviesState {

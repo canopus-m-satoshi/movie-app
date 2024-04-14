@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
 import { IoCaretBackOutline } from 'react-icons/io5'

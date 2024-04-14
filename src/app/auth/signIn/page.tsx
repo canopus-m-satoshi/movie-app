@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { signInWithGoogle } from '@/lib/features/auth/authSlice'
-import { auth } from '@/lib/firebase'
+import { auth } from '@/lib/firebase/firebase'
 import { AppDispatch } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 const SignIn = () => {

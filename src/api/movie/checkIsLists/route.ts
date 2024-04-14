@@ -1,7 +1,7 @@
 import { getAuth } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 
-import { db } from '@/lib/firebase'
+import { db } from '@/lib/firebase/firebase'
 
 export const getUid = async (): Promise<string | null> => {
   const auth = getAuth()

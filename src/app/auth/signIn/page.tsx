@@ -59,7 +59,10 @@ const SignIn = () => {
         await router.push('/movie')
         toast.success('ログインしました', toastConfig)
       } else {
-        toast.error('ログインに失敗しました', toastConfig)
+        toast.error(
+          'signInSuccessを取得できませんできず、ログインに失敗しました',
+          toastConfig,
+        )
       }
     } catch (error) {
       console.error('Error signing in with Google:', error)

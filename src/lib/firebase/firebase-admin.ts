@@ -2,13 +2,18 @@ import 'server-only'
 
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
 import { getAuth, SessionCookieOptions } from 'firebase-admin/auth'
+import { readFileSync } from 'fs'
 import { cookies } from 'next/headers'
+
+const serviceAccountKey = JSON.parse(
+  readFileSync(process.env.NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT_KEY!, 'utf8'),
+)
 
 export const firebaseApp =
   getApps().find((it) => it.name === 'firebase-admin-app') ||
   initializeApp(
     {
-      credential: cert(process.env.NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT_KEY),
+      credential: cert(serviceAccountKey),
     },
     'firebase-admin-app',
   )

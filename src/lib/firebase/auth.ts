@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 
 import { APIResponse } from '@/types/ApiResponse'
@@ -18,6 +19,7 @@ export async function signInWithGoogle() {
       },
       body: JSON.stringify({ idToken }),
     })
+
     const resBody = (await response.json()) as unknown as APIResponse<string>
     if (response.ok && resBody.success) {
       return true

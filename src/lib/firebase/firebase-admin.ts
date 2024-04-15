@@ -26,10 +26,11 @@ export async function isUserAuthenticated(
   if (!_session) return false
 
   try {
+    // Admin SDK の verifySessionCookie API でセッション Cookie の確認
     const isRevoked = !(await auth.verifySessionCookie(_session, true))
     return !isRevoked
   } catch (error) {
-    console.log(error)
+    console.error('Error verifying session cookie:', error)
     return false
   }
 }

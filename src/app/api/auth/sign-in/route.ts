@@ -20,11 +20,7 @@ export async function POST(request: NextRequest) {
 
   // セッションクッキーが正しく設定されているかどうかを確認
   const setCookie = cookies().get('__session')
-  if (setCookie) {
-    console.log('Session cookie set successfully:', setCookie.value)
-  } else {
-    console.log('Session cookie not set')
-  }
+  if (!setCookie) return console.error('Failed to sign in.')
 
   return NextResponse.json<APIResponse<string>>({
     success: true,

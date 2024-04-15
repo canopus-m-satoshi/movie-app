@@ -2,11 +2,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { IoCaretBackOutline } from 'react-icons/io5'
 
-import { checkIsLists, getUid } from '@/app/api/movie/checkIsLists/route'
+import { checkIsLists } from '@/app/api/movie/checkIsLists/route'
 import { getMovieDetails } from '@/app/api/movie/getMovieDetails/route'
 import Tooltips from '@/components/Tooltips'
 import { posterURL } from '@/constants/posterURL'
-import { getCurrentUser } from '@/lib/firebase/firebase-admin'
 import { Movie } from '@/types/Movie'
 
 type Genres = Pick<Movie, 'genres'>
@@ -18,13 +17,11 @@ export default async function MovieDetails({
   params: { id: string }
   searchParams: { query: string; page: number }
 }) {
-  // const uid = cookies().get('uid')?.value
-  // console.log('SERVER ~ uid:', uid)
-
-  const currentUser = await getCurrentUser()
-  console.log('🚀 ~ currentUser:', currentUser)
-
-  const isLists = await checkIsLists(params.id, '4czTwyvJzsXORmRn9EJGl79rGlS2')
+  const isListsData = await checkIsLists(params.id)
+  const isLists = isListsData ?? {
+    favorite: false,
+    watchlist: false,
+  }
 
   const res = await getMovieDetails(params.id)
   const movie = res.data

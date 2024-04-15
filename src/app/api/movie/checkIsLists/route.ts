@@ -1,21 +1,15 @@
-import { getAuth } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 
 import { db } from '@/lib/firebase/firebase'
+import { getCurrentUser } from '@/lib/firebase/firebase-admin'
 
-export const getUid = async (): Promise<string | null> => {
-  const auth = getAuth()
-  const user = auth.currentUser
-  if (user) {
-    return user.uid
-  } else {
-    return null
-  }
-}
+export const checkIsLists = async (movieId: string) => {
+  const currentUser = await getCurrentUser()
 
-export const checkIsLists = async (movieId: string, uid: string) => {
   try {
-    const userListRef = doc(db, 'users', uid)
+    if (!currentUser) return null
+
+    const userListRef = doc(db, 'users', currentUser?.uid)
 
     const favoritesRef = doc(userListRef, 'favorites', movieId)
     const favoritesDoc = await getDoc(favoritesRef)

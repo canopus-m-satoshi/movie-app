@@ -3,7 +3,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { getCurrentUser } from '@/lib/firebase/firebase-admin'
 
-export const checkIsLists = async (movieId: string) => {
+export const checkMovieInUserLists = async (movieId: string) => {
   const currentUser = await getCurrentUser()
 
   try {
@@ -17,12 +17,12 @@ export const checkIsLists = async (movieId: string) => {
     const watchlistsRef = doc(userListRef, 'watchlists', movieId)
     const watchlistsDoc = await getDoc(watchlistsRef)
 
-    const isLists = {
+    const movieListStatus = {
       favorite: favoritesDoc.exists(),
       watchlist: watchlistsDoc.exists(),
     }
 
-    return await isLists
+    return await movieListStatus
   } catch (error) {
     throw new Error('Failed to fetch search results')
   }

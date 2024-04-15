@@ -56,7 +56,7 @@ const MovieList = ({ movies, query, page }: Props) => {
               height={440}
             />
             {/* <div className="my-3">
-              <Tooltips movieId={movie.id.toString()} isLists={} />
+              <Tooltips movieId={movie.id.toString()} movieListStatus={} />
             </div> */}
             <h3 className="font-bold text-lg lg:text-2xl mt-3">
               {movie.title}

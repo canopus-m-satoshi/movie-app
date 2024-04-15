@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { IoCaretBackOutline } from 'react-icons/io5'
 
-import { checkIsLists } from '@/app/api/movie/checkIsLists/route'
+import { checkMovieInUserLists } from '@/app/api/movie/checkMovieInUserLists/route'
 import { getMovieDetails } from '@/app/api/movie/getMovieDetails/route'
 import Tooltips from '@/components/Tooltips'
 import { posterURL } from '@/constants/posterURL'
@@ -17,8 +17,8 @@ export default async function MovieDetails({
   params: { id: string }
   searchParams: { query: string; page: number }
 }) {
-  const isListsData = await checkIsLists(params.id)
-  const isLists = isListsData ?? {
+  const movieListStatusData = await checkMovieInUserLists(params.id)
+  const movieListStatus = movieListStatusData ?? {
     favorite: false,
     watchlist: false,
   }
@@ -58,7 +58,7 @@ export default async function MovieDetails({
             </ul>
           </div>
 
-          <Tooltips movieId={params.id} isLists={isLists} />
+          <Tooltips movieId={params.id} movieListStatus={movieListStatus} />
 
           <div className="md:col-span-3 xl:col-span-2">
             <p>{movie.overview}</p>

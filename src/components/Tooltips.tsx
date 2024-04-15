@@ -18,17 +18,17 @@ import TooltipButton from './TooltipButton'
 
 type Props = {
   movieId: string
-  isLists: {
+  movieListStatus: {
     favorite: boolean
     watchlist: boolean
   }
 }
 // APIを作成してfirestoreから値を取れる様になったが、Tooltiipのトグルがうまくいかなくなったのでそこから対応する
 
-const Tooltips = ({ movieId, isLists }: Props) => {
+const Tooltips = ({ movieId, movieListStatus }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
-  const { favorite, watchlist } = isLists
+  const { favorite, watchlist } = movieListStatus
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
 

@@ -5,11 +5,10 @@ import { getCurrentUser } from '@/lib/firebase/firebase-admin'
 
 export const checkMovieInUserLists = async (movieId: string) => {
   const currentUser = await getCurrentUser()
+  if (!currentUser) return null
 
   try {
-    if (!currentUser) return null
-
-    const userListRef = doc(db, 'users', currentUser?.uid)
+    const userListRef = doc(db, 'users', currentUser.uid)
 
     const favoritesRef = doc(userListRef, 'favorites', movieId)
     const favoritesDoc = await getDoc(favoritesRef)
@@ -23,7 +22,8 @@ export const checkMovieInUserLists = async (movieId: string) => {
     }
 
     return await movieListStatus
-  } catch (error) {
-    throw new Error('Failed to fetch search results')
+  } catch (error: any) {
+    console.error('Failed to check Lists status', error)
+    throw new Error('Failed to check Lists status', { cause: error })
   }
 }

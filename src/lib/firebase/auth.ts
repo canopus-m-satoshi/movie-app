@@ -12,7 +12,7 @@ export async function signInWithGoogle() {
     const userCreds = await signInWithPopup(auth, provider)
     const idToken = await userCreds.user.getIdToken()
 
-    const response = await axios.post<APIResponse<string>>(
+    const response = await axios.post(
       '/api/auth/sign-in',
       { idToken },
       {
@@ -22,11 +22,7 @@ export async function signInWithGoogle() {
       },
     )
 
-    if (response.data.success) {
-      return true
-    } else {
-      return false
-    }
+    return response.status === 201
   } catch (error) {
     console.error('Error signing in with Google', error)
     return false

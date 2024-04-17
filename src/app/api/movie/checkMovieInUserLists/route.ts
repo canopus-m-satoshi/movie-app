@@ -9,19 +9,18 @@ export const checkMovieInUserLists = async (movieId: string) => {
 
   try {
     const userListRef = doc(db, 'users', currentUser.uid)
+    const listTypes = ['favorites', 'watchlists']
 
-    const favoritesRef = doc(userListRef, 'favorites', movieId)
-    const favoritesDoc = await getDoc(favoritesRef)
+    const docs = await Promise.all(
+      listTypes.map(async (type): Promise<[string, boolean]> => {
+        const ref = await getDoc(doc(userListRef, type, movieId))
 
-    const watchlistsRef = doc(userListRef, 'watchlists', movieId)
-    const watchlistsDoc = await getDoc(watchlistsRef)
+        return [type, ref.exists()]
+      }),
+    )
 
-    const movieListStatus = {
-      favorite: favoritesDoc.exists(),
-      watchlist: watchlistsDoc.exists(),
-    }
-
-    return await movieListStatus
+    // 算出プロパティ名（Computed property names）: []でくくることで、式の値から動的にプロパティ名を生成することができる
+    return docs.reduce((acc, item) => ({ ...acc, [item[0]]: item[1] }), {})
   } catch (error: any) {
     console.error('Failed to check Lists status', error)
     throw new Error('Failed to check Lists status', { cause: error })

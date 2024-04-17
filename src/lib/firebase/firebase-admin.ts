@@ -27,8 +27,8 @@ export async function isUserAuthenticated(
 
   try {
     // Admin SDK の verifySessionCookie API でセッション Cookie の確認
-    const isRevoked = !(await auth.verifySessionCookie(_session, true))
-    return !isRevoked
+    const isValid = await auth.verifySessionCookie(_session, true)
+    return isValid
   } catch (error) {
     console.error('Error verifying session cookie:', error)
     return false
@@ -38,11 +38,10 @@ export async function isUserAuthenticated(
 export async function getCurrentUser() {
   const session = await getSession()
 
-  if (!(await isUserAuthenticated(session))) {
-    return null
-  }
+  if (!session) return null
+  if (!(await isUserAuthenticated(session))) return null
 
-  const decodedIdToken = await auth.verifySessionCookie(session!)
+  const decodedIdToken = await auth.verifySessionCookie(session)
   const currentUser = await auth.getUser(decodedIdToken.uid)
 
   return currentUser

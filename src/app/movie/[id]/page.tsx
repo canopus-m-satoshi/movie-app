@@ -2,10 +2,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { IoCaretBackOutline } from 'react-icons/io5'
 
-import { getMovieDetails } from '@/app/api/movie/getMovieDetails/route'
 import Tooltips from '@/components/Tooltips'
 import { posterURL } from '@/constants/posterURL'
 import { checkMovieInUserLists } from '@/lib/movies/checkMovieInUserLists'
+import { getMovieDetails } from '@/lib/movies/getMovieDetails'
 import { Movie } from '@/types/Movie'
 
 type Genres = Pick<Movie, 'genres'>

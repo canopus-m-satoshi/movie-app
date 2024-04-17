@@ -2,7 +2,7 @@
 
 import useSWR from 'swr'
 
-import { getMovieDetails } from '@/app/api/movie/getMovieDetails/route'
+import { getMovieDetails } from '@/lib/movies/getMovieDetails'
 
 import Loading from '../app/loading'
 

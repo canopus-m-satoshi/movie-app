@@ -1,8 +1,6 @@
 import axios from 'axios'
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 
-import { APIResponse } from '@/types/ApiResponse'
-
 import { auth } from './firebase'
 
 export async function signInWithGoogle() {

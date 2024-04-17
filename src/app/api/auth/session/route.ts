@@ -2,7 +2,6 @@ import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { createSessionCookie } from '@/lib/firebase/firebase-admin'
-import { APIResponse } from '@/types/ApiResponse'
 
 const EXPIRES_IN = 60 * 60 * 24 * 5 * 1000 // Cookieの有効期限を【５日間】に設定
 

@@ -22,7 +22,7 @@ export const auth = getAuth(firebaseApp)
 export async function isUserAuthenticated(
   session: string | undefined = undefined,
 ) {
-  const _session = session ?? (await getSession())
+  const _session = session ?? getSession()
   if (!_session) return false
 
   try {
@@ -36,7 +36,7 @@ export async function isUserAuthenticated(
 }
 
 export async function getCurrentUser() {
-  const session = await getSession()
+  const session = getSession()
 
   if (!session) return null
   if (!(await isUserAuthenticated(session))) return null
@@ -47,12 +47,8 @@ export async function getCurrentUser() {
   return currentUser
 }
 
-async function getSession() {
-  try {
-    return cookies().get('__session')?.value
-  } catch (error) {
-    return undefined
-  }
+function getSession() {
+  return cookies().get('__session')?.value ?? undefined
 }
 
 export async function createSessionCookie(

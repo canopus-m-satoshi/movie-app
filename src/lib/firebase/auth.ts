@@ -20,7 +20,7 @@ export async function signInWithGoogle() {
       },
     )
 
-    return response.status === 201
+    return true
   } catch (error) {
     console.error('Error signing in with Google', error)
     return false

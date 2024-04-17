@@ -6,12 +6,10 @@ import ReactDatePicker from 'react-datepicker'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import { registerWatchedDate } from '@/lib/features/lists/listsSlice'
 import { toggle as handleModal } from '@/lib/features/modal/modalSlice'
 import { RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 
-import { MovieItem } from '../types/Lists'
 import { User } from '../types/User'
 
 type Props = {
@@ -25,10 +23,6 @@ const DatePicker = ({ title, checkboxText, movieId }: Props) => {
 
   const user: User | null = useSelector((state: RootState) => state.auth.user)
   const uid = user?.uid
-
-  const movieListData: MovieItem | null = useSelector(
-    (state: RootState) => user && state.lists.movieListData[user.uid],
-  )
 
   const [pickedDate, setPickedDate] = useState<Date | null>(null)
 
@@ -44,22 +38,10 @@ const DatePicker = ({ title, checkboxText, movieId }: Props) => {
     if (!user || !pickedDate) return
 
     const formattedDate = format(pickedDate, 'yyyy-MM-dd')
-    await dispatch(
-      registerWatchedDate({ movieId, uid, formattedDate, isWatched: true }),
-    )
 
     dispatch(handleModal())
     toast.success('映画鑑賞日を登録しました', toastConfig)
   }
-
-  useEffect(() => {
-    if (movieListData && movieListData[movieId].watchedDate) {
-      const watchedDate = movieListData[movieId].watchedDate
-      setPickedDate(parse(watchedDate, 'yyyy-MM-dd', new Date()))
-    } else {
-      setPickedDate(new Date())
-    }
-  }, [movieListData, movieId])
 
   return (
     <>

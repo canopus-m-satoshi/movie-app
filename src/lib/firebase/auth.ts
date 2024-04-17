@@ -13,7 +13,7 @@ export async function signInWithGoogle() {
     const idToken = await userCreds.user.getIdToken()
 
     const response = await axios.post(
-      '/api/auth/sign-in',
+      '/api/auth/session',
       { idToken },
       {
         headers: {

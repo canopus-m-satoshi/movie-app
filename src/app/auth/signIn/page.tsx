@@ -52,10 +52,7 @@ const SignIn = () => {
         await dispatch(checkAuthStatus())
         toast.success('ログインしました', toastConfig)
       } else {
-        toast.error(
-          'signInSuccessを取得できませんできず、ログインに失敗しました',
-          toastConfig,
-        )
+        toast.error('ログインに失敗しました', toastConfig)
       }
     } catch (error) {
       console.error('Error signing in with Google:', error)

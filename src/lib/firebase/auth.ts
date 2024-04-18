@@ -10,15 +10,7 @@ export async function signInWithGoogle() {
     const userCreds = await signInWithPopup(auth, provider)
     const idToken = await userCreds.user.getIdToken()
 
-    const response = await axios.post(
-      '/api/auth/session',
-      { idToken },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    )
+    await axios.post('/api/auth/session', { idToken })
 
     return true
   } catch (error) {

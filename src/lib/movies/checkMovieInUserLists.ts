@@ -3,6 +3,11 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { getCurrentUser } from '@/lib/firebase/firebase-admin'
 
+/**
+ * 指定された映画がユーザーのリストに登録されているかチェックする関数
+ * @param movieId : TMDBに登録された映画のID
+ * @returns : ユーザーのリストに映画が含まれているかを示すオブジェクト
+ */
 export const checkMovieInUserLists = async (movieId: string) => {
   const currentUser = await getCurrentUser()
   if (!currentUser) return null

@@ -50,6 +50,8 @@ const UserLists = () => {
     console.log('🚀 ~ movies:', movies)
   }, [movies])
 
+  if (!user) return
+
   return (
     <>
       {movies ? (

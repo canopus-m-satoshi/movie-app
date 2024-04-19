@@ -10,6 +10,11 @@ import { Movie } from '@/types/Movie'
 
 type Genres = Pick<Movie, 'genres'>
 
+type MovieListStatusData = {
+  favorite: boolean
+  watchlist: boolean
+}
+
 export default async function MovieDetails({
   params,
   searchParams,
@@ -17,7 +22,9 @@ export default async function MovieDetails({
   params: { id: string }
   searchParams: { query: string; page: number }
 }) {
-  const movieListStatusData = await checkMovieInUserLists(params.id)
+  const movieListStatusData = (await checkMovieInUserLists(
+    params.id,
+  )) as MovieListStatusData
   const movieListStatus = movieListStatusData ?? {
     favorite: false,
     watchlist: false,

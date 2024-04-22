@@ -27,8 +27,7 @@ export default function Home() {
   useEffect(() => {
     if (user) {
       dispatch(fetchRegisteredMovies(user.uid))
-      dispatch(fetchRegisteredLists({ uid: user.uid, listType: 'favorites' }))
-      dispatch(fetchRegisteredLists({ uid: user.uid, listType: 'watchlists' }))
+      dispatch(fetchRegisteredLists({ uid: user.uid }))
     }
   }, [user, dispatch])
 

@@ -47,8 +47,6 @@ const Tooltips = ({ movieId, movieListStatus }: Props) => {
 
   // useEffectを使用してツールチップのテキストを更新
   useEffect(() => {
-    console.log('Rerendered')
-
     setFavoriteTip(
       favorites ? 'お気に入りから削除する' : 'お気に入りに追加する',
     )

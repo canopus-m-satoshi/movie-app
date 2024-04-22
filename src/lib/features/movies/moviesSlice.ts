@@ -17,8 +17,8 @@ import { MovieItem } from '@/types/Lists'
 
 interface moviesState {
   movieListData: Record<string, MovieItem> // 各ユーザーのリストをuidをキーとして保持する
-  favorites: Record<string, string>
-  watchlists: Record<string, string>
+  favorites: Record<string, MovieItem>
+  watchlists: Record<string, MovieItem>
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | undefined
 }
@@ -78,16 +78,18 @@ export const fetchRegisteredMovies = createAsyncThunk<
 })
 
 export const fetchRegisteredLists = createAsyncThunk<
-  Record<string, MovieItem>,
-  { uid: string; listType: string },
+  Record<string, Record<string, MovieItem>>,
+  { uid: string },
   { rejectValue: { message: string; error?: any } }
->(
-  'movies/fetchRegisteredLists',
-  async ({ uid, listType }, { rejectWithValue }) => {
-    try {
-      const userListRef = doc(db, 'users', uid)
-      const querySnapshot = await getDocs(collection(userListRef, listType))
+>('movies/fetchRegisteredLists', async ({ uid }, { rejectWithValue }) => {
+  try {
+    const userListRef = doc(db, 'users', uid)
+    const listTypes = ['favorites', 'watchlists']
 
+    const listDataObject: Record<string, Record<string, MovieItem>> = {}
+
+    for (const type of listTypes) {
+      const querySnapshot = await getDocs(collection(userListRef, type))
       const listData: Record<string, MovieItem> = {}
 
       querySnapshot.forEach((doc) => {
@@ -95,29 +97,30 @@ export const fetchRegisteredLists = createAsyncThunk<
 
         if (data.createdAt) {
           const createdAt = data.createdAt.toDate()
-
-          const formattedWatchedAt = createdAt
+          const formattedCreatedAt = createdAt
             ? format(createdAt, 'yyyy-MM-dd')
             : null
 
           listData[doc.id] = {
             ...data,
-            createdAt: formattedWatchedAt,
+            createdAt: formattedCreatedAt,
           }
         } else {
           listData[doc.id] = data
         }
       })
 
-      return { listData, listType }
-    } catch (error: any) {
-      return rejectWithValue({
-        message: 'Failed to fetch favorites list',
-        error,
-      })
+      listDataObject[type] = listData
     }
-  },
-)
+
+    return listDataObject
+  } catch (error: any) {
+    return rejectWithValue({
+      message: 'Failed to fetch user lists',
+      error,
+    })
+  }
+})
 
 export const toggleFavorites = createAsyncThunk<
   TogglePayload,
@@ -216,17 +219,10 @@ const moviesSlice = createSlice({
       .addCase(fetchRegisteredLists.fulfilled, (state, action) => {
         state.status = 'succeeded'
 
-        const { listData, listType } = action.payload
+        const listData = action.payload
 
-        switch (listType) {
-          case 'favorites':
-            state.favorites = listData
-            break
-
-          case 'watchlists':
-            state.watchlists = listData
-            break
-        }
+        state.favorites = listData.favorites || {}
+        state.watchlists = listData.watchlists || {}
       })
       .addCase(fetchRegisteredLists.rejected, (state, action) => {
         state.status = 'failed'

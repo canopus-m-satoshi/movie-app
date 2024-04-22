@@ -134,7 +134,7 @@ export const toggleFavorites = createAsyncThunk<
 
     if (favoritesDoc.exists()) {
       await deleteDoc(favoritesRef)
-      return { movieId, createdAt: null }
+      return { movieId, uid, createdAt: null }
     } else {
       const createdAt = Timestamp.now()
       await setDoc(favoritesRef, { createdAt })
@@ -146,10 +146,10 @@ export const toggleFavorites = createAsyncThunk<
 
       const formattedCreatedAt = format(createdAt.toDate(), 'yyyy-MM-dd')
 
-      return { movieId, formattedCreatedAt }
+      return { movieId, uid, formattedCreatedAt }
     }
   } catch (error: any) {
-    return rejectWithValue({ message: 'Error happened', error })
+    return rejectWithValue('Error happened')
   }
 })
 
@@ -168,7 +168,7 @@ export const toggleWatchlists = createAsyncThunk<
 
     if (watchlistsDoc.exists()) {
       await deleteDoc(watchlistsRef)
-      return { movieId, createdAt: null }
+      return { movieId, uid, createdAt: null }
     } else {
       const createdAt = Timestamp.now()
       await setDoc(watchlistsRef, { createdAt })
@@ -180,10 +180,10 @@ export const toggleWatchlists = createAsyncThunk<
 
       const formattedCreatedAt = format(createdAt.toDate(), 'yyyy-MM-dd')
 
-      return { movieId, formattedCreatedAt }
+      return { movieId, uid, formattedCreatedAt }
     }
   } catch (error: any) {
-    return rejectWithValue({ message: 'Error happened', error })
+    return rejectWithValue('Error happened')
   }
 })
 
@@ -254,11 +254,7 @@ const moviesSlice = createSlice({
       })
       .addCase(toggleFavorites.rejected, (state, action) => {
         state.status = 'failed'
-        if (action.payload) {
-          state.error = action.payload.message
-        } else {
-          state.error = action.error.message
-        }
+        state.error = action.error.message
       })
       .addCase(toggleWatchlists.pending, (state) => {
         state.status = 'loading'
@@ -278,11 +274,7 @@ const moviesSlice = createSlice({
       })
       .addCase(toggleWatchlists.rejected, (state, action) => {
         state.status = 'failed'
-        if (action.payload) {
-          state.error = action.payload.message
-        } else {
-          state.error = action.error.message
-        }
+        state.error = action.error.message
       })
   },
 })

@@ -24,31 +24,32 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
 
   return (
     <div className="block w-full mx-auto my-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 grid-rows-5 sm:grid-rows-2 lg:grid-rows-1 gap-4 border rounded shadow-black p-4 place-items-center">
-        <div className="avatar block">
-          {user?.avatarUrl ? (
-            <div className="w-24 lg:w-fit rounded-full">
-              <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          ) : (
-            <div>
-              <CgProfile size={80} />
-            </div>
-          )}
-        </div>
-        <div className="sm:col-span-2  lg:col-span-auto">
+      <div className="flex flex-wrap md:flex-nowrap  justify-between gap-4 border rounded shadow-black p-4">
+        <div className="flex items-center gap-4">
+          <div className="avatar block">
+            {user?.avatarUrl ? (
+              <div className="w-24 lg:w-fit rounded-full">
+                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            ) : (
+              <div className="w-20">
+                <CgProfile size={'100%'} />
+              </div>
+            )}
+          </div>
           <p>お名前: {user?.displayName}</p>
-          <p>メールアドレス: {user?.email}</p>
         </div>
-        <StatsItem title="今までに観た映画" number={watchedAtLength} />
-        <StatsItem
-          title="お気に入りリスト"
-          number={Object.keys(favorites).length}
-        />
-        <StatsItem
-          title="ウォッチリスト"
-          number={Object.keys(watchlists).length}
-        />
+        <div className="flex flex-col min-[450px]:flex-row justify-between lg:justify-end md:flex-grow gap-2 lg:gap-4 w-full md:w-auto">
+          <StatsItem title="今までに観た映画" number={watchedAtLength} />
+          <StatsItem
+            title="お気に入りリスト"
+            number={Object.keys(favorites).length}
+          />
+          <StatsItem
+            title="ウォッチリスト"
+            number={Object.keys(watchlists).length}
+          />
+        </div>
       </div>
     </div>
   )

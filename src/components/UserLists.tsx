@@ -11,12 +11,12 @@ import { MovieItem } from '../types/Lists'
 import { User } from '../types/User'
 import MovieTitle from './MovieTitle'
 
-const UserLists = () => {
-  const user: User | null = useSelector((state: RootState) => state.auth.user)
+type Props = {
+  movies: Record<string, MovieItem>
+}
 
-  const movies: Record<string, MovieItem> = useSelector(
-    (state: RootState) => state.movies.movieListData,
-  )
+const UserLists = ({ movies }: Props) => {
+  const user: User | null = useSelector((state: RootState) => state.auth.user)
 
   const [edittingMovieId, setEdittingMovieId] = useState<string | null>(null)
   const [inputedComment, setInputedComment] = useState<string>('')
@@ -45,10 +45,6 @@ const UserLists = () => {
   const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputedComment(e.target.value)
   }
-
-  useEffect(() => {
-    console.log('🚀 ~ movies:', movies)
-  }, [movies])
 
   if (!user) return
 

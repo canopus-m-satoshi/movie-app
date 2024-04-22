@@ -56,7 +56,7 @@ export const fetchRegisteredMovies = createAsyncThunk<
       const data = doc.data() as MovieItem
 
       if (data.watchedAt) {
-        const watchedAt = data.watchedAt.toDate()
+        const watchedAt = new Date(data.watchedAt)
 
         const formattedWatchedAt = watchedAt
           ? format(watchedAt, 'yyyy-MM-dd')
@@ -242,7 +242,11 @@ const moviesSlice = createSlice({
 
         if (formattedCreatedAt) {
           // お気に入りに追加された場合
-          state.favorites[movieId] = { createdAt: formattedCreatedAt }
+          state.favorites[movieId] = {
+            movieId,
+            addedAt: formattedCreatedAt,
+            createdAt: formattedCreatedAt,
+          }
         } else {
           // お気に入りから削除された場合
           delete state.favorites[movieId]
@@ -262,7 +266,11 @@ const moviesSlice = createSlice({
 
         if (formattedCreatedAt) {
           // お気に入りに追加された場合
-          state.watchlists[movieId] = { createdAt: formattedCreatedAt }
+          state.watchlists[movieId] = {
+            movieId,
+            addedAt: formattedCreatedAt,
+            createdAt: formattedCreatedAt,
+          }
         } else {
           // お気に入りから削除された場合
           delete state.watchlists[movieId]

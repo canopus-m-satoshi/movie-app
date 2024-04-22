@@ -9,8 +9,8 @@ import StatsItem from './StatsItem'
 type Props = {
   user: User
   movies: Record<string, MovieItem>
-  favorites: Record<string, string>
-  watchlists: Record<string, string>
+  favorites: Record<string, MovieItem>
+  watchlists: Record<string, MovieItem>
 }
 
 const Profile = ({ user, movies, favorites, watchlists }: Props) => {

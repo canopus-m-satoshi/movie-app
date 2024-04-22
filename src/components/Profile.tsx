@@ -1,13 +1,26 @@
 import { CgProfile } from 'react-icons/cg'
-import { useSelector } from 'react-redux'
 
-import { RootState } from '@/lib/store'
+import { MovieItem } from '@/types/Lists'
 
 import { User } from '../types/User'
 import StatsItem from './StatsItem'
 
-const Profile = () => {
-  const user: User | null = useSelector((state: RootState) => state.auth.user)
+type Props = {
+  user: User
+  movies: Record<string, MovieItem>
+  favorites: Record<string, string>
+  watchlists: Record<string, string>
+}
+
+const Profile = ({ user, movies, favorites, watchlists }: Props) => {
+  const checkIsWatched = () => {
+    const watchedMovies = Object.entries(movies).filter(([_, movieDetail]) => {
+      return movieDetail.watchedAt !== undefined
+    })
+
+    return watchedMovies.length
+  }
+  const watchedAtLength = checkIsWatched()
 
   return (
     <div className="block w-full mx-auto my-6">
@@ -27,9 +40,15 @@ const Profile = () => {
           <p>お名前: {user?.displayName}</p>
           <p>メールアドレス: {user?.email}</p>
         </div>
-        <StatsItem title="今までに観た映画" number={400} />
-        <StatsItem title="お気に入りリスト" number={15} />
-        <StatsItem title="ウォッチリスト" number={4} />
+        <StatsItem title="今までに観た映画" number={watchedAtLength} />
+        <StatsItem
+          title="お気に入りリスト"
+          number={Object.keys(favorites).length}
+        />
+        <StatsItem
+          title="ウォッチリスト"
+          number={Object.keys(watchlists).length}
+        />
       </div>
     </div>
   )

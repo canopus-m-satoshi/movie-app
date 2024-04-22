@@ -33,8 +33,7 @@ const MovieList = ({ movies, query, page }: Props) => {
   useEffect(() => {
     if (uid) {
       dispatch(fetchRegisteredMovies(uid))
-      dispatch(fetchRegisteredLists({ uid: uid, listType: 'favorites' }))
-      dispatch(fetchRegisteredLists({ uid: uid, listType: 'watchlists' }))
+      dispatch(fetchRegisteredLists({ uid: uid }))
     }
   }, [uid, dispatch])
 

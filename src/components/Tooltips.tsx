@@ -19,8 +19,8 @@ import TooltipButton from './TooltipButton'
 type Props = {
   movieId: string
   movieListStatus: {
-    favorite: boolean
-    watchlist: boolean
+    favorites: boolean
+    watchlists: boolean
   }
 }
 // APIを作成してfirestoreから値を取れる様になったが、Tooltiipのトグルがうまくいかなくなったのでそこから対応する
@@ -28,7 +28,7 @@ type Props = {
 const Tooltips = ({ movieId, movieListStatus }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
-  const { favorite, watchlist } = movieListStatus
+  const { favorites, watchlists } = movieListStatus
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
 
@@ -47,14 +47,16 @@ const Tooltips = ({ movieId, movieListStatus }: Props) => {
 
   // useEffectを使用してツールチップのテキストを更新
   useEffect(() => {
-    setFavoriteTip(favorite ? 'お気に入りから削除する' : 'お気に入りに追加する')
+    setFavoriteTip(
+      favorites ? 'お気に入りから削除する' : 'お気に入りに追加する',
+    )
     setWatchTip(
-      watchlist ? 'ウォッチリストから削除する' : 'ウォッチリストに追加する',
+      watchlists ? 'ウォッチリストから削除する' : 'ウォッチリストに追加する',
     )
     // setWatchedTip(
     //   isWatched ? '鑑賞済みリストから削除する' : '鑑賞済みリストに追加する',
     // )
-  }, [favorite, watchlist])
+  }, [favorites, watchlists])
 
   const onToggleFavorites = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -64,7 +66,7 @@ const Tooltips = ({ movieId, movieListStatus }: Props) => {
 
     await dispatch(toggleFavorites({ movieId, uid }))
     setToastMessage(
-      favorite
+      favorites
         ? 'お気に入りリストから削除しました'
         : 'お気に入りリストに追加しました',
     )
@@ -78,7 +80,7 @@ const Tooltips = ({ movieId, movieListStatus }: Props) => {
 
     await dispatch(toggleWatchlists({ movieId, uid }))
     setToastMessage(
-      watchlist
+      watchlists
         ? 'ウォッチリストから削除しました'
         : 'ウォッチリストに追加しました',
     )
@@ -98,12 +100,12 @@ const Tooltips = ({ movieId, movieListStatus }: Props) => {
   return (
     <div className="md:col-span-2 md:row-span-1 flex gap-4 ml-0 mr-auto w-fit">
       <TooltipButton
-        icon={<FaHeart color={favorite ? '#ff002d' : 'inherit'} />}
+        icon={<FaHeart color={favorites ? '#ff002d' : 'inherit'} />}
         tip={favoriteTip}
         onClick={(event) => onToggleFavorites(event)}
       />
       <TooltipButton
-        icon={<FaBookmark color={watchlist ? '#ffe200' : 'inherit'} />}
+        icon={<FaBookmark color={watchlists ? '#ffe200' : 'inherit'} />}
         tip={watchTip}
         onClick={(event) => onToggleWatchlists(event)}
       />

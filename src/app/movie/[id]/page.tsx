@@ -2,12 +2,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { IoCaretBackOutline } from 'react-icons/io5'
 
-import { Movie } from '@/types/Movie'
-import { getMovieDetails } from '@/api/movie/getMovieDetails/route'
-import { posterURL } from '@/constants/posterURL'
 import Tooltips from '@/components/Tooltips'
+import { posterURL } from '@/constants/posterURL'
+import { checkMovieInUserLists } from '@/lib/movies/checkMovieInUserLists'
+import { getMovieDetails } from '@/lib/movies/getMovieDetails'
+import { Movie } from '@/types/Movie'
 
 type Genres = Pick<Movie, 'genres'>
+
+type MovieListStatusData = {
+  favorite: boolean
+  watchlist: boolean
+}
 
 export default async function MovieDetails({
   params,
@@ -16,6 +22,14 @@ export default async function MovieDetails({
   params: { id: string }
   searchParams: { query: string; page: number }
 }) {
+  const movieListStatusData = (await checkMovieInUserLists(
+    params.id,
+  )) as MovieListStatusData
+  const movieListStatus = movieListStatusData ?? {
+    favorite: false,
+    watchlist: false,
+  }
+
   const res = await getMovieDetails(params.id)
   const movie = res.data
   const { query, page } = searchParams
@@ -51,7 +65,7 @@ export default async function MovieDetails({
             </ul>
           </div>
 
-          <Tooltips movieId={params.id} />
+          <Tooltips movieId={params.id} movieListStatus={movieListStatus} />
 
           <div className="md:col-span-3 xl:col-span-2">
             <p>{movie.overview}</p>

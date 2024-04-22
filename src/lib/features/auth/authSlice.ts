@@ -9,7 +9,7 @@ import {
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 
-import { auth, db } from '@/lib/firebase'
+import { auth, db } from '@/lib/firebase/firebase'
 import { AuthState, User } from '@/types/User'
 
 const initialState: AuthState = { user: null, status: 'idle', error: undefined }
@@ -28,31 +28,6 @@ export const signIn = createAsyncThunk(
         password,
       )
       return { uid: userCredential.user.uid, email: userCredential.user.email }
-    } catch (error: any) {
-      return rejectWithValue(error.message)
-    }
-  },
-)
-
-export const signInWithGoogle = createAsyncThunk(
-  'auth/signInWithGoogle',
-  async (_, { rejectWithValue }) => {
-    try {
-      const provider = new GoogleAuthProvider()
-      const result = await signInWithPopup(auth, provider)
-      const user = result.user
-
-      const usersRef = doc(db, 'users', user.uid)
-      await setDoc(
-        usersRef,
-        {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-        },
-        { merge: true },
-      )
-      return { uid: user.uid, email: user.email, displayName: user.displayName }
     } catch (error: any) {
       return rejectWithValue(error.message)
     }
@@ -125,17 +100,6 @@ const authSlice = createSlice({
         state.user = action.payload
       })
       .addCase(signIn.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.payload as string
-      })
-      .addCase(signInWithGoogle.pending, (state) => {
-        state.status = 'loading'
-      })
-      .addCase(signInWithGoogle.fulfilled, (state, action) => {
-        state.status = 'succeeded'
-        state.user = action.payload
-      })
-      .addCase(signInWithGoogle.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.payload as string
       })

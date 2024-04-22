@@ -129,12 +129,20 @@ export const toggleFavorites = createAsyncThunk<
     const favoritesRef = doc(userListRef, 'favorites', movieId)
     const favoritesDoc = await getDoc(favoritesRef)
 
+    const moviesRef = doc(userListRef, 'movies', movieId)
+    const moviesDoc = await getDoc(moviesRef)
+
     if (favoritesDoc.exists()) {
       await deleteDoc(favoritesRef)
       return { movieId, createdAt: null }
     } else {
       const createdAt = Timestamp.now()
       await setDoc(favoritesRef, { createdAt })
+
+      if (!moviesDoc.exists()) {
+        const movieData = {}
+        await setDoc(moviesRef, movieData)
+      }
 
       const formattedCreatedAt = format(createdAt.toDate(), 'yyyy-MM-dd')
 
@@ -155,12 +163,20 @@ export const toggleWatchlists = createAsyncThunk<
     const watchlistsRef = doc(userListRef, 'watchlists', movieId)
     const watchlistsDoc = await getDoc(watchlistsRef)
 
+    const moviesRef = doc(userListRef, 'movies', movieId)
+    const moviesDoc = await getDoc(moviesRef)
+
     if (watchlistsDoc.exists()) {
       await deleteDoc(watchlistsRef)
       return { movieId, createdAt: null }
     } else {
       const createdAt = Timestamp.now()
       await setDoc(watchlistsRef, { createdAt })
+
+      if (!moviesDoc.exists()) {
+        const movieData = {}
+        await setDoc(moviesRef, movieData)
+      }
 
       const formattedCreatedAt = format(createdAt.toDate(), 'yyyy-MM-dd')
 

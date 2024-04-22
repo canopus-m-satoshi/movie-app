@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { CgProfile } from 'react-icons/cg'
 
 import { MovieItem } from '@/types/Lists'
@@ -29,7 +30,13 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
           <div className="avatar block">
             {user?.avatarUrl ? (
               <div className="w-24 lg:w-fit rounded-full">
-                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                <Image
+                  src={user.avatarUrl}
+                  alt="User Avatar"
+                  width={96}
+                  height={96}
+                  className="rounded-full"
+                />
               </div>
             ) : (
               <div className="w-20">

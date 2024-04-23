@@ -77,6 +77,7 @@ export const checkAuthStatus = createAsyncThunk<User>(
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
+            avatarUrl: user.photoURL || null,
           })
         } else {
           reject(rejectWithValue('No user logged in'))
@@ -97,7 +98,11 @@ const authSlice = createSlice({
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        state.user = action.payload
+        state.user = {
+          ...action.payload,
+          displayName: null,
+          avatarUrl: null,
+        }
       })
       .addCase(signIn.rejected, (state, action) => {
         state.status = 'failed'
@@ -108,7 +113,11 @@ const authSlice = createSlice({
       })
       .addCase(signUp.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        state.user = action.payload
+        state.user = {
+          ...action.payload,
+          displayName: null,
+          avatarUrl: null,
+        }
       })
       .addCase(signUp.rejected, (state, action) => {
         state.status = 'failed'

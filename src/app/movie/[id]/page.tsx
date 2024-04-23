@@ -25,7 +25,6 @@ export default async function MovieDetails({
   const movieListStatusData = (await checkMovieInUserLists(
     params.id,
   )) as MovieListStatusData
-  console.log('🚀 ~ movieListStatusData:', movieListStatusData)
   const movieListStatus = movieListStatusData ?? {
     favorites: false,
     watchlists: false,

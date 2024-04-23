@@ -11,5 +11,5 @@ export interface MovieItem {
   movieId: string
   addedAt: string
   comment?: string
-  watchedAt?: string | null
+  watchedAt?: string | Timestamp | null
 }

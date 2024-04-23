@@ -56,11 +56,17 @@ export const fetchRegisteredMovies = createAsyncThunk<
       const data = doc.data() as MovieItem
 
       if (data.watchedAt) {
-        const watchedAt = new Date(data.watchedAt)
+        let watchedAt: Date
 
-        const formattedWatchedAt = watchedAt
-          ? format(watchedAt, 'yyyy-MM-dd')
-          : null
+        if (typeof data.watchedAt === 'string') {
+          watchedAt = new Date(data.watchedAt)
+        } else if (data.watchedAt instanceof Timestamp) {
+          watchedAt = data.watchedAt.toDate()
+        } else {
+          return // data.watchedAt が null の場合は処理をスキップ
+        }
+
+        const formattedWatchedAt = format(watchedAt, 'yyyy-MM-dd')
 
         movieListData[doc.id] = {
           ...data,

@@ -1,6 +1,5 @@
 'use client'
 
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -70,12 +69,13 @@ export default function Home() {
               placeholder="タイトルを入力"
               onChange={(e) => handleInputChange(e)}
               value={inputedText}
+              disabled={query ? true : false}
             />
           </div>
 
           <button
-            className="btn btn-primary whitespace-nowrap	 py-1 basis-[48%] md:basis-[15%]"
-            disabled={inputedText === ''}
+            className="btn btn-primary whitespace-nowrap py-1 basis-[48%] md:basis-[15%]"
+            disabled={query ? true : false}
             onClick={() => searchMoviesOnClick()}>
             検索
           </button>

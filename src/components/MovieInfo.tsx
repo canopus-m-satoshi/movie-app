@@ -9,8 +9,7 @@ import {
 } from '@/lib/features/movies/moviesSlice'
 import { checkMovieInUserLists } from '@/lib/movies/checkMovieInUserLists'
 import { AppDispatch, RootState } from '@/lib/store'
-import { MovieListStatusData } from '@/types/Lists'
-import { Movie } from '@/types/Movie'
+import { Movie, MovieListStatusData } from '@/types/Movie'
 import { User } from '@/types/User'
 
 import Tooltips from './Tooltips'
@@ -64,6 +63,7 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
     <>
       <h1 className="text-lg md:text-3xl font-bold">{movie.title}</h1>
       <p className="mt-3">公開日：{movie.release_date}</p>
+      <p className="mt-3">上映時間：{movie.runtime}分</p>
       <ul className="flex flex-wrap gap-2 mt-3">
         {movie.genres.map((genre: Genres['genres'][number]) => (
           <li key={genre.id} className="border border-slate-400	 rounded-md p-1">

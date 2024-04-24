@@ -13,7 +13,7 @@ import {
 import { watch } from 'fs'
 
 import { db } from '@/lib/firebase/firebase'
-import { MovieItem } from '@/types/Lists'
+import { MovieItem } from '@/types/Movie'
 
 interface moviesState {
   movieListData: Record<string, MovieItem> // 各ユーザーのリストをuidをキーとして保持する

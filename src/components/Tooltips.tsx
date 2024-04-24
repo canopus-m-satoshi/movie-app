@@ -3,7 +3,7 @@ import { FaBookmark, FaHeart } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 
 import { toastConfig } from '@/lib/toastConfig'
-import { MovieListStatusData } from '@/types/Lists'
+import { MovieListStatusData } from '@/types/Movie'
 
 import TooltipButton from './TooltipButton'
 

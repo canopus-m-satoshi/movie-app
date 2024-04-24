@@ -7,7 +7,7 @@ import { posterURL } from '@/constants/posterURL'
 import { getCurrentUser } from '@/lib/firebase/firebase-admin'
 import { checkMovieInUserLists } from '@/lib/movies/checkMovieInUserLists'
 import { getMovieDetails } from '@/lib/movies/getMovieDetails'
-import { MovieListStatusData } from '@/types/Lists'
+import { MovieListStatusData } from '@/types/Movie'
 
 export default async function MovieDetails({
   params,

@@ -1,7 +1,7 @@
 import { doc, getDoc } from 'firebase/firestore'
 
 import { db } from '@/lib/firebase/firebase'
-import { MovieListStatusData } from '@/types/Lists'
+import { MovieListStatusData } from '@/types/Movie'
 
 /**
  * @param movieId

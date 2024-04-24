@@ -2,18 +2,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { IoCaretBackOutline } from 'react-icons/io5'
 
-import Tooltips from '@/components/Tooltips'
+import MovieInfo from '@/components/MovieInfo'
 import { posterURL } from '@/constants/posterURL'
+import { getCurrentUser } from '@/lib/firebase/firebase-admin'
 import { checkMovieInUserLists } from '@/lib/movies/checkMovieInUserLists'
 import { getMovieDetails } from '@/lib/movies/getMovieDetails'
-import { Movie } from '@/types/Movie'
-
-type Genres = Pick<Movie, 'genres'>
-
-type MovieListStatusData = {
-  favorites: boolean
-  watchlists: boolean
-}
+import { MovieListStatusData } from '@/types/Lists'
 
 export default async function MovieDetails({
   params,
@@ -22,12 +16,18 @@ export default async function MovieDetails({
   params: { id: string }
   searchParams: { query: string; page: number }
 }) {
-  const movieListStatusData = (await checkMovieInUserLists(
-    params.id,
-  )) as MovieListStatusData
-  const movieListStatus = movieListStatusData ?? {
+  const user = await getCurrentUser()
+
+  let movieListStatusData = {
     favorites: false,
     watchlists: false,
+  }
+
+  if (user) {
+    movieListStatusData = (await checkMovieInUserLists(
+      params.id,
+      user.uid,
+    )) as MovieListStatusData
   }
 
   const res = await getMovieDetails(params.id)
@@ -52,20 +52,11 @@ export default async function MovieDetails({
             />
           </div>
           <div className="md:col-span-2 md:row-span-1">
-            <h1 className="text-lg md:text-3xl font-bold">{movie.title}</h1>
-            <p className="mt-3">公開日：{movie.release_date}</p>
-            <ul className="flex flex-wrap gap-2 mt-3">
-              {movie.genres.map((genre: Genres['genres'][number]) => (
-                <li
-                  key={genre.id}
-                  className="border border-slate-400	 rounded-md p-1">
-                  {genre.name}
-                </li>
-              ))}
-            </ul>
+            <MovieInfo
+              movie={movie}
+              movieListStatusData={movieListStatusData}
+            />
           </div>
-
-          <Tooltips movieId={params.id} movieListStatus={movieListStatus} />
 
           <div className="md:col-span-3 xl:col-span-2">
             <p>{movie.overview}</p>

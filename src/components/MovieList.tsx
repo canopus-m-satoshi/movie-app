@@ -11,7 +11,6 @@ import {
 import { AppDispatch, RootState } from '@/lib/store'
 
 import { Movie } from '../types/Movie'
-import Tooltips from './Tooltips'
 
 type Props = {
   movies: Movie[]
@@ -27,8 +26,6 @@ const MovieList = ({ movies, query, page }: Props) => {
   )
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid)
-  const favorites = useSelector((state: RootState) => state.movies.favorites)
-  const watchlists = useSelector((state: RootState) => state.movies.watchlists)
 
   useEffect(() => {
     if (uid) {
@@ -54,9 +51,6 @@ const MovieList = ({ movies, query, page }: Props) => {
               width={300}
               height={440}
             />
-            {/* <div className="my-3">
-              <Tooltips movieId={movie.id.toString()} movieListStatus={} />
-            </div> */}
             <h3 className="font-bold text-lg lg:text-2xl mt-3">
               {movie.title}
             </h3>
@@ -67,7 +61,7 @@ const MovieList = ({ movies, query, page }: Props) => {
             {movieListData &&
               movieListData[movie.id] &&
               movieListData[movie.id].watchedAt && (
-                <p>鑑賞日: {movieListData[movie.id].watchedAt}</p>
+                <p>鑑賞日: {movieListData[movie.id].watchedAt?.toString()}</p>
               )}
           </Link>
         )

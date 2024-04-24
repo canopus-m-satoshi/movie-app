@@ -13,3 +13,8 @@ export interface MovieItem {
   comment?: string
   watchedAt?: string | Timestamp | null
 }
+
+export type MovieListStatusData = {
+  favorites: boolean
+  watchlists: boolean
+}

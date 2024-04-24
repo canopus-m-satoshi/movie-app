@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FaCheck, FaPen } from 'react-icons/fa'
 import { FaXmark } from 'react-icons/fa6'
 import { useSelector } from 'react-redux'
@@ -60,7 +60,9 @@ const UserLists = ({ movies }: Props) => {
                 <MovieTitle movieId={movieId} />
                 <p>
                   鑑賞日:
-                  {movieDetail.watchedAt ? movieDetail.watchedAt : ' 未登録'}
+                  {movieDetail.watchedAt
+                    ? movieDetail.watchedAt.toString()
+                    : ' 未登録'}
                 </p>
                 {edittingMovieId === movieId ? (
                   <div className="md:flex justify-between items-end gap-2">

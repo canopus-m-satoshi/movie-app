@@ -13,7 +13,7 @@ import {
 import { watch } from 'fs'
 
 import { db } from '@/lib/firebase/firebase'
-import { MovieItem } from '@/types/Lists'
+import { MovieItem } from '@/types/Movie'
 
 interface moviesState {
   movieListData: Record<string, MovieItem> // 各ユーザーのリストをuidをキーとして保持する
@@ -28,7 +28,7 @@ interface TogglePayload {
   uid: string
   formattedCreatedAt?: string
 }
-interface toggleLists {
+interface ToggleLists {
   [key: string]: string
 }
 
@@ -79,6 +79,7 @@ export const fetchRegisteredMovies = createAsyncThunk<
 
     return movieListData
   } catch (error: any) {
+    console.error('Error is ', error)
     return rejectWithValue({ message: 'Failed to fetch user lists', error })
   }
 })
@@ -130,7 +131,7 @@ export const fetchRegisteredLists = createAsyncThunk<
 
 export const toggleFavorites = createAsyncThunk<
   TogglePayload,
-  toggleLists,
+  ToggleLists,
   { rejectValue: string }
 >('toggleFavorites', async ({ movieId, uid }, { rejectWithValue }) => {
   try {
@@ -164,7 +165,7 @@ export const toggleFavorites = createAsyncThunk<
 
 export const toggleWatchlists = createAsyncThunk<
   TogglePayload,
-  toggleLists,
+  ToggleLists,
   { rejectValue: string }
 >('toggleWatchlists', async ({ movieId, uid }, { rejectWithValue }) => {
   try {

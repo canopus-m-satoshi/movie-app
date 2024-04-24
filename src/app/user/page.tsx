@@ -8,7 +8,7 @@ import {
   fetchRegisteredMovies,
 } from '@/lib/features/movies/moviesSlice'
 import { AppDispatch, RootState } from '@/lib/store'
-import { MovieItem } from '@/types/Lists'
+import { MovieItem } from '@/types/Movie'
 
 import Profile from '../../components/Profile'
 import UserLists from '../../components/UserLists'

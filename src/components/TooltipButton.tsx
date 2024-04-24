@@ -1,14 +1,21 @@
 type Props = {
   icon: React.ReactNode
   tip: string
-  // onClick: () => void
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 const TooltipButton = ({ icon, tip, onClick }: Props) => {
+  const _onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+
+    if (onClick) {
+      onClick(event)
+    }
+  }
+
   return (
     <div className="tooltip" data-tip={tip}>
-      <button className="btn rounded-badge" onClick={onClick}>
+      <button className="btn rounded-badge" onClick={_onClick}>
         {icon}
       </button>
     </div>

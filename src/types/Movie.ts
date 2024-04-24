@@ -1,3 +1,18 @@
+import { Timestamp } from 'firebase/firestore'
+
+export interface MovieItem {
+  [key: string]: any // 任意の文字列をキーとして値を設定
+  movieId: string
+  addedAt: string
+  comment?: string
+  watchedAt?: string | Timestamp | null
+}
+
+export type MovieListStatusData = {
+  favorites: boolean
+  watchlists: boolean
+}
+
 export type Movie = {
   adult: boolean
   backdrop_path: string

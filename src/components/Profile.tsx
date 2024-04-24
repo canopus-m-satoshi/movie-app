@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { CgProfile } from 'react-icons/cg'
 
-import { MovieItem } from '@/types/Lists'
+import { MovieItem } from '@/types/Movie'
 
 import { User } from '../types/User'
 import StatsItem from './StatsItem'

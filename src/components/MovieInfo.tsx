@@ -71,11 +71,13 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
           </li>
         ))}
       </ul>
-      <Tooltips
-        onToggleFavorites={onToggleFavorites}
-        onToggleWatchlists={onToggleWatchlists}
-        movieListStatus={userLists}
-      />
+      {user && (
+        <Tooltips
+          onToggleFavorites={onToggleFavorites}
+          onToggleWatchlists={onToggleWatchlists}
+          movieListStatus={userLists}
+        />
+      )}
     </>
   )
 }

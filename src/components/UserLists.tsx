@@ -50,6 +50,7 @@ const UserLists = ({ movies }: Props) => {
 
   return (
     <>
+      <h2 className="text-2xl md:text-3xl font-bold my-4">最近登録した映画</h2>
       {movies ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-4 gap-x-4">
           {Object.entries(movies).map(

@@ -40,7 +40,6 @@ const initialState: moviesState = {
   error: undefined,
 }
 
-// 新規データベース構造 start
 export const fetchRegisteredMovies = createAsyncThunk<
   Record<string, MovieItem>,
   string,
@@ -197,7 +196,23 @@ export const toggleWatchlists = createAsyncThunk<
   }
 })
 
-// 新規データベース構造 end
+export const updateComment = createAsyncThunk<
+  { movieId: string; comment: string },
+  { movieId: string; comment: string; uid: string },
+  { rejectValue: string }
+>('updateComment', async ({ movieId, comment, uid }, { rejectWithValue }) => {
+  try {
+    const userListRef = doc(db, 'users', uid)
+    const movieRef = doc(userListRef, 'movies', movieId)
+
+    await updateDoc(movieRef, { comment })
+
+    return { movieId, comment }
+  } catch (error: any) {
+    console.error('Error is ', error)
+    return rejectWithValue('Error happened')
+  }
+})
 
 const moviesSlice = createSlice({
   name: 'movies',
@@ -284,6 +299,20 @@ const moviesSlice = createSlice({
         }
       })
       .addCase(toggleWatchlists.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+      })
+      .addCase(updateComment.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(updateComment.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+
+        const { movieId, comment } = action.payload
+
+        state.movieListData[movieId].comment = comment
+      })
+      .addCase(updateComment.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
       })

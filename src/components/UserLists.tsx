@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import { RootState } from '@/lib/store'
+import { updateComment } from '@/lib/features/movies/moviesSlice'
+import { AppDispatch, RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 
 import { MovieItem } from '../types/Movie'
@@ -14,6 +15,7 @@ type Props = {
 }
 
 const UserLists = ({ movies }: Props) => {
+  const dispatch: AppDispatch = useDispatch()
   const user: User | null = useSelector((state: RootState) => state.auth.user)
 
   const [edittingMovieId, setEdittingMovieId] = useState<string | null>(null)
@@ -25,6 +27,7 @@ const UserLists = ({ movies }: Props) => {
   }
 
   const confirmEdit = (movieId: string, uid: string) => {
+    dispatch(updateComment({ movieId, uid, comment: inputedComment }))
     setEdittingMovieId(null)
 
     toast.success('コメントを編集しました', toastConfig)

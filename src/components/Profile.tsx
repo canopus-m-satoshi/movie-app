@@ -49,11 +49,11 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
         <div className="flex flex-col min-[450px]:flex-row justify-between lg:justify-end md:flex-grow gap-2 lg:gap-4 w-full md:w-auto">
           <StatsItem title="今までに観た映画" number={watchedAtLength} />
           <StatsItem
-            title="お気に入りリスト"
+            title="お気に入り映画"
             number={Object.keys(favorites).length}
           />
           <StatsItem
-            title="ウォッチリスト"
+            title="ウォッチリスト映画"
             number={Object.keys(watchlists).length}
           />
         </div>

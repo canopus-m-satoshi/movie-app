@@ -25,8 +25,8 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
 
   return (
     <div className="block w-full mx-auto my-6">
-      <div className="flex flex-wrap md:flex-nowrap  justify-between gap-4 border rounded shadow-black p-4">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-4 border rounded shadow-black p-4">
+        <div className="flex flex-col min-[350px]:flex-row items-center gap-4">
           <div className="avatar block">
             {user?.avatarUrl ? (
               <div className="w-24 lg:w-fit rounded-full">
@@ -49,11 +49,11 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
         <div className="flex flex-col min-[450px]:flex-row justify-between lg:justify-end md:flex-grow gap-2 lg:gap-4 w-full md:w-auto">
           <StatsItem title="今までに観た映画" number={watchedAtLength} />
           <StatsItem
-            title="お気に入りリスト"
+            title="お気に入り映画"
             number={Object.keys(favorites).length}
           />
           <StatsItem
-            title="ウォッチリスト"
+            title="ウォッチリスト映画"
             number={Object.keys(watchlists).length}
           />
         </div>

@@ -37,10 +37,6 @@ export default function Home() {
 
   return (
     <div className="w-full mx-auto mt-6 px-2">
-      <h1 className="font-bold text-4xl text-center">
-        {user.displayName}さんのページ
-      </h1>
-
       <Profile
         user={user}
         movies={movies}

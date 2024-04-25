@@ -81,7 +81,7 @@ const Header = () => {
               </>
             ) : (
               <li>
-                <Link href={'/auth/signIn'}>ログインする</Link>
+                <Link href={'/auth/sign-in'}>ログインする</Link>
               </li>
             )}
           </ul>

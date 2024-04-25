@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { CgProfile } from 'react-icons/cg'
@@ -44,7 +45,21 @@ const Header = () => {
             <p className="inline-block border-b border-black group-hover:border-transparent">
               {user ? user.displayName : 'ゲスト'}
             </p>
-            <CgProfile size={30} />
+            {user?.avatarUrl ? (
+              <div className="w-24 lg:w-fit rounded-full">
+                <Image
+                  src={user.avatarUrl}
+                  alt="User Avatar"
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                />
+              </div>
+            ) : (
+              <div className="w-7">
+                <CgProfile size={'100%'} />
+              </div>
+            )}
           </div>
           <ul
             tabIndex={0}

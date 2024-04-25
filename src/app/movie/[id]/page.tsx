@@ -37,7 +37,7 @@ export default async function MovieDetails({
   return (
     <>
       <div className="container mx-auto my-6 px-3">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[auto,1fr,1fr] md:grid-rows-3 lg:grid-rows-[auto,auto,1fr] gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[auto,1fr,1fr] md:grid-rows-[auto,auto,1fr] gap-4 lg:gap-6">
           <div className="md:col-span-1 md:row-span-2 lg:row-span-3 xl: w-fit mx-auto">
             <Image
               src={

@@ -32,8 +32,8 @@ const Header = () => {
 
   return (
     <header className="bg-gray-200 py-5 px-4">
-      <div className="flex justify-between align-center">
-        <h1 className="font-bold text-4xl">
+      <div className="flex justify-between items-center">
+        <h1 className="font-bold text-3xl min-[450px]:text-4xl">
           <Link href={headerLink}>MOVIE APP</Link>
         </h1>
 
@@ -42,11 +42,11 @@ const Header = () => {
             tabIndex={0}
             role="button"
             className="flex items-center gap-1 group">
-            <p className="inline-block border-b border-black group-hover:border-transparent">
+            <p className="max-[450px]:hidden inline-block border-b border-black group-hover:border-transparent">
               {user ? user.displayName : 'ゲスト'}
             </p>
             {user?.avatarUrl ? (
-              <div className="w-24 lg:w-fit rounded-full">
+              <div className="w-fit rounded-full">
                 <Image
                   src={user.avatarUrl}
                   alt="User Avatar"

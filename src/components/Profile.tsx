@@ -25,8 +25,8 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
 
   return (
     <div className="block w-full mx-auto my-6">
-      <div className="flex flex-wrap md:flex-nowrap  justify-between gap-4 border rounded shadow-black p-4">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-4 border rounded shadow-black p-4">
+        <div className="flex flex-col min-[350px]:flex-row items-center gap-4">
           <div className="avatar block">
             {user?.avatarUrl ? (
               <div className="w-24 lg:w-fit rounded-full">

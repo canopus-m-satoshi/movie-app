@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 import { RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 
-import { MovieItem } from '../types/Lists'
+import { MovieItem } from '../types/Movie'
 import { User } from '../types/User'
 import MovieTitle from './MovieTitle'
 

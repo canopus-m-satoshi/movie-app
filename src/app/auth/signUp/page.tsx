@@ -86,17 +86,6 @@ const SignUp = () => {
           登録
         </button>
       </div>
-      <div className="divider my-8">OR</div>
-
-      <h3 className="text-md md:text-xl lg:text-2xl text-center font-bold my-6">
-        SNSアカウントで会員登録する
-      </h3>
-      <div className="w-fit mx-auto">
-        <button onClick={signUpWithGoogle} className="btn btn-outline">
-          <FcGoogle size={24} className="mr-2" />
-          Googleで登録
-        </button>
-      </div>
 
       <div className="divider my-8">OR</div>
       <div className="w-fit mt-6 mx-auto">

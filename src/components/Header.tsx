@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { CgProfile } from 'react-icons/cg'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -13,17 +14,26 @@ const Header = () => {
   const dispatch: AppDispatch = useDispatch()
   const user = useSelector((state: any) => state.auth.user)
 
+  const searchParams = useSearchParams()
+  const query: string | null = searchParams.get('query')
+  const page: number | null = parseInt(searchParams.get('page') || '1')
+
   const handleSignOut = () => {
     dispatch(signOutUser())
 
     toast.success('ログアウトしました', toastConfig)
   }
 
+  let headerLink = 'movie/'
+  if (query || page) {
+    headerLink = `/movie?query=${query}&page=${page}`
+  }
+
   return (
     <header className="bg-gray-200 py-5 px-4">
       <div className="flex justify-between align-center">
         <h1 className="font-bold text-4xl">
-          <Link href={'/movie'}>MOVIE APP</Link>
+          <Link href={headerLink}>MOVIE APP</Link>
         </h1>
 
         <div className="dropdown dropdown-bottom dropdown-end">

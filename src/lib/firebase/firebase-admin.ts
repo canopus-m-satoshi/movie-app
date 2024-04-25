@@ -2,12 +2,15 @@ import 'server-only'
 
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
 import { getAuth, SessionCookieOptions } from 'firebase-admin/auth'
-import { readFileSync } from 'fs'
 import { cookies } from 'next/headers'
 
-const serviceAccountKey = JSON.parse(
-  readFileSync(process.env.NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT_KEY!, 'utf8'),
-)
+const serviceAccountKey = {
+  // cert()の中に直接JSON形式で代入
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  privateKey:
+    process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n') ?? '',
+  clientEmail: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL,
+}
 
 export const firebaseApp =
   getApps().find((it) => it.name === 'firebase-admin-app') ||

@@ -25,7 +25,7 @@ const Header = () => {
   }
 
   let headerLink = 'movie/'
-  if (query || page) {
+  if (query) {
     headerLink = `/movie?query=${query}&page=${page}`
   }
 

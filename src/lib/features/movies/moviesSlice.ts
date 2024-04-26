@@ -32,6 +32,16 @@ interface ToggleLists {
   [key: string]: string
 }
 
+interface WatchedPayload {
+  movieId: string
+  watchedAt: Timestamp | string | null
+}
+interface WatchedMovie {
+  movieId: string
+  watchedAt: Date | null | undefined
+  uid: string
+}
+
 const initialState: moviesState = {
   movieListData: {},
   favorites: {},
@@ -214,6 +224,49 @@ export const updateComment = createAsyncThunk<
   }
 })
 
+export const regisrerWatched = createAsyncThunk<
+  WatchedPayload,
+  WatchedMovie,
+  { rejectValue: string }
+>(
+  'registerWatched',
+  async ({ movieId, watchedAt, uid }, { rejectWithValue }) => {
+    try {
+      const userListRef = doc(db, 'users', uid)
+      const movieRef = doc(userListRef, 'movies', movieId)
+      const movieDoc = await getDoc(movieRef)
+
+      if (watchedAt) {
+        const formatWatchedAtToTimestamp = Timestamp.fromDate(watchedAt)
+        const formattedWatchedAtToString = format(watchedAt, 'yyyy-MM-dd')
+
+        if (movieDoc.exists()) {
+          await updateDoc(movieRef, {
+            watchedAt: formatWatchedAtToTimestamp,
+          })
+        } else {
+          await setDoc(movieRef, {
+            watchedAt: formatWatchedAtToTimestamp,
+          })
+        }
+
+        return { movieId, watchedAt: formattedWatchedAtToString }
+      } else {
+        if (movieDoc.exists()) {
+          await updateDoc(movieRef, { watchedAt: null })
+        } else {
+          await setDoc(movieRef, { watchedAt: null })
+        }
+
+        return { movieId, watchedAt: null }
+      }
+    } catch (error: any) {
+      console.error('Error is ', error)
+      return rejectWithValue('Error happened')
+    }
+  },
+)
+
 const moviesSlice = createSlice({
   name: 'movies',
   initialState,
@@ -313,6 +366,23 @@ const moviesSlice = createSlice({
         state.movieListData[movieId].comment = comment
       })
       .addCase(updateComment.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+      })
+      .addCase(regisrerWatched.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(regisrerWatched.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+
+        const { movieId, watchedAt } = action.payload
+
+        state.movieListData[movieId] = {
+          ...state.movieListData[movieId],
+          watchedAt,
+        }
+      })
+      .addCase(regisrerWatched.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
       })

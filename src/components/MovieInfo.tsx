@@ -3,15 +3,18 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { toggleModal } from '@/lib/features/modal/modalSlice'
 import {
+  fetchRegisteredMovies,
   toggleFavorites,
   toggleWatchlists,
 } from '@/lib/features/movies/moviesSlice'
 import { checkMovieInUserLists } from '@/lib/movies/checkMovieInUserLists'
 import { AppDispatch, RootState } from '@/lib/store'
-import { Movie, MovieListStatusData } from '@/types/Movie'
+import { Movie, MovieItem, MovieListStatusData } from '@/types/Movie'
 import { User } from '@/types/User'
 
+import Modal from './Modal'
 import Tooltips from './Tooltips'
 
 type Genres = Pick<Movie, 'genres'>
@@ -24,22 +27,30 @@ type Props = {
 const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   const dispatch: AppDispatch = useDispatch()
   const user: User | null = useSelector((state: RootState) => state.auth.user)
-
-  const movieId = movie.id.toString()
+  const { toggle, stack } = useSelector((state: RootState) => state.modal)
+  const movies: Record<string, MovieItem> = useSelector(
+    (state: RootState) => state.movies.movieListData,
+  )
+  let uid = ''
+  if (user) {
+    uid = user.uid
+  }
 
   const [userLists, setUserLists] = useState(movieListStatusData)
+
+  const movieId = movie.id.toString()
 
   const refetch = useCallback(async () => {
     if (!user) return
 
-    const res = await checkMovieInUserLists(movieId, user.uid)
+    const res = await checkMovieInUserLists(movieId, uid)
 
     setUserLists(res)
-  }, [user, movieId])
+  }, [user, movieId, uid])
 
   const onToggleFavorites = async () => {
     if (!user) return
-    await dispatch(toggleFavorites({ movieId, uid: user.uid }))
+    await dispatch(toggleFavorites({ movieId, uid: uid }))
 
     await refetch()
 
@@ -48,16 +59,24 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
 
   const onToggleWatchlists = async () => {
     if (!user) return
-    await dispatch(toggleWatchlists({ movieId, uid: user.uid }))
+    await dispatch(toggleWatchlists({ movieId, uid: uid }))
 
     await refetch()
 
     return !userLists.watchlists
   }
 
+  const onToggleModal = () => {
+    dispatch(toggleModal())
+  }
+
   useEffect(() => {
     refetch()
-  }, [refetch])
+  }, [refetch, dispatch, movies])
+
+  useEffect(() => {
+    dispatch(fetchRegisteredMovies(uid))
+  }, [dispatch, uid])
 
   return (
     <>
@@ -71,13 +90,13 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
           </li>
         ))}
       </ul>
-      {user && (
-        <Tooltips
-          onToggleFavorites={onToggleFavorites}
-          onToggleWatchlists={onToggleWatchlists}
-          movieListStatus={userLists}
-        />
-      )}
+      <Tooltips
+        onToggleFavorites={onToggleFavorites}
+        onToggleWatchlists={onToggleWatchlists}
+        onToggleModal={onToggleModal}
+        movieListStatus={userLists}
+      />
+      <Modal movieId={movieId} toggle={toggle} stack={stack} uid={uid} />
     </>
   )
 }

@@ -11,6 +11,7 @@ export interface MovieItem {
 export type MovieListStatusData = {
   favorites: boolean
   watchlists: boolean
+  isWatched: boolean
 }
 
 export type Movie = {

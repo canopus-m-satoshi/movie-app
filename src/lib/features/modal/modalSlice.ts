@@ -9,7 +9,7 @@ export const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    toggle: (state) => {
+    toggleModal: (state) => {
       state.toggle = !state.toggle
 
       // modal閉じる時にスタックを空にする
@@ -20,6 +20,6 @@ export const modalSlice = createSlice({
   },
 })
 
-export const { toggle } = modalSlice.actions
+export const { toggleModal } = modalSlice.actions
 
 export default modalSlice.reducer

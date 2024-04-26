@@ -70,12 +70,6 @@ const Header = () => {
                   <Link href={'/user'}>マイページへ</Link>
                 </li>
                 <li>
-                  <Link href={'/watchlist'}>ウォッチリストへ</Link>
-                </li>
-                <li>
-                  <Link href={'/settings'}>設定</Link>
-                </li>
-                <li>
                   <button onClick={handleSignOut}>ログアウトする</button>
                 </li>
               </>

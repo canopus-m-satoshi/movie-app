@@ -379,7 +379,7 @@ const moviesSlice = createSlice({
 
         state.movieListData[movieId] = {
           ...state.movieListData[movieId],
-          watchedAt,
+          watchedAt: watchedAt as string | Date | null,
         }
       })
       .addCase(regisrerWatched.rejected, (state, action) => {

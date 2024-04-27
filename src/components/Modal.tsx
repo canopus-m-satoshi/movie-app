@@ -12,6 +12,7 @@ type Props = {
   toggle: boolean
   stack: string[]
   uid: string
+  watcedAt: Date | string | null
 }
 
 ReactModal.setAppElement('html')
@@ -28,7 +29,7 @@ const customStyles = {
   },
 }
 
-const Modal = ({ movieId, toggle, uid }: Props) => {
+const Modal = ({ movieId, toggle, uid, watcedAt }: Props) => {
   const dispatch = useDispatch()
 
   const handleCloseModal = () => {
@@ -50,6 +51,7 @@ const Modal = ({ movieId, toggle, uid }: Props) => {
           checkboxText="鑑賞日不明"
           movieId={movieId}
           uid={uid}
+          watcedAt={watcedAt}
         />
       </div>
     </ReactModal>

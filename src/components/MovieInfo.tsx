@@ -36,6 +36,8 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
     uid = user.uid
   }
 
+  const watcedAt = movies[movie.id]?.watchedAt || null
+
   const [userLists, setUserLists] = useState(movieListStatusData)
 
   const movieId = movie.id.toString()
@@ -96,7 +98,13 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
         onToggleModal={onToggleModal}
         movieListStatus={userLists}
       />
-      <Modal movieId={movieId} toggle={toggle} stack={stack} uid={uid} />
+      <Modal
+        movieId={movieId}
+        toggle={toggle}
+        stack={stack}
+        uid={uid}
+        watcedAt={watcedAt}
+      />
     </>
   )
 }

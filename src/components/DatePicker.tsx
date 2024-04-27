@@ -1,5 +1,6 @@
 'use client'
 
+import { getYear } from 'date-fns'
 import { useState } from 'react'
 import ReactDatePicker from 'react-datepicker'
 import { useDispatch } from 'react-redux'
@@ -15,14 +16,17 @@ type Props = {
   title: string
   checkboxText: string
   uid: string
+  watcedAt: Date | string | null
 }
 
-const DatePicker = ({ title, checkboxText, movieId, uid }: Props) => {
+const DatePicker = ({ title, checkboxText, movieId, uid, watcedAt }: Props) => {
   const dispatch: AppDispatch = useDispatch()
 
-  const [pickedDate, setPickedDate] = useState<Date | null>()
+  const [pickedDate, setPickedDate] = useState(
+    watcedAt ? new Date(watcedAt) : null,
+  )
 
-  const [isUnknown, setIsUnknown] = useState(false)
+  const [isUnknown, setIsUnknown] = useState(watcedAt === null)
 
   const handleDateChange = (date: Date) => {
     setPickedDate(date)

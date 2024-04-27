@@ -5,7 +5,7 @@ export interface MovieItem {
   movieId: string
   addedAt: string
   comment?: string
-  watchedAt?: string | Timestamp | null
+  watchedAt?: string | Date | null
 }
 
 export type MovieListStatusData = {

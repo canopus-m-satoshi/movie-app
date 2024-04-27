@@ -15,13 +15,21 @@ export const checkMovieInUserLists = async (
 ) => {
   try {
     const userListRef = doc(db, 'users', userId)
-    const listTypes = ['favorites', 'watchlists']
+    const listTypes = ['favorites', 'watchlists', 'isWatched']
 
     const docs = await Promise.all(
       listTypes.map(async (type): Promise<[string, boolean]> => {
-        const ref = await getDoc(doc(userListRef, type, movieId))
+        if (type === 'isWatched') {
+          const ref = await getDoc(doc(userListRef, 'movies', movieId))
+          const data = ref.data()
+          const isWatched = data?.watchedAt ? true : false
 
-        return [type, ref.exists()]
+          return [type, isWatched]
+        } else {
+          const ref = await getDoc(doc(userListRef, type, movieId))
+
+          return [type, ref.exists()]
+        }
       }),
     )
 
@@ -30,6 +38,7 @@ export const checkMovieInUserLists = async (
       {
         favorites: false,
         watchlists: false,
+        isWatched: false,
       },
     )
   } catch (error: any) {

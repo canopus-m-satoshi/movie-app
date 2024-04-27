@@ -1,17 +1,18 @@
-'use client'
-
+import { Timestamp } from 'firebase/firestore'
 import { RxCross2 } from 'react-icons/rx'
 import ReactModal from 'react-modal'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
-import { toggle as handleModal } from '@/lib/features/modal/modalSlice'
-import { RootState } from '@/lib/store'
+import { toggleModal } from '@/lib/features/modal/modalSlice'
 
 import DatePicker from './DatePicker'
 
 type Props = {
   movieId: string
-  onRequestClose: () => void
+  toggle: boolean
+  stack: string[]
+  uid: string
+  watcedAt: Date | string | null
 }
 
 ReactModal.setAppElement('html')
@@ -28,13 +29,11 @@ const customStyles = {
   },
 }
 
-const Modal = ({ movieId, onRequestClose }: Props) => {
+const Modal = ({ movieId, toggle, uid, watcedAt }: Props) => {
   const dispatch = useDispatch()
 
-  const { toggle, stack } = useSelector((state: RootState) => state.modal)
-
-  const closeModal = () => {
-    dispatch(handleModal())
+  const handleCloseModal = () => {
+    dispatch(toggleModal())
   }
 
   return (
@@ -42,15 +41,17 @@ const Modal = ({ movieId, onRequestClose }: Props) => {
       isOpen={toggle}
       style={customStyles}
       contentLabel="鑑賞日選択モーダル"
-      onRequestClose={onRequestClose}>
-      <button onClick={closeModal} className="absolute top-2 right-2">
+      onRequestClose={handleCloseModal}>
+      <button onClick={handleCloseModal} className="absolute top-2 right-2">
         <RxCross2 />
       </button>
       <div className="text-center">
         <DatePicker
           title="鑑賞日を選択"
-          checkboxText="鑑賞日は不明"
+          checkboxText="鑑賞日不明"
           movieId={movieId}
+          uid={uid}
+          watcedAt={watcedAt}
         />
       </div>
     </ReactModal>

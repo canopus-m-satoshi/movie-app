@@ -21,6 +21,7 @@ export default async function MovieDetails({
   let movieListStatusData = {
     favorites: false,
     watchlists: false,
+    isWatched: false,
   }
 
   if (user) {

@@ -38,7 +38,7 @@ const UserListsItem = ({
       <MovieTitle movieId={movieId} />
       <p>
         鑑賞日:
-        {watchedAt ? watchedAt.toString() : ' 未登録'}
+        {watchedAt ? watchedAt.toString() : ' -'}
       </p>
       {edittingMovieId === movieId ? (
         <div className="md:flex justify-between items-end gap-2">

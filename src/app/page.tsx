@@ -30,7 +30,7 @@ export default async function Home() {
           </Link>
           {!isLoggedIn && (
             <Link
-              href={'/auth/sign-in'}
+              href={'/auth/signin'}
               className="btn btn-active btn-secondary">
               ログインする
             </Link>

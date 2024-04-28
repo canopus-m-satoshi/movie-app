@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 import { useCustomFetch } from '@/hooks/useMovieFetch'
 
@@ -99,15 +99,17 @@ export default function Home() {
           <div>
             {isShowData && movies && (
               <>
-                <MovieList movies={movies} query={query} page={page} />
+                <Suspense fallback={<Loading />}>
+                  <MovieList movies={movies} query={query} page={page} />
 
-                {totalPages && (
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handleSearchPageChange}
-                  />
-                )}
+                  {totalPages && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handleSearchPageChange}
+                    />
+                  )}
+                </Suspense>
               </>
             )}
           </div>

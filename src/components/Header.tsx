@@ -25,7 +25,7 @@ const Header = () => {
     toast.success('ログアウトしました', toastConfig)
   }
 
-  let headerLink = 'movie/'
+  let headerLink = '/movie'
   if (query) {
     headerLink = `/movie?query=${query}&page=${page}`
   }

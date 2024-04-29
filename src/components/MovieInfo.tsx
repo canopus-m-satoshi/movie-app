@@ -77,6 +77,8 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   }, [refetch, dispatch, movies])
 
   useEffect(() => {
+    if (!uid) return
+
     dispatch(fetchRegisteredMovies(uid))
   }, [dispatch, uid])
 

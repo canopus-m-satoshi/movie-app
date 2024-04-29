@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -37,13 +37,17 @@ export default function Home() {
 
   return (
     <div className="w-full mx-auto mt-6 px-2">
-      <Profile
-        user={user}
-        movies={movies}
-        favorites={favorites}
-        watchlists={watchlists}
-      />
-      <UserLists movies={movies} />
+      <Suspense fallback={<Loading />}>
+        <Profile
+          user={user}
+          movies={movies}
+          favorites={favorites}
+          watchlists={watchlists}
+        />
+      </Suspense>
+      <Suspense fallback={<Loading />}>
+        <UserLists movies={movies} />
+      </Suspense>
     </div>
   )
 }

@@ -107,7 +107,7 @@ const SignIn = () => {
       </div>
       <div className="divider my-8">OR</div>
       <div className="w-fit mt-6 mx-auto">
-        <Link href={'/auth/sign-up/'} className="flex items-center gap-2 ">
+        <Link href={'/auth/signup/'} className="flex items-center gap-2 ">
           新規会員登録
           <MdKeyboardArrowRight />
         </Link>

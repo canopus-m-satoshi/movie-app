@@ -31,6 +31,7 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   const movies: Record<string, MovieItem> = useSelector(
     (state: RootState) => state.movies.movieListData,
   )
+
   let uid = ''
   if (user) {
     uid = user.uid
@@ -43,15 +44,15 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   const movieId = movie.id.toString()
 
   const refetch = useCallback(async () => {
-    if (!user) return
+    if (!uid) return
 
     const res = await checkMovieInUserLists(movieId, uid)
 
     setUserLists(res)
-  }, [user, movieId, uid])
+  }, [movieId, uid])
 
   const onToggleFavorites = async () => {
-    if (!user) return
+    if (!uid) return
     await dispatch(toggleFavorites({ movieId, uid: uid }))
 
     await refetch()
@@ -60,7 +61,8 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   }
 
   const onToggleWatchlists = async () => {
-    if (!user) return
+    if (!uid) return
+
     await dispatch(toggleWatchlists({ movieId, uid: uid }))
 
     await refetch()

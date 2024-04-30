@@ -1,6 +1,6 @@
 'use client'
 
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { signInAnonymously, signInWithEmailAndPassword } from 'firebase/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -60,6 +60,18 @@ const SignIn = () => {
     }
   }
 
+  const signInWithAnonymously = async () => {
+    try {
+      await signInAnonymously(auth)
+      await router.push('/movie')
+      await dispatch(checkAuthStatus())
+      toast.success('匿名でログインしました', toastConfig)
+    } catch (error) {
+      console.error('Error signing in anonymously:', error)
+      toast.error('ログインに失敗しました', toastConfig)
+    }
+  }
+
   return (
     <div className="md:w-1/2 mx-auto">
       <h2 className="text-center font-bold text-xl md:text-4xl">
@@ -103,6 +115,17 @@ const SignIn = () => {
         <button onClick={handleGoogleSignIn} className="btn btn-outline">
           <FcGoogle size={24} className="mr-2" />
           Googleでログイン
+        </button>
+      </div>
+      <div className="divider my-8">OR</div>
+      <h3 className="text-md md:text-xl lg:text-2xl text-center font-bold my-3">
+        匿名で利用する
+      </h3>
+      <div className="w-fit mx-auto">
+        <button
+          className="btn btn-secondary block md:w-64 mt-4 md:mt-8 mx-auto"
+          onClick={signInWithAnonymously}>
+          匿名でログイン
         </button>
       </div>
       <div className="divider my-8">OR</div>

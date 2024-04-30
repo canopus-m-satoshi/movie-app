@@ -34,8 +34,8 @@ const UserLists = ({ movies }: Props) => {
   }
 
   const cancelEdit = () => {
-    setEdittingMovieId(null)
     if (window.confirm('編集をキャンセルしますか？')) {
+      setEdittingMovieId(null)
       setInputedComment('')
       toast.error('編集をキャンセルしました', toastConfig)
     } else {

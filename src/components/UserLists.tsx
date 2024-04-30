@@ -26,11 +26,18 @@ const UserLists = ({ movies }: Props) => {
     setInputedComment(comment || '')
   }
 
-  const confirmEdit = (movieId: string, uid: string) => {
-    dispatch(updateComment({ movieId, uid, comment: inputedComment }))
-    setEdittingMovieId(null)
+  const confirmEdit = async (movieId: string, uid: string) => {
+    const res = await dispatch(
+      updateComment({ movieId, uid, comment: inputedComment }),
+    )
 
-    toast.success('コメントを編集しました', toastConfig)
+    if (updateComment.fulfilled.match(res)) {
+      toast.success('コメントを編集しました', toastConfig)
+    } else {
+      toast.error('コメントの編集に失敗しました', toastConfig)
+    }
+
+    setEdittingMovieId(null)
   }
 
   const cancelEdit = () => {

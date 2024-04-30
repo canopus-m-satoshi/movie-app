@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { CgProfile } from 'react-icons/cg'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -17,6 +18,8 @@ const UserMenu = () => {
 
   const user = useSelector((state: any) => state.auth.user)
 
+  const [userName, setUserName] = useState('ゲスト')
+
   const handleSignOut = async () => {
     await dispatch(signOutUser())
 
@@ -24,11 +27,22 @@ const UserMenu = () => {
     toast.success('ログアウトしました', toastConfig)
   }
 
+  useEffect(() => {
+    if (!user) {
+      setUserName('ゲスト')
+      return
+    } else if (user.uid && user.displayName) {
+      setUserName(user.displayName)
+    } else if (user.uid && !user.displayName) {
+      setUserName('匿名ユーザー')
+    }
+  }, [user])
+
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
       <div tabIndex={0} role="button" className="flex items-center gap-1 group">
         <p className="max-[450px]:hidden inline-block border-b border-black group-hover:border-transparent">
-          {user ? user.displayName : 'ゲスト'}
+          {userName}
         </p>
         {user?.avatarUrl ? (
           <div className="w-fit rounded-full">

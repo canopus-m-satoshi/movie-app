@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { FcGoogle } from 'react-icons/fc'
-import { IoIosEyeOff, IoMdEye, IoMdMail } from 'react-icons/io'
+import { IoIosEyeOff, IoMdEye, IoMdHelpCircle, IoMdMail } from 'react-icons/io'
 import { IoKey } from 'react-icons/io5'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
@@ -74,10 +74,10 @@ const SignIn = () => {
 
   return (
     <div className="md:w-1/2 mx-auto">
-      <h2 className="text-center font-bold text-xl md:text-4xl">
+      <h2 className="text-center font-bold text-xl md:text-4xl mb-10">
         ログインページ
       </h2>
-      <div className="flex flex-col gap-3 mt-6">
+      {/* <div className="flex flex-col gap-3 mt-6">
         <label className="input input-bordered flex items-center gap-2">
           <IoMdMail />
           <input
@@ -102,17 +102,17 @@ const SignIn = () => {
           </button>
         </label>
         <button
-          className="btn btn-accent block md:w-64 mt-6 md:mt-8 mx-auto"
+          className="btn btn-accent block md:w-64 mt-4 mx-auto"
           onClick={signInWithEmail}>
           ログイン
         </button>
-      </div>
       <div className="divider my-8">OR</div>
+      </div> */}
       <h3 className="text-md md:text-xl lg:text-2xl text-center font-bold my-3">
         Googleアカウントで利用する
       </h3>
       <div className="w-fit mx-auto">
-        <button onClick={handleGoogleSignIn} className="btn btn-outline">
+        <button onClick={handleGoogleSignIn} className="btn btn-outline mt-4">
           <FcGoogle size={24} className="mr-2" />
           Googleでログイン
         </button>
@@ -123,18 +123,18 @@ const SignIn = () => {
       </h3>
       <div className="w-fit mx-auto">
         <button
-          className="btn btn-secondary block md:w-64 mt-4 md:mt-8 mx-auto"
+          className="btn btn-secondary block md:w-64 mt-4 mx-auto"
           onClick={signInWithAnonymously}>
           匿名でログイン
         </button>
       </div>
-      <div className="divider my-8">OR</div>
+      {/*  <div className="divider my-8">OR</div>
       <div className="w-fit mt-6 mx-auto">
         <Link href={'/auth/signup/'} className="flex items-center gap-2 ">
           新規会員登録
           <MdKeyboardArrowRight />
         </Link>
-      </div>
+      </div> */}
     </div>
   )
 }

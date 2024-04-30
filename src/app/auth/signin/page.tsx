@@ -75,7 +75,7 @@ const SignIn = () => {
   return (
     <div className="md:w-1/2 mx-auto">
       <h2 className="text-center font-bold text-xl md:text-4xl">
-        ログイン画面
+        ログインページ
       </h2>
       <div className="flex flex-col gap-3 mt-6">
         <label className="input input-bordered flex items-center gap-2">
@@ -102,14 +102,14 @@ const SignIn = () => {
           </button>
         </label>
         <button
-          className="btn btn-accent block md:w-64 mt-6 md:mt-12 mx-auto"
+          className="btn btn-accent block md:w-64 mt-6 md:mt-8 mx-auto"
           onClick={signInWithEmail}>
           ログイン
         </button>
       </div>
       <div className="divider my-8">OR</div>
       <h3 className="text-md md:text-xl lg:text-2xl text-center font-bold my-3">
-        SNSアカウントでログインする
+        Googleアカウントで利用する
       </h3>
       <div className="w-fit mx-auto">
         <button onClick={handleGoogleSignIn} className="btn btn-outline">

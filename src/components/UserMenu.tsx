@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { CgProfile } from 'react-icons/cg'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -12,11 +13,14 @@ import { toastConfig } from '@/lib/toastConfig'
 
 const UserMenu = () => {
   const dispatch: AppDispatch = useDispatch()
+  const router = useRouter()
+
   const user = useSelector((state: any) => state.auth.user)
 
-  const handleSignOut = () => {
-    dispatch(signOutUser())
+  const handleSignOut = async () => {
+    await dispatch(signOutUser())
 
+    await router.push('/')
     toast.success('ログアウトしました', toastConfig)
   }
 

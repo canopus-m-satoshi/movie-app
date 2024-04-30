@@ -210,7 +210,7 @@ export const updateComment = createAsyncThunk<
   { movieId: string; comment: string },
   { movieId: string; comment: string; uid: string },
   { rejectValue: string }
->('updateComment', async ({ movieId, comment, uid }, { rejectWithValue }) => {
+>('updateComment', async ({ movieId, comment, uid }) => {
   try {
     const userListRef = doc(db, 'users', uid)
     const movieRef = doc(userListRef, 'movies', movieId)
@@ -219,8 +219,7 @@ export const updateComment = createAsyncThunk<
 
     return { movieId, comment }
   } catch (error: any) {
-    console.error('Error is ', error)
-    return rejectWithValue('Error happened')
+    throw error
   }
 })
 

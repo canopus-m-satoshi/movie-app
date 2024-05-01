@@ -10,7 +10,6 @@ import {
   Timestamp,
   updateDoc,
 } from 'firebase/firestore'
-import { watch } from 'fs'
 
 import { db } from '@/lib/firebase/firebase'
 import { MovieItem } from '@/types/Movie'
@@ -89,7 +88,7 @@ export const fetchRegisteredMovies = createAsyncThunk<
     return movieListData
   } catch (error: any) {
     console.error('Error is ', error)
-    return rejectWithValue({ message: 'Failed to fetch user lists', error })
+    return rejectWithValue(error)
   }
 })
 
@@ -131,10 +130,8 @@ export const fetchRegisteredLists = createAsyncThunk<
 
     return listDataObject
   } catch (error: any) {
-    return rejectWithValue({
-      message: 'Failed to fetch user lists',
-      error,
-    })
+    console.error('Error is ', error)
+    return rejectWithValue(error)
   }
 })
 
@@ -168,7 +165,8 @@ export const toggleFavorites = createAsyncThunk<
       return { movieId, uid, formattedCreatedAt }
     }
   } catch (error: any) {
-    return rejectWithValue('Error happened')
+    console.error('Error is ', error)
+    return rejectWithValue(error)
   }
 })
 
@@ -202,7 +200,8 @@ export const toggleWatchlists = createAsyncThunk<
       return { movieId, uid, formattedCreatedAt }
     }
   } catch (error: any) {
-    return rejectWithValue('Error happened')
+    console.error('Error is ', error)
+    return rejectWithValue(error)
   }
 })
 
@@ -210,16 +209,16 @@ export const updateComment = createAsyncThunk<
   { movieId: string; comment: string },
   { movieId: string; comment: string; uid: string },
   { rejectValue: string }
->('updateComment', async ({ movieId, comment, uid }) => {
+>('updateComment', async ({ movieId, comment, uid }, { rejectWithValue }) => {
   try {
     const userListRef = doc(db, 'users', uid)
     const movieRef = doc(userListRef, 'movies', movieId)
 
     await updateDoc(movieRef, { comment })
-
     return { movieId, comment }
   } catch (error: any) {
-    throw error
+    console.error('Error is ', error)
+    return rejectWithValue(error)
   }
 })
 
@@ -261,7 +260,7 @@ export const regisrerWatched = createAsyncThunk<
       }
     } catch (error: any) {
       console.error('Error is ', error)
-      return rejectWithValue('Error happened')
+      return rejectWithValue(error)
     }
   },
 )

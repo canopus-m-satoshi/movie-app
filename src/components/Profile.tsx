@@ -44,7 +44,7 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
               </div>
             )}
           </div>
-          <p>お名前: {user?.displayName}</p>
+          {user?.displayName && <p>お名前: {user?.displayName}</p>}
         </div>
         <div className="flex flex-col min-[450px]:flex-row justify-between lg:justify-end md:flex-grow gap-2 lg:gap-4 w-full md:w-auto">
           <StatsItem title="今までに観た映画" number={watchedAtLength} />

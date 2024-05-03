@@ -31,10 +31,8 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   const movies: Record<string, MovieItem> = useSelector(
     (state: RootState) => state.movies.movieListData,
   )
-  let uid = ''
-  if (user) {
-    uid = user.uid
-  }
+
+  const uid = user?.uid
 
   const watcedAt = movies[movie.id]?.watchedAt || null
 
@@ -43,15 +41,15 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   const movieId = movie.id.toString()
 
   const refetch = useCallback(async () => {
-    if (!user) return
+    if (!uid) return
 
     const res = await checkMovieInUserLists(movieId, uid)
 
     setUserLists(res)
-  }, [user, movieId, uid])
+  }, [movieId, uid])
 
   const onToggleFavorites = async () => {
-    if (!user) return
+    if (!uid) return
     await dispatch(toggleFavorites({ movieId, uid: uid }))
 
     await refetch()
@@ -60,7 +58,8 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   }
 
   const onToggleWatchlists = async () => {
-    if (!user) return
+    if (!uid) return
+
     await dispatch(toggleWatchlists({ movieId, uid: uid }))
 
     await refetch()
@@ -77,6 +76,8 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   }, [refetch, dispatch, movies])
 
   useEffect(() => {
+    if (!uid) return
+
     dispatch(fetchRegisteredMovies(uid))
   }, [dispatch, uid])
 
@@ -92,19 +93,23 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
           </li>
         ))}
       </ul>
-      <Tooltips
-        onToggleFavorites={onToggleFavorites}
-        onToggleWatchlists={onToggleWatchlists}
-        onToggleModal={onToggleModal}
-        movieListStatus={userLists}
-      />
-      <Modal
-        movieId={movieId}
-        toggle={toggle}
-        stack={stack}
-        uid={uid}
-        watcedAt={watcedAt}
-      />
+      {uid && (
+        <>
+          <Tooltips
+            onToggleFavorites={onToggleFavorites}
+            onToggleWatchlists={onToggleWatchlists}
+            onToggleModal={onToggleModal}
+            movieListStatus={userLists}
+          />
+          <Modal
+            movieId={movieId}
+            toggle={toggle}
+            stack={stack}
+            uid={uid}
+            watcedAt={watcedAt}
+          />
+        </>
+      )}
     </>
   )
 }

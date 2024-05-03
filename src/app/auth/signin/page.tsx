@@ -1,11 +1,11 @@
 'use client'
 
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { signInAnonymously, signInWithEmailAndPassword } from 'firebase/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { FcGoogle } from 'react-icons/fc'
-import { IoIosEyeOff, IoMdEye, IoMdMail } from 'react-icons/io'
+import { IoIosEyeOff, IoMdEye, IoMdHelpCircle, IoMdMail } from 'react-icons/io'
 import { IoKey } from 'react-icons/io5'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
@@ -60,12 +60,24 @@ const SignIn = () => {
     }
   }
 
+  const signInWithAnonymously = async () => {
+    try {
+      await signInAnonymously(auth)
+      await router.push('/movie')
+      await dispatch(checkAuthStatus())
+      toast.success('匿名でログインしました', toastConfig)
+    } catch (error) {
+      console.error('Error signing in anonymously:', error)
+      toast.error('ログインに失敗しました', toastConfig)
+    }
+  }
+
   return (
-    <div className="md:w-1/2 mx-auto">
-      <h2 className="text-center font-bold text-xl md:text-4xl">
-        ログイン画面
+    <div className="md:w-4/5 mx-auto">
+      <h2 className="text-center font-bold text-xl md:text-4xl mb-10">
+        ログインページ
       </h2>
-      <div className="flex flex-col gap-3 mt-6">
+      {/* <div className="flex flex-col gap-3 mt-6">
         <label className="input input-bordered flex items-center gap-2">
           <IoMdMail />
           <input
@@ -90,28 +102,44 @@ const SignIn = () => {
           </button>
         </label>
         <button
-          className="btn btn-accent block md:w-64 mt-6 md:mt-12 mx-auto"
+          className="btn btn-accent block md:w-64 mt-4 mx-auto"
           onClick={signInWithEmail}>
           ログイン
         </button>
-      </div>
       <div className="divider my-8">OR</div>
+      </div> */}
       <h3 className="text-md md:text-xl lg:text-2xl text-center font-bold my-3">
-        SNSアカウントでログインする
+        Googleアカウントで利用する
       </h3>
       <div className="w-fit mx-auto">
-        <button onClick={handleGoogleSignIn} className="btn btn-outline">
+        <button onClick={handleGoogleSignIn} className="btn btn-outline mt-4">
           <FcGoogle size={24} className="mr-2" />
           Googleでログイン
         </button>
       </div>
       <div className="divider my-8">OR</div>
+      <h3 className="text-md md:text-xl lg:text-2xl text-center font-bold my-3">
+        匿名で利用する
+      </h3>
+      <div className="w-fit mx-auto">
+        <button
+          className="btn btn-secondary block md:w-64 mt-4 mx-auto"
+          onClick={signInWithAnonymously}>
+          匿名でログイン
+        </button>
+      </div>
+      <p className="mt-4 md:text-center">
+        <small>
+          ※匿名でログインした場合、ログアウト時にお気に入りリストなど保存した情報はリセットされます。
+        </small>
+      </p>
+      {/*  <div className="divider my-8">OR</div>
       <div className="w-fit mt-6 mx-auto">
         <Link href={'/auth/signup/'} className="flex items-center gap-2 ">
           新規会員登録
           <MdKeyboardArrowRight />
         </Link>
-      </div>
+      </div> */}
     </div>
   )
 }

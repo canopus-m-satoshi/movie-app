@@ -29,3 +29,8 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ status: 201 })
 }
+
+export function DELETE() {
+  cookies().delete('__session')
+  return NextResponse.json({ status: 200 })
+}

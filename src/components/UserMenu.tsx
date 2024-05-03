@@ -1,5 +1,6 @@
 'use client'
 
+import axios from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -9,22 +10,21 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { signOutUser } from '@/lib/features/auth/authSlice'
-import { AppDispatch } from '@/lib/store'
+import { AppDispatch, RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 
 const UserMenu = () => {
   const dispatch: AppDispatch = useDispatch()
   const router = useRouter()
 
-  const user = useSelector((state: any) => state.auth.user)
+  const user = useSelector((state: RootState) => state.auth.user)
 
   const [userName, setUserName] = useState('ゲスト')
 
   const handleSignOut = async () => {
     await dispatch(signOutUser())
 
-    await router.push('/')
-    toast.success('ログアウトしました', toastConfig)
+    await axios.delete('/api/auth/session')
   }
 
   useEffect(() => {

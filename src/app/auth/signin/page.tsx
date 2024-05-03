@@ -73,7 +73,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className="md:w-1/2 mx-auto">
+    <div className="md:w-4/5 mx-auto">
       <h2 className="text-center font-bold text-xl md:text-4xl mb-10">
         ログインページ
       </h2>
@@ -128,6 +128,11 @@ const SignIn = () => {
           匿名でログイン
         </button>
       </div>
+      <p className="mt-4 md:text-center">
+        <small>
+          ※匿名でログインした場合、ログアウト時にお気に入りリストなど保存した情報はリセットされます。
+        </small>
+      </p>
       {/*  <div className="divider my-8">OR</div>
       <div className="w-fit mt-6 mx-auto">
         <Link href={'/auth/signup/'} className="flex items-center gap-2 ">

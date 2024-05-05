@@ -3,6 +3,7 @@
 import { Suspense, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import UserTab from '@/components/UserTab'
 import {
   fetchRegisteredLists,
   fetchRegisteredMovies,
@@ -11,7 +12,6 @@ import { AppDispatch, RootState } from '@/lib/store'
 import { MovieItem } from '@/types/Movie'
 
 import Profile from '../../components/Profile'
-import UserLists from '../../components/UserLists'
 import { User } from '../../types/User'
 import Loading from '../loading'
 
@@ -45,9 +45,8 @@ export default function Home() {
           watchlists={watchlists}
         />
       </Suspense>
-      <Suspense fallback={<Loading />}>
-        <UserLists movies={movies} />
-      </Suspense>
+
+      <UserTab movies={movies} favorites={favorites} watchlists={watchlists} />
     </div>
   )
 }

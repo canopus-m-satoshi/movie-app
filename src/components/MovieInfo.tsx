@@ -11,7 +11,7 @@ import {
 } from '@/lib/features/movies/moviesSlice'
 import { checkMovieInUserLists } from '@/lib/movies/checkMovieInUserLists'
 import { AppDispatch, RootState } from '@/lib/store'
-import { Movie, MovieItem, MovieListStatusData } from '@/types/Movie'
+import { Movie, MovieListStatusData } from '@/types/Movie'
 import { User } from '@/types/User'
 
 import Modal from './Modal'
@@ -28,13 +28,13 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
   const dispatch: AppDispatch = useDispatch()
   const user: User | null = useSelector((state: RootState) => state.auth.user)
   const { toggle, stack } = useSelector((state: RootState) => state.modal)
-  const movies: Record<string, MovieItem> = useSelector(
+  const movieListData = useSelector(
     (state: RootState) => state.movies.movieListData,
   )
 
   const uid = user?.uid
 
-  const watcedAt = movies[movie.id]?.watchedAt || null
+  const watcedAt = movieListData[movie.id]?.watchedAt || null
 
   const [userLists, setUserLists] = useState(movieListStatusData)
 
@@ -73,7 +73,7 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
 
   useEffect(() => {
     refetch()
-  }, [refetch, dispatch, movies])
+  }, [refetch, dispatch, movieListData])
 
   useEffect(() => {
     if (!uid) return

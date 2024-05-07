@@ -19,7 +19,12 @@ const UserTab = ({ movieListData, favorites, watchlists }: Props) => {
       {/* Tablist */}
       <UserTabList selectedTab={selectedTab} handleTabClick={handleTabClick} />
 
-      <UserTabPanel selectedTab={selectedTab} />
+      <UserTabPanel
+        selectedTab={selectedTab}
+        movieListData={movieListData}
+        favorites={favorites}
+        watchlists={watchlists}
+      />
     </div>
   )
 }

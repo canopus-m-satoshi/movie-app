@@ -80,8 +80,8 @@ export default function Home() {
             検索
           </button>
           <button
-            className="btn py-1 whitespace-nowrap basis-[48%] md:basis-[15%]"
-            disabled={!movies}
+            className="btn py-1 whitespace-nowrap basis-[48%] md:basis-[15%] bg-white"
+            disabled={!movies || inputedText ? false : true}
             onClick={() => handleClear()}>
             クリア
           </button>

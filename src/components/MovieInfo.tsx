@@ -88,7 +88,9 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
       <p className="mt-3">上映時間：{movie.runtime}分</p>
       <ul className="flex flex-wrap gap-2 mt-3">
         {movie.genres.map((genre: Genres['genres'][number]) => (
-          <li key={genre.id} className="border border-slate-400	 rounded-md p-1">
+          <li
+            key={genre.id}
+            className="bg-white border border-slate-400  rounded-md p-1">
             {genre.name}
           </li>
         ))}

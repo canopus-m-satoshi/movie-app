@@ -15,7 +15,7 @@ const TooltipButton = ({ icon, tip, onClick }: Props) => {
 
   return (
     <div className="tooltip" data-tip={tip}>
-      <button className="btn rounded-badge" onClick={_onClick}>
+      <button className="btn rounded-badge bg-white" onClick={_onClick}>
         {icon}
       </button>
     </div>

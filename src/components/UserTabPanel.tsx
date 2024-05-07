@@ -18,7 +18,7 @@ const UserTabPanel = ({
   return (
     <div className="mt-4 sm:mt-0">
       <UserTabPanelItem tabId="favorites" selectedTab={selectedTab}>
-        {favorites && (
+        {Object.keys(favorites).length ? (
           <ul className="flex flex-col gap-4">
             {Object.keys(favorites).map((movieId) => {
               const movie = getRegisteredMovieData(movieId)
@@ -46,10 +46,12 @@ const UserTabPanel = ({
               )
             })}
           </ul>
+        ) : (
+          <p className="text-center">登録された映画はありません</p>
         )}
       </UserTabPanelItem>
       <UserTabPanelItem tabId="watchlists" selectedTab={selectedTab}>
-        {watchlists && (
+        {Object.keys(watchlists).length ? (
           <ul className="flex flex-col gap-4">
             {Object.keys(watchlists).map((movieId) => {
               const movie = getRegisteredMovieData(movieId)
@@ -75,10 +77,12 @@ const UserTabPanel = ({
               )
             })}
           </ul>
+        ) : (
+          <p className="text-center">登録された映画はありません</p>
         )}
       </UserTabPanelItem>
       <UserTabPanelItem tabId="watched" selectedTab={selectedTab}>
-        {movieListData && (
+        {Object.keys(movieListData).length ? (
           <ul className="flex flex-col gap-4">
             {Object.keys(movieListData).map((movieId) => (
               <li key={movieId} className="bg-white border rounded-lg p-2">
@@ -88,6 +92,8 @@ const UserTabPanel = ({
               </li>
             ))}
           </ul>
+        ) : (
+          <p className="text-center">登録された映画はありません</p>
         )}
       </UserTabPanelItem>
     </div>

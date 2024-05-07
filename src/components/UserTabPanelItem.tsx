@@ -5,6 +5,13 @@ type Props = {
 }
 
 const UserTabPanelItem = ({ tabId, selectedTab, children }: Props) => {
+  const colorVariants: Record<string, string> = {
+    favorites: 'bg-red-100 ',
+    watchlists: 'bg-yellow-100 ',
+    watched: 'bg-blue-100 ',
+  }
+  const tabColorClass = colorVariants[tabId] || ''
+
   return (
     <div
       id={`${tabId}-panel`}
@@ -12,7 +19,7 @@ const UserTabPanelItem = ({ tabId, selectedTab, children }: Props) => {
       tabIndex={0}
       aria-labelledby={tabId}
       hidden={selectedTab !== tabId}
-      className="bg-red-300 p-4">
+      className={`p-4 ${tabColorClass}`}>
       {children}
     </div>
   )

@@ -24,7 +24,7 @@ const UserTabPanel = ({
               const movie = getRegisteredMovieData(movieId)
 
               return (
-                <li key={movieId} className="border p-2">
+                <li key={movieId} className="bg-white border rounded-lg p-2">
                   <MovieTitle movieId={movieId} />
                   {movie ? (
                     <>
@@ -55,21 +55,19 @@ const UserTabPanel = ({
               const movie = getRegisteredMovieData(movieId)
 
               return (
-                <li key={movieId} className="border p-2">
+                <li key={movieId} className="bg-white border rounded-lg p-2">
                   <MovieTitle movieId={movieId} />
                   {movie ? (
                     <>
                       <p>
                         鑑賞日：
-                        {movie.watchedAt
-                          ? movie.watchedAt.toString()
-                          : '未視聴'}
+                        {movie.watchedAt ? movie.watchedAt.toString() : '-'}
                       </p>
                       <p>メモ： {movie.comment ? movie.comment : ''}</p>
                     </>
                   ) : (
                     <>
-                      <p>鑑賞日：未視聴</p>
+                      <p>鑑賞日：-</p>
                       <p>メモ：</p>
                     </>
                   )}
@@ -83,7 +81,7 @@ const UserTabPanel = ({
         {movieListData && (
           <ul className="flex flex-col gap-4">
             {Object.keys(movieListData).map((movieId) => (
-              <li key={movieId} className="border p-2">
+              <li key={movieId} className="bg-white border rounded-lg p-2">
                 <MovieTitle movieId={movieId} />
                 <p>鑑賞日：{movieListData[movieId].watchedAt?.toString()}</p>
                 <p>メモ：{movieListData[movieId].comment}</p>

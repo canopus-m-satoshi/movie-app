@@ -6,6 +6,13 @@ type Props = {
 }
 
 const UserTabListItem = ({ tabId, selectedTab, children, onClick }: Props) => {
+  const colorVariants: Record<string, string> = {
+    favorites: 'bg-red-100 ',
+    watchlists: 'bg-yellow-100 ',
+    watched: 'bg-blue-100 ',
+  }
+  const tabColorClass = colorVariants[tabId] || ''
+
   return (
     <button
       role="tab"
@@ -15,7 +22,7 @@ const UserTabListItem = ({ tabId, selectedTab, children, onClick }: Props) => {
       aria-controls={`${tabId}-panel`}
       onClick={() => onClick(tabId)}
       className={`${
-        selectedTab === tabId ? 'bg-red-300' : 'bg-gray-200'
+        selectedTab === tabId ? tabColorClass : 'bg-gray-200'
       } p-2 flex-grow block w-full sm:w-fit`}>
       {children}
     </button>

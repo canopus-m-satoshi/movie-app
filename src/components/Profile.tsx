@@ -14,7 +14,7 @@ const Profile = ({ user, movieListData, favorites, watchlists }: Props) => {
   const checkIsWatched = () => {
     const watchedMovies = Object.entries(movieListData).filter(
       ([_, movieDetail]) => {
-      return movieDetail.watchedAt !== undefined
+        return movieDetail.watchedAt !== undefined
       },
     )
 

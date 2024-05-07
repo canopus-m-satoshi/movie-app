@@ -18,7 +18,7 @@ import Loading from '../loading'
 export default function Home() {
   const dispatch: AppDispatch = useDispatch()
   const user: User | null = useSelector((state: RootState) => state.auth.user)
-  const movies: Record<string, MovieItem> = useSelector(
+  const movieListData: Record<string, MovieItem> = useSelector(
     (state: RootState) => state.movies.movieListData,
   )
   const favorites = useSelector((state: RootState) => state.movies.favorites)
@@ -40,13 +40,17 @@ export default function Home() {
       <Suspense fallback={<Loading />}>
         <Profile
           user={user}
-          movies={movies}
+          movieListData={movieListData}
           favorites={favorites}
           watchlists={watchlists}
         />
       </Suspense>
 
-      <UserTab movies={movies} favorites={favorites} watchlists={watchlists} />
+      <UserTab
+        movieListData={movieListData}
+        favorites={favorites}
+        watchlists={watchlists}
+      />
     </div>
   )
 }

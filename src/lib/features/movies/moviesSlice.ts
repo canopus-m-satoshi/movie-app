@@ -12,15 +12,13 @@ import {
 } from 'firebase/firestore'
 
 import { db } from '@/lib/firebase/firebase'
+import { Lists } from '@/types/Lists'
 import { MovieItem } from '@/types/Movie'
 
-interface moviesState {
-  movieListData: Record<string, MovieItem> // 各ユーザーのリストをuidをキーとして保持する
-  favorites: Record<string, MovieItem>
-  watchlists: Record<string, MovieItem>
+type MoviesState = {
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | undefined
-}
+} & Lists
 
 interface TogglePayload {
   movieId: string
@@ -41,7 +39,7 @@ interface WatchedMovie {
   uid: string
 }
 
-const initialState: moviesState = {
+const initialState: MoviesState = {
   movieListData: {},
   favorites: {},
   watchlists: {},

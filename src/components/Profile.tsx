@@ -1,23 +1,22 @@
 import Image from 'next/image'
 import { CgProfile } from 'react-icons/cg'
 
-import { MovieItem } from '@/types/Movie'
+import { Lists } from '@/types/Lists'
 
 import { User } from '../types/User'
 import StatsItem from './StatsItem'
 
 type Props = {
   user: User
-  movies: Record<string, MovieItem>
-  favorites: Record<string, MovieItem>
-  watchlists: Record<string, MovieItem>
-}
+} & Lists
 
-const Profile = ({ user, movies, favorites, watchlists }: Props) => {
+const Profile = ({ user, movieListData, favorites, watchlists }: Props) => {
   const checkIsWatched = () => {
-    const watchedMovies = Object.entries(movies).filter(([_, movieDetail]) => {
+    const watchedMovies = Object.entries(movieListData).filter(
+      ([_, movieDetail]) => {
       return movieDetail.watchedAt !== undefined
-    })
+      },
+    )
 
     return watchedMovies.length
   }

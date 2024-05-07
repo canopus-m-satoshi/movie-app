@@ -1,17 +1,13 @@
 import { useState } from 'react'
 
-import { MovieItem } from '@/types/Movie'
+import { Lists } from '@/types/Lists'
 
 import UserTabList from './UserTabList'
 import UserTabPanel from './UserTabPanel'
 
-type Props = {
-  movies: Record<string, MovieItem>
-  favorites: Record<string, MovieItem>
-  watchlists: Record<string, MovieItem>
-}
+type Props = Lists
 
-const UserTab = ({ movies, favorites, watchlists }: Props) => {
+const UserTab = ({ movieListData, favorites, watchlists }: Props) => {
   const [selectedTab, setSelectedTab] = useState('favorites')
 
   const handleTabClick = (tabId: string) => {

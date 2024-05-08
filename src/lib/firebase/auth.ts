@@ -1,5 +1,10 @@
 import axios from 'axios'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import {
+  Auth,
+  GoogleAuthProvider,
+  signInAnonymously,
+  signInWithPopup,
+} from 'firebase/auth'
 
 import { auth } from './firebase'
 
@@ -17,4 +22,8 @@ export async function signInWithGoogle() {
     console.error('Error signing in with Google', error)
     return false
   }
+}
+
+export async function signInAsAnonymous(auth: Auth) {
+  await signInAnonymously(auth)
 }

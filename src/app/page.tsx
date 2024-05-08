@@ -7,9 +7,9 @@ export default async function Home() {
 
   return (
     <main className="mt-5">
-      <div className="container mx-auto py-8">
+      <div className="container mx-auto py-8 px-3">
         <div className="text-center">
-          <h2 className="font-bold text-2xl md:text-5xl bg-gradient-to-r from-blue-600 to-red-400 bg-clip-text text-transparent">
+          <h2 className="font-bold text-3xl sm:text-5xl bg-gradient-to-r from-blue-600 to-red-400 bg-clip-text text-transparent">
             MOVIE APP
           </h2>
 

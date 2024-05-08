@@ -22,9 +22,14 @@ const UserMenu = () => {
   const [userName, setUserName] = useState('ゲスト')
 
   const handleSignOut = async () => {
-    await dispatch(signOutUser())
-
-    await axios.delete('/api/auth/session')
+    try {
+      await router.push('/')
+      await dispatch(signOutUser())
+      await axios.delete('/api/auth/session')
+      toast.success('ログアウトしました。', toastConfig)
+    } catch (error: any) {
+      toast.error('ログアウトできませんでした。', toastConfig)
+    }
   }
 
   useEffect(() => {

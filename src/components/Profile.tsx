@@ -1,23 +1,22 @@
 import Image from 'next/image'
 import { CgProfile } from 'react-icons/cg'
 
-import { MovieItem } from '@/types/Movie'
+import { Lists } from '@/types/Lists'
 
 import { User } from '../types/User'
 import StatsItem from './StatsItem'
 
 type Props = {
   user: User
-  movies: Record<string, MovieItem>
-  favorites: Record<string, MovieItem>
-  watchlists: Record<string, MovieItem>
-}
+} & Lists
 
-const Profile = ({ user, movies, favorites, watchlists }: Props) => {
+const Profile = ({ user, movieListData, favorites, watchlists }: Props) => {
   const checkIsWatched = () => {
-    const watchedMovies = Object.entries(movies).filter(([_, movieDetail]) => {
-      return movieDetail.watchedAt !== undefined
-    })
+    const watchedMovies = Object.entries(movieListData).filter(
+      ([_, movieDetail]) => {
+        return movieDetail.watchedAt !== undefined
+      },
+    )
 
     return watchedMovies.length
   }
@@ -25,7 +24,7 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
 
   return (
     <div className="block w-full mx-auto my-6">
-      <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-4 border rounded shadow-black p-4">
+      <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-4 border rounded-md shadow-black p-4 bg-white">
         <div className="flex flex-col min-[350px]:flex-row items-center gap-4">
           <div className="avatar block">
             {user?.avatarUrl ? (
@@ -47,7 +46,6 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
           {user?.displayName && <p>お名前: {user?.displayName}</p>}
         </div>
         <div className="flex flex-col min-[450px]:flex-row justify-between lg:justify-end md:flex-grow gap-2 lg:gap-4 w-full md:w-auto">
-          <StatsItem title="今までに観た映画" number={watchedAtLength} />
           <StatsItem
             title="お気に入り映画"
             number={Object.keys(favorites).length}
@@ -56,6 +54,7 @@ const Profile = ({ user, movies, favorites, watchlists }: Props) => {
             title="ウォッチリスト映画"
             number={Object.keys(watchlists).length}
           />
+          <StatsItem title="今までに観た映画" number={watchedAtLength} />
         </div>
       </div>
     </div>

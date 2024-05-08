@@ -3,22 +3,21 @@
 import { Suspense, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import UserTab from '@/components/UserTab'
 import {
   fetchRegisteredLists,
   fetchRegisteredMovies,
 } from '@/lib/features/movies/moviesSlice'
 import { AppDispatch, RootState } from '@/lib/store'
-import { MovieItem } from '@/types/Movie'
 
 import Profile from '../../components/Profile'
-import UserLists from '../../components/UserLists'
 import { User } from '../../types/User'
 import Loading from '../loading'
 
 export default function Home() {
   const dispatch: AppDispatch = useDispatch()
   const user: User | null = useSelector((state: RootState) => state.auth.user)
-  const movies: Record<string, MovieItem> = useSelector(
+  const movieListData = useSelector(
     (state: RootState) => state.movies.movieListData,
   )
   const favorites = useSelector((state: RootState) => state.movies.favorites)
@@ -40,14 +39,17 @@ export default function Home() {
       <Suspense fallback={<Loading />}>
         <Profile
           user={user}
-          movies={movies}
+          movieListData={movieListData}
           favorites={favorites}
           watchlists={watchlists}
         />
       </Suspense>
-      <Suspense fallback={<Loading />}>
-        <UserLists movies={movies} />
-      </Suspense>
+
+      <UserTab
+        movieListData={movieListData}
+        favorites={favorites}
+        watchlists={watchlists}
+      />
     </div>
   )
 }

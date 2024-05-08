@@ -59,9 +59,11 @@ export default async function MovieDetails({
             />
           </div>
 
-          <div className="md:col-span-3 xl:col-span-2">
-            <p>{movie.overview}</p>
-          </div>
+          {movie.overview && (
+            <div className="md:col-span-3 xl:col-span-2 p-4 bg-white rounded-md">
+              <p>{movie.overview}</p>
+            </div>
+          )}
         </div>
 
         <div className="w-fit mx-auto mt-6">

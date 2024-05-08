@@ -28,7 +28,7 @@ export default function RootLayout({
           <AuthProvider>
             <div className="flex flex-col min-h-screen">
               <Header />
-              <div className="flex-grow">{children}</div>
+              <div className="flex-grow bg-slate-100">{children}</div>
               <Footer />
               <ToastContainer />
             </div>

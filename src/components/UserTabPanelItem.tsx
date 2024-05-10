@@ -4,7 +4,10 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import { updateComment } from '@/lib/features/movies/moviesSlice'
+import {
+  removeRegisteredMovie,
+  updateComment,
+} from '@/lib/features/movies/moviesSlice'
 import { AppDispatch, RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 import { Lists } from '@/types/Lists'
@@ -32,6 +35,8 @@ const UserTabPanelItem = ({
   const [edittingMovieId, setEdittingMovieId] = useState<string | null>(null)
   const [inputedComment, setInputedComment] = useState<string>('')
 
+  if (!user) return
+
   const colorVariants: Record<string, string> = {
     favorites: 'bg-red-100 ',
     watchlists: 'bg-yellow-100 ',
@@ -40,6 +45,21 @@ const UserTabPanelItem = ({
   const tabColorClass = colorVariants[tabName] || ''
 
   const getRegisteredMovieData = (id: string) => movieListData[id]
+
+  const confirmRemoveMovie = async (movieId: string, lystType: string) => {
+    if (window.confirm('リストから削除しますか？')) {
+      await dispatch(
+        removeRegisteredMovie({
+          movieId,
+          uid: user?.uid,
+          lystType: tabName,
+        }),
+      )
+      toast.success('削除しました。', toastConfig)
+    } else {
+      toast.info('キャンセルしました。', toastConfig)
+    }
+  }
 
   const toggleEditMode = (movieId: string, comment: string | undefined) => {
     setEdittingMovieId((prevId) => (prevId === movieId ? null : movieId))
@@ -74,8 +94,6 @@ const UserTabPanelItem = ({
     setInputedComment(e.target.value)
   }
 
-  if (!user) return
-
   return (
     <div
       id={`${tabName}-panel`}
@@ -94,9 +112,11 @@ const UserTabPanelItem = ({
                 <UserRegisteredMovie
                   movieId={movieId}
                   movieInfo={movieInfo}
+                  listType={tabName}
                   user={user}
                   edittingMovieId={edittingMovieId}
                   inputedComment={inputedComment}
+                  onConfirmRemove={confirmRemoveMovie}
                   onToggleEditMode={toggleEditMode}
                   onConfirmEdit={confirmEdit}
                   onCancelEdit={cancelEdit}

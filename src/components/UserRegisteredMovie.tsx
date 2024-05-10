@@ -11,10 +11,12 @@ import MovieWatchedAt from './MovieWatchedAt'
 type Props = {
   movieId: string
   movieInfo: Record<string, MovieItem>
+  listType: string
   user: User
   edittingMovieId: string | null
   inputedComment: string
   onToggleEditMode: (movieId: string, comment: string | undefined) => void
+  onConfirmRemove: (movieId: string, uid: string, listType: string) => void
   onConfirmEdit: (movieId: string, uid: string) => void
   onCancelEdit: () => void
   onCommentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
@@ -23,10 +25,12 @@ type Props = {
 const UserRegisteredMovie = ({
   movieId,
   movieInfo,
+  listType,
   user,
   edittingMovieId,
   inputedComment,
   onToggleEditMode,
+  onConfirmRemove,
   onConfirmEdit,
   onCancelEdit,
   onCommentChange,
@@ -42,7 +46,7 @@ const UserRegisteredMovie = ({
   return (
     <div className="relative bg-white border rounded-lg p-4 pr-2 sm:grid sm:grid-cols-[auto_1fr] gap-4">
       <div className="absolute top-2 right-2">
-        <button>
+        <button onClick={() => onConfirmRemove(movieId, user.uid, listType)}>
           <FaTrashAlt color={'#bb2323'} />
         </button>
       </div>

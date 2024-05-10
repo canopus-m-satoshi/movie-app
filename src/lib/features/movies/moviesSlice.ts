@@ -133,6 +133,35 @@ export const fetchRegisteredLists = createAsyncThunk<
   }
 })
 
+export const removeRegisteredMovie = createAsyncThunk<
+  {
+    movieId: string
+    uid: string
+    lystType: string
+  },
+  {
+    movieId: string
+    uid: string
+    lystType: string
+  },
+  { rejectValue: string }
+>(
+  'removeRegisteredMovie',
+  async ({ movieId, uid, lystType }, { rejectWithValue }) => {
+    try {
+      const userListRef = doc(db, 'users', uid)
+      const listsRef = doc(userListRef, lystType, movieId)
+
+      await deleteDoc(listsRef)
+
+      return { movieId, uid, lystType }
+    } catch (error: any) {
+      console.error('Error is ', error)
+      return rejectWithValue(error)
+    }
+  },
+)
+
 export const toggleFavorites = createAsyncThunk<
   TogglePayload,
   ToggleLists,
@@ -233,16 +262,16 @@ export const regisrerWatched = createAsyncThunk<
       const movieDoc = await getDoc(movieRef)
 
       if (watchedAt) {
-        const formatWatchedAtToTimestamp = Timestamp.fromDate(watchedAt)
+        const convertWatchedAtToTimestamp = Timestamp.fromDate(watchedAt)
         const formattedWatchedAtToString = format(watchedAt, 'yyyy-MM-dd')
 
         if (movieDoc.exists()) {
           await updateDoc(movieRef, {
-            watchedAt: formatWatchedAtToTimestamp,
+            watchedAt: convertWatchedAtToTimestamp,
           })
         } else {
           await setDoc(movieRef, {
-            watchedAt: formatWatchedAtToTimestamp,
+            watchedAt: convertWatchedAtToTimestamp,
           })
         }
 
@@ -302,6 +331,24 @@ const moviesSlice = createSlice({
         } else {
           state.error = action.error.message
         }
+      })
+      .addCase(removeRegisteredMovie.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(removeRegisteredMovie.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+
+        const { movieId, lystType } = action.payload
+
+        if (lystType === 'favorites') {
+          delete state.favorites[movieId]
+        } else if (lystType === 'watchlists') {
+          delete state.watchlists[movieId]
+        }
+      })
+      .addCase(removeRegisteredMovie.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
       })
       .addCase(toggleFavorites.pending, (state) => {
         state.status = 'loading'

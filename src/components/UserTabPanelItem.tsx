@@ -1,5 +1,15 @@
+'use client'
+
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+
+import { updateComment } from '@/lib/features/movies/moviesSlice'
+import { AppDispatch, RootState } from '@/lib/store'
+import { toastConfig } from '@/lib/toastConfig'
 import { Lists } from '@/types/Lists'
 import { MovieItem } from '@/types/Movie'
+import { User } from '@/types/User'
 
 import UserRegisteredMovie from './UserRegisteredMovie'
 
@@ -16,13 +26,55 @@ const UserTabPanelItem = ({
   movieList,
   movieListData,
 }: Props) => {
+  const dispatch: AppDispatch = useDispatch()
+  const user: User | null = useSelector((state: RootState) => state.auth.user)
+
+  const [edittingMovieId, setEdittingMovieId] = useState<string | null>(null)
+  const [inputedComment, setInputedComment] = useState<string>('')
+
   const colorVariants: Record<string, string> = {
     favorites: 'bg-red-100 ',
     watchlists: 'bg-yellow-100 ',
     watched: 'bg-blue-100 ',
   }
   const tabColorClass = colorVariants[tabId] || ''
+
   const getRegisteredMovieData = (id: string) => movieListData[id]
+
+  const toggleEditMode = (movieId: string, comment: string | undefined) => {
+    setEdittingMovieId((prevId) => (prevId === movieId ? null : movieId))
+    setInputedComment(comment || '')
+  }
+
+  const confirmEdit = async (movieId: string, uid: string) => {
+    const res = await dispatch(
+      updateComment({ movieId, uid, comment: inputedComment }),
+    )
+
+    if (updateComment.fulfilled.match(res)) {
+      toast.success('コメントを編集しました', toastConfig)
+    } else {
+      toast.error('コメントの編集に失敗しました', toastConfig)
+    }
+
+    setEdittingMovieId(null)
+  }
+
+  const cancelEdit = () => {
+    if (window.confirm('編集をキャンセルしますか？')) {
+      setEdittingMovieId(null)
+      setInputedComment('')
+      toast.error('編集をキャンセルしました', toastConfig)
+    } else {
+      return
+    }
+  }
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputedComment(e.target.value)
+  }
+
+  if (!user) return
 
   return (
     <div
@@ -38,7 +90,19 @@ const UserTabPanelItem = ({
 
           return (
             <li key={movieId}>
-              {<UserRegisteredMovie movieId={movieId} movieInfo={movieInfo} />}
+              {
+                <UserRegisteredMovie
+                  movieId={movieId}
+                  movieInfo={movieInfo}
+                  user={user}
+                  edittingMovieId={edittingMovieId}
+                  inputedComment={inputedComment}
+                  toggleEditMode={toggleEditMode}
+                  confirmEdit={confirmEdit}
+                  cancelEdit={cancelEdit}
+                  handleOnChange={handleOnChange}
+                />
+              }
             </li>
           )
         })}

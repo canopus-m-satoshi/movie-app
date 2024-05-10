@@ -21,5 +21,5 @@ export default function MovieTitle({ movieId }: Props) {
   if (error) return <div>failed to load</div>
   if (!data) return <Loading />
 
-  return <h3 className="text-2xl font-bold">{data.original_title}</h3>
+  return <h3 className="text-2xl font-bold pr-4">{data.original_title}</h3>
 }

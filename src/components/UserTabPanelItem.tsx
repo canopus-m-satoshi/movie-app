@@ -97,10 +97,10 @@ const UserTabPanelItem = ({
                   user={user}
                   edittingMovieId={edittingMovieId}
                   inputedComment={inputedComment}
-                  toggleEditMode={toggleEditMode}
-                  confirmEdit={confirmEdit}
-                  cancelEdit={cancelEdit}
-                  handleOnChange={handleOnChange}
+                  onToggleEditMode={toggleEditMode}
+                  onConfirmEdit={confirmEdit}
+                  onCancelEdit={cancelEdit}
+                  onCommentChange={handleOnChange}
                 />
               }
             </li>

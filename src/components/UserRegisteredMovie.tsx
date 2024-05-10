@@ -1,9 +1,9 @@
-import { FaCheck, FaPen, FaTrashAlt } from 'react-icons/fa'
-import { FaXmark } from 'react-icons/fa6'
+import { FaTrashAlt } from 'react-icons/fa'
 
 import { MovieItem } from '@/types/Movie'
 import { User } from '@/types/User'
 
+import MovieMemo from './MovieMemo'
 import MovieThumbnail from './MovieThumbnail'
 import MovieTitle from './MovieTitle'
 
@@ -13,10 +13,10 @@ type Props = {
   user: User
   edittingMovieId: string | null
   inputedComment: string
-  toggleEditMode: (movieId: string, comment: string | undefined) => void
-  confirmEdit: (movieId: string, uid: string) => void
-  cancelEdit: () => void
-  handleOnChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  onToggleEditMode: (movieId: string, comment: string | undefined) => void
+  onConfirmEdit: (movieId: string, uid: string) => void
+  onCancelEdit: () => void
+  onCommentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
 }
 
 const UserRegisteredMovie = ({
@@ -25,10 +25,10 @@ const UserRegisteredMovie = ({
   user,
   edittingMovieId,
   inputedComment,
-  toggleEditMode,
-  confirmEdit,
-  cancelEdit,
-  handleOnChange,
+  onToggleEditMode,
+  onConfirmEdit,
+  onCancelEdit,
+  onCommentChange,
 }: Props) => {
   const { comment, watchedAt } = movieInfo || {
     comment: '',
@@ -50,38 +50,20 @@ const UserRegisteredMovie = ({
       <div>
         <MovieTitle movieId={movieId} />
         <p>鑑賞日：{watchedAt?.toString()}</p>
-
-        {edittingMovieId === movieId ? (
-          <div className="md:flex justify-between items-end gap-2">
-            <textarea
-              className="textarea textarea-bordered w-full min-h-36"
-              value={inputedComment}
-              onChange={handleOnChange}
-              wrap="hard"></textarea>
-            <div className="flex gap-2">
-              <button onClick={() => confirmEdit(movieId, user.uid)}>
-                <FaCheck color={'#04b600'} />
-              </button>
-              <button onClick={cancelEdit}>
-                <FaXmark color={'#ff002d'} />
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex justify-between items-baseline gap-2">
-            <p className="whitespace-pre-line">
-              コメント:
-              {edittingMovieId === movieId
-                ? inputedComment
-                : convertComment || ''}
-            </p>
-            <button onClick={() => toggleEditMode(movieId, convertComment)}>
-              <FaPen />
-            </button>
-          </div>
-        )}
+        <MovieMemo
+          movieId={movieId}
+          user={user}
+          edittingMovieId={edittingMovieId}
+          convertComment={convertComment}
+          inputedComment={inputedComment}
+          onToggleEditMode={onToggleEditMode}
+          onConfirmEdit={onConfirmEdit}
+          onCancelEdit={onCancelEdit}
+          onCommentChange={onCommentChange}
+        />
       </div>
     </div>
   )
 }
+
 export default UserRegisteredMovie

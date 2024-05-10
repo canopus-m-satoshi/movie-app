@@ -14,14 +14,14 @@ import { User } from '@/types/User'
 import UserRegisteredMovie from './UserRegisteredMovie'
 
 type Props = {
-  tabId: string
+  tabName: string
   selectedTab: string
   movieList: Record<string, MovieItem>
   movieListData: Lists['movieListData']
 }
 
 const UserTabPanelItem = ({
-  tabId,
+  tabName,
   selectedTab,
   movieList,
   movieListData,
@@ -37,7 +37,7 @@ const UserTabPanelItem = ({
     watchlists: 'bg-yellow-100 ',
     watched: 'bg-blue-100 ',
   }
-  const tabColorClass = colorVariants[tabId] || ''
+  const tabColorClass = colorVariants[tabName] || ''
 
   const getRegisteredMovieData = (id: string) => movieListData[id]
 
@@ -78,11 +78,11 @@ const UserTabPanelItem = ({
 
   return (
     <div
-      id={`${tabId}-panel`}
+      id={`${tabName}-panel`}
       role="tabpanel"
       tabIndex={0}
-      aria-labelledby={tabId}
-      hidden={selectedTab !== tabId}
+      aria-labelledby={tabName}
+      hidden={selectedTab !== tabName}
       className={`p-4 ${tabColorClass}`}>
       <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {Object.keys(movieList).map((movieId) => {

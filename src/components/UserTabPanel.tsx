@@ -15,19 +15,19 @@ const UserTabPanel = ({
   return (
     <div className="mt-4 sm:mt-0">
       <UserTabPanelItem
-        tabId="favorites"
+        tabName="favorites"
         selectedTab={selectedTab}
         movieList={favorites}
         movieListData={movieListData}
       />
       <UserTabPanelItem
-        tabId="watchlists"
+        tabName="watchlists"
         selectedTab={selectedTab}
         movieList={watchlists}
         movieListData={movieListData}
       />
       <UserTabPanelItem
-        tabId="watched"
+        tabName="watched"
         selectedTab={selectedTab}
         movieList={movieListData}
         movieListData={movieListData}

@@ -10,8 +10,8 @@ type Props = Lists
 const UserTab = ({ movieListData, favorites, watchlists }: Props) => {
   const [selectedTab, setSelectedTab] = useState('favorites')
 
-  const handleTabClick = (tabId: string) => {
-    setSelectedTab(tabId)
+  const handleTabClick = (tabName: string) => {
+    setSelectedTab(tabName)
   }
 
   return (

@@ -47,10 +47,8 @@ const MovieMemo = ({
       ) : (
         <div className="flex justify-between items-baseline gap-2">
           <p className="whitespace-pre-line">
-            コメント:
-            {edittingMovieId === movieId
-              ? inputedComment
-              : convertComment || ''}
+            コメント：
+            {edittingMovieId === movieId ? inputedComment : convertComment}
           </p>
           <button onClick={() => onToggleEditMode(movieId, convertComment)}>
             <FaPen />

@@ -6,6 +6,7 @@ import { User } from '@/types/User'
 import MovieMemo from './MovieMemo'
 import MovieThumbnail from './MovieThumbnail'
 import MovieTitle from './MovieTitle'
+import MovieWatchedAt from './MovieWatchedAt'
 
 type Props = {
   movieId: string
@@ -35,7 +36,8 @@ const UserRegisteredMovie = ({
     watchedAt: null,
   }
 
-  const convertComment = String(comment)
+  const convertComment = comment ? String(comment) : ''
+  const convertWatchedAt = watchedAt ? watchedAt.toString() : '-'
 
   return (
     <div className="relative bg-white border rounded-lg p-4 pr-2 sm:grid sm:grid-cols-[auto_1fr] gap-4">
@@ -49,7 +51,7 @@ const UserRegisteredMovie = ({
       </div>
       <div>
         <MovieTitle movieId={movieId} />
-        <p>鑑賞日：{watchedAt?.toString()}</p>
+        <MovieWatchedAt watchedAt={convertWatchedAt} />
         <MovieMemo
           movieId={movieId}
           user={user}

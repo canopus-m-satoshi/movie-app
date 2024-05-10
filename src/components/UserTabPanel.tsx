@@ -1,6 +1,5 @@
 import { Lists } from '@/types/Lists'
 
-import UserRegisteredMovie from './UserRegisteredMovie'
 import UserTabPanelItem from './UserTabPanelItem'
 
 type Props = {
@@ -13,22 +12,26 @@ const UserTabPanel = ({
   favorites,
   watchlists,
 }: Props) => {
-  const getRegisteredMovieData = (id: string) => movieListData[id]
-
   return (
     <div className="mt-4 sm:mt-0">
-      <UserTabPanelItem tabId="favorites" selectedTab={selectedTab}>
-        {UserRegisteredMovie(Object.keys(favorites), getRegisteredMovieData)}
-      </UserTabPanelItem>
-      <UserTabPanelItem tabId="watchlists" selectedTab={selectedTab}>
-        {UserRegisteredMovie(Object.keys(watchlists), getRegisteredMovieData)}
-      </UserTabPanelItem>
-      <UserTabPanelItem tabId="watched" selectedTab={selectedTab}>
-        {UserRegisteredMovie(
-          Object.keys(movieListData),
-          (id) => movieListData[id],
-        )}
-      </UserTabPanelItem>
+      <UserTabPanelItem
+        tabId="favorites"
+        selectedTab={selectedTab}
+        movieList={favorites}
+        movieListData={movieListData}
+      />
+      <UserTabPanelItem
+        tabId="watchlists"
+        selectedTab={selectedTab}
+        movieList={watchlists}
+        movieListData={movieListData}
+      />
+      <UserTabPanelItem
+        tabId="watched"
+        selectedTab={selectedTab}
+        movieList={movieListData}
+        movieListData={movieListData}
+      />
     </div>
   )
 }

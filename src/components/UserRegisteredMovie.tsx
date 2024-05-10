@@ -1,35 +1,37 @@
-import MovieThumbnail from '@/components/MovieThumbnail'
-import MovieTitle from '@/components/MovieTitle'
+import { FaTrashAlt } from 'react-icons/fa'
 
-interface UserRegisteredMovie {
-  (movieIds: string[], getRegisteredMovieData: (id: string) => any): JSX.Element
+import { MovieItem } from '@/types/Movie'
+
+import MovieThumbnail from './MovieThumbnail'
+import MovieTitle from './MovieTitle'
+
+type Props = {
+  movieId: string
+  movieInfo: Record<string, MovieItem>
 }
 
-const UserRegisteredMovie: UserRegisteredMovie = (
-  movieIds,
-  getRegisteredMovieData,
-) => {
-  return (
-    <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {movieIds.map((movieId) => {
-        const movie = getRegisteredMovieData(movieId)
+const UserRegisteredMovie = ({ movieId, movieInfo }: Props) => {
+  const { comment, watchedAt } = movieInfo || {
+    comment: '',
+    watchedAt: null,
+  }
 
-        return (
-          <li
-            key={movieId}
-            className="bg-white border rounded-lg p-4 sm:grid sm:grid-cols-[auto_1fr] gap-4">
-            <div className="w-fit mx-auto mb-4 sm:mb-0 ">
-              <MovieThumbnail movieId={movieId} />
-            </div>
-            <div>
-              <MovieTitle movieId={movieId} />
-              <p>鑑賞日：{movie?.watchedAt?.toString() || '-'}</p>
-              <p>メモ：{movie?.comment || ''}</p>
-            </div>
-          </li>
-        )
-      })}
-    </ul>
+  return (
+    <div className="relative bg-white border rounded-lg p-4 sm:grid sm:grid-cols-[auto_1fr] gap-4">
+      <div className="absolute top-2 right-2">
+        <button>
+          <FaTrashAlt color={'#bb2323'} />
+        </button>
+      </div>
+      <div className="w-fit mx-auto mb-4 sm:mb-0 ">
+        <MovieThumbnail movieId={movieId} />
+      </div>
+      <div>
+        <MovieTitle movieId={movieId} />
+        <p>鑑賞日：{watchedAt?.toString()}</p>
+        <p>メモ：{String(comment)}</p>
+      </div>
+    </div>
   )
 }
 export default UserRegisteredMovie

@@ -1,5 +1,6 @@
 'use client'
 
+import { List } from 'postcss/lib/list'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -19,7 +20,7 @@ import UserRegisteredMovie from './UserRegisteredMovie'
 type Props = {
   tabName: string
   selectedTab: string
-  movieList: Record<string, MovieItem>
+  movieList: Omit<Lists, 'movieListData'>
   movieListData: Lists['movieListData']
 }
 
@@ -40,19 +41,17 @@ const UserTabPanelItem = ({
   const colorVariants: Record<string, string> = {
     favorites: 'bg-red-100 ',
     watchlists: 'bg-yellow-100 ',
-    watched: 'bg-blue-100 ',
+    watchedlists: 'bg-blue-100 ',
   }
   const tabColorClass = colorVariants[tabName] || ''
 
-  const getRegisteredMovieData = (id: string) => movieListData[id]
-
-  const confirmRemoveMovie = async (movieId: string, lystType: string) => {
+  const confirmRemoveMovie = async (movieId: string) => {
     if (window.confirm('リストから削除しますか？')) {
       await dispatch(
         removeRegisteredMovie({
           movieId,
           uid: user?.uid,
-          lystType: tabName,
+          listType: tabName,
         }),
       )
       toast.success('削除しました。', toastConfig)
@@ -104,14 +103,14 @@ const UserTabPanelItem = ({
       className={`p-4 ${tabColorClass}`}>
       <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {Object.keys(movieList).map((movieId) => {
-          const movieInfo = getRegisteredMovieData(movieId)
+          const movieData = movieListData[movieId]
 
           return (
             <li key={movieId}>
               {
                 <UserRegisteredMovie
                   movieId={movieId}
-                  movieInfo={movieInfo}
+                  movieData={movieData}
                   listType={tabName}
                   user={user}
                   edittingMovieId={edittingMovieId}

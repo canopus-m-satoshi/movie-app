@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import {
   collection,
   deleteDoc,
+  deleteField,
   doc,
   getDoc,
   getDocs,
@@ -18,7 +19,7 @@ import { MovieItem } from '@/types/Movie'
 type MoviesState = {
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | undefined
-} & Lists
+} & Omit<Lists, 'watchedlists'>
 
 interface TogglePayload {
   movieId: string
@@ -97,7 +98,7 @@ export const fetchRegisteredLists = createAsyncThunk<
 >('movies/fetchRegisteredLists', async ({ uid }, { rejectWithValue }) => {
   try {
     const userListRef = doc(db, 'users', uid)
-    const listTypes = ['favorites', 'watchlists']
+    const listTypes = ['favorites', 'watchlists', 'watchedlists']
 
     const listDataObject: Record<string, Record<string, MovieItem>> = {}
 
@@ -137,24 +138,35 @@ export const removeRegisteredMovie = createAsyncThunk<
   {
     movieId: string
     uid: string
-    lystType: string
+    listType: string
   },
   {
     movieId: string
     uid: string
-    lystType: string
+    listType: string
   },
   { rejectValue: string }
 >(
   'removeRegisteredMovie',
-  async ({ movieId, uid, lystType }, { rejectWithValue }) => {
+  async ({ movieId, uid, listType }, { rejectWithValue }) => {
     try {
       const userListRef = doc(db, 'users', uid)
-      const listsRef = doc(userListRef, lystType, movieId)
 
-      await deleteDoc(listsRef)
+      if (listType === 'watchedlists') {
+        const listsRef = doc(userListRef, 'movies', movieId)
+        const movieDoc = await getDoc(listsRef)
 
-      return { movieId, uid, lystType }
+        if (movieDoc.exists()) {
+          await updateDoc(listsRef, {
+            watchedAt: deleteField(),
+          })
+        }
+      } else {
+        const listsRef = doc(userListRef, listType, movieId)
+        await deleteDoc(listsRef)
+      }
+
+      return { movieId, uid, listType }
     } catch (error: any) {
       console.error('Error is ', error)
       return rejectWithValue(error)
@@ -338,12 +350,17 @@ const moviesSlice = createSlice({
       .addCase(removeRegisteredMovie.fulfilled, (state, action) => {
         state.status = 'succeeded'
 
-        const { movieId, lystType } = action.payload
+        const { movieId, listType } = action.payload
 
-        if (lystType === 'favorites') {
+        if (listType === 'favorites') {
           delete state.favorites[movieId]
-        } else if (lystType === 'watchlists') {
+        } else if (listType === 'watchlists') {
           delete state.watchlists[movieId]
+        } else if (listType === 'watchedlists') {
+          state.movieListData[movieId] = {
+            ...state.movieListData[movieId],
+            watchedAt: undefined,
+          }
         }
       })
       .addCase(removeRegisteredMovie.rejected, (state, action) => {

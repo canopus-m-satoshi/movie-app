@@ -10,7 +10,7 @@ import MovieWatchedAt from './MovieWatchedAt'
 
 type Props = {
   movieId: string
-  movieInfo: Record<string, MovieItem>
+  movieData: Record<string, MovieItem>
   listType: string
   user: User
   edittingMovieId: string | null
@@ -24,7 +24,7 @@ type Props = {
 
 const UserRegisteredMovie = ({
   movieId,
-  movieInfo,
+  movieData,
   listType,
   user,
   edittingMovieId,
@@ -35,7 +35,7 @@ const UserRegisteredMovie = ({
   onCancelEdit,
   onCommentChange,
 }: Props) => {
-  const { comment, watchedAt } = movieInfo || {
+  const { comment, watchedAt } = movieData || {
     comment: '',
     watchedAt: null,
   }

@@ -11,6 +11,7 @@ const UserTabPanel = ({
   movieListData,
   favorites,
   watchlists,
+  watchedlists,
 }: Props) => {
   return (
     <div className="mt-4 sm:mt-0">
@@ -27,9 +28,9 @@ const UserTabPanel = ({
         movieListData={movieListData}
       />
       <UserTabPanelItem
-        tabName="watched"
+        tabName="watchedlists"
         selectedTab={selectedTab}
-        movieList={movieListData}
+        movieList={watchedlists}
         movieListData={movieListData}
       />
     </div>

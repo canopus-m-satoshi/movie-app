@@ -24,7 +24,7 @@ const UserTabList = ({ selectedTab, handleTabClick }: Props) => {
         ウォッチリスト登録した映画
       </UserTabListItem>
       <UserTabListItem
-        tabName="watched"
+        tabName="watchedlists"
         selectedTab={selectedTab}
         onClick={handleTabClick}>
         今までに観た映画

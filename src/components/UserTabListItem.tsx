@@ -14,7 +14,7 @@ const UserTabListItem = ({
   const colorVariants: Record<string, string> = {
     favorites: 'bg-red-100 ',
     watchlists: 'bg-yellow-100 ',
-    watched: 'bg-blue-100 ',
+    watchedlists: 'bg-blue-100 ',
   }
   const tabColorClass = colorVariants[tabName] || ''
 

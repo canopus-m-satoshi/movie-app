@@ -91,6 +91,10 @@ const UserTabPanelItem = ({
     setInputedComment(e.target.value)
   }
 
+  const isEmpty = (obj: Lists[keyof Omit<Lists, 'movieListData'>]) => {
+    return Object.keys(obj).length === 0
+  }
+
   return (
     <div
       id={`${tabName}-panel`}
@@ -99,31 +103,34 @@ const UserTabPanelItem = ({
       aria-labelledby={tabName}
       hidden={selectedTab !== tabName}
       className={`p-4 ${tabColorClass}`}>
-      <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {Object.keys(movieList).map((movieId) => {
-          const movieData = movieListData[movieId]
-
-          return (
-            <li key={movieId}>
-              {
-                <UserRegisteredMovie
-                  movieId={movieId}
-                  movieData={movieData}
-                  listType={tabName}
-                  user={user}
-                  edittingMovieId={edittingMovieId}
-                  inputedComment={inputedComment}
-                  onConfirmRemove={confirmRemoveMovie}
-                  onToggleEditMode={toggleEditMode}
-                  onConfirmEdit={confirmEdit}
-                  onCancelEdit={cancelEdit}
-                  onCommentChange={handleOnChange}
-                />
-              }
-            </li>
-          )
-        })}
-      </ul>
+      {isEmpty(movieList) ? (
+        <p className="text-center">リストが空です</p>
+      ) : (
+        <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {Object.keys(movieList).map((movieId) => {
+            const movieData = movieListData[movieId]
+            return (
+              <li key={movieId}>
+                {
+                  <UserRegisteredMovie
+                    movieId={movieId}
+                    movieData={movieData}
+                    listType={tabName}
+                    user={user}
+                    edittingMovieId={edittingMovieId}
+                    inputedComment={inputedComment}
+                    onConfirmRemove={confirmRemoveMovie}
+                    onToggleEditMode={toggleEditMode}
+                    onConfirmEdit={confirmEdit}
+                    onCancelEdit={cancelEdit}
+                    onCommentChange={handleOnChange}
+                  />
+                }
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </div>
   )
 }

@@ -2,7 +2,7 @@ import UserTabListItem from './UserTabListItem'
 
 type Props = {
   selectedTab: string
-  handleTabClick: (tabId: string) => void
+  handleTabClick: (tabName: string) => void
 }
 
 const UserTabList = ({ selectedTab, handleTabClick }: Props) => {
@@ -12,19 +12,19 @@ const UserTabList = ({ selectedTab, handleTabClick }: Props) => {
       aria-label="Registered Movie Tabs"
       className="sm:flex flex-wrap">
       <UserTabListItem
-        tabId="favorites"
+        tabName="favorites"
         selectedTab={selectedTab}
         onClick={handleTabClick}>
         お気に入り登録した映画
       </UserTabListItem>
       <UserTabListItem
-        tabId="watchlists"
+        tabName="watchlists"
         selectedTab={selectedTab}
         onClick={handleTabClick}>
         ウォッチリスト登録した映画
       </UserTabListItem>
       <UserTabListItem
-        tabId="watched"
+        tabName="watchedlists"
         selectedTab={selectedTab}
         onClick={handleTabClick}>
         今までに観た映画

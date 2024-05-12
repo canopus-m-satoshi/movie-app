@@ -8,20 +8,9 @@ import StatsItem from './StatsItem'
 
 type Props = {
   user: User
-} & Lists
+} & Omit<Lists, 'movieListData'>
 
-const Profile = ({ user, movieListData, favorites, watchlists }: Props) => {
-  const checkIsWatched = () => {
-    const watchedMovies = Object.entries(movieListData).filter(
-      ([_, movieDetail]) => {
-        return movieDetail.watchedAt !== undefined
-      },
-    )
-
-    return watchedMovies.length
-  }
-  const watchedAtLength = checkIsWatched()
-
+const Profile = ({ user, favorites, watchlists, watchedlists }: Props) => {
   return (
     <div className="block w-full mx-auto my-6">
       <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-4 border rounded-md shadow-black p-4 bg-white">
@@ -54,7 +43,10 @@ const Profile = ({ user, movieListData, favorites, watchlists }: Props) => {
             title="ウォッチリスト映画"
             number={Object.keys(watchlists).length}
           />
-          <StatsItem title="今までに観た映画" number={watchedAtLength} />
+          <StatsItem
+            title="今までに観た映画"
+            number={Object.keys(watchedlists).length}
+          />
         </div>
       </div>
     </div>

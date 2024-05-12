@@ -9,6 +9,7 @@ import {
   fetchRegisteredMovies,
 } from '@/lib/features/movies/moviesSlice'
 import { AppDispatch, RootState } from '@/lib/store'
+import { Lists } from '@/types/Lists'
 
 import Profile from '../../components/Profile'
 import { User } from '../../types/User'
@@ -22,6 +23,18 @@ export default function Home() {
   )
   const favorites = useSelector((state: RootState) => state.movies.favorites)
   const watchlists = useSelector((state: RootState) => state.movies.watchlists)
+
+  const watchedlists = Object.keys(movieListData).reduce((acc, movieId) => {
+    const movie = movieListData[movieId]
+
+    if (movie.watchedAt !== null && movie.watchedAt !== undefined) {
+      acc[movieId] = {
+        comment: movie.comment,
+        watchedAt: movie.watchedAt,
+      }
+    }
+    return acc
+  }, {} as Lists['watchedlists'])
 
   useEffect(() => {
     if (user) {
@@ -39,9 +52,9 @@ export default function Home() {
       <Suspense fallback={<Loading />}>
         <Profile
           user={user}
-          movieListData={movieListData}
           favorites={favorites}
           watchlists={watchlists}
+          watchedlists={watchedlists}
         />
       </Suspense>
 
@@ -49,6 +62,7 @@ export default function Home() {
         movieListData={movieListData}
         favorites={favorites}
         watchlists={watchlists}
+        watchedlists={watchedlists}
       />
     </div>
   )

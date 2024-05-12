@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import {
   collection,
   deleteDoc,
+  deleteField,
   doc,
   getDoc,
   getDocs,
@@ -18,7 +19,7 @@ import { MovieItem } from '@/types/Movie'
 type MoviesState = {
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | undefined
-} & Lists
+} & Omit<Lists, 'watchedlists'>
 
 interface TogglePayload {
   movieId: string
@@ -97,7 +98,7 @@ export const fetchRegisteredLists = createAsyncThunk<
 >('movies/fetchRegisteredLists', async ({ uid }, { rejectWithValue }) => {
   try {
     const userListRef = doc(db, 'users', uid)
-    const listTypes = ['favorites', 'watchlists']
+    const listTypes = ['favorites', 'watchlists', 'watchedlists']
 
     const listDataObject: Record<string, Record<string, MovieItem>> = {}
 
@@ -132,6 +133,46 @@ export const fetchRegisteredLists = createAsyncThunk<
     return rejectWithValue(error)
   }
 })
+
+export const removeRegisteredMovie = createAsyncThunk<
+  {
+    movieId: string
+    uid: string
+    listType: string
+  },
+  {
+    movieId: string
+    uid: string
+    listType: string
+  },
+  { rejectValue: string }
+>(
+  'removeRegisteredMovie',
+  async ({ movieId, uid, listType }, { rejectWithValue }) => {
+    try {
+      const userListRef = doc(db, 'users', uid)
+
+      if (listType === 'watchedlists') {
+        const listsRef = doc(userListRef, 'movies', movieId)
+        const movieDoc = await getDoc(listsRef)
+
+        if (movieDoc.exists()) {
+          await updateDoc(listsRef, {
+            watchedAt: deleteField(),
+          })
+        }
+      } else {
+        const listsRef = doc(userListRef, listType, movieId)
+        await deleteDoc(listsRef)
+      }
+
+      return { movieId, uid, listType }
+    } catch (error: any) {
+      console.error('Error is ', error)
+      return rejectWithValue(error)
+    }
+  },
+)
 
 export const toggleFavorites = createAsyncThunk<
   TogglePayload,
@@ -233,16 +274,16 @@ export const regisrerWatched = createAsyncThunk<
       const movieDoc = await getDoc(movieRef)
 
       if (watchedAt) {
-        const formatWatchedAtToTimestamp = Timestamp.fromDate(watchedAt)
+        const convertWatchedAtToTimestamp = Timestamp.fromDate(watchedAt)
         const formattedWatchedAtToString = format(watchedAt, 'yyyy-MM-dd')
 
         if (movieDoc.exists()) {
           await updateDoc(movieRef, {
-            watchedAt: formatWatchedAtToTimestamp,
+            watchedAt: convertWatchedAtToTimestamp,
           })
         } else {
           await setDoc(movieRef, {
-            watchedAt: formatWatchedAtToTimestamp,
+            watchedAt: convertWatchedAtToTimestamp,
           })
         }
 
@@ -302,6 +343,29 @@ const moviesSlice = createSlice({
         } else {
           state.error = action.error.message
         }
+      })
+      .addCase(removeRegisteredMovie.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(removeRegisteredMovie.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+
+        const { movieId, listType } = action.payload
+
+        if (listType === 'favorites') {
+          delete state.favorites[movieId]
+        } else if (listType === 'watchlists') {
+          delete state.watchlists[movieId]
+        } else if (listType === 'watchedlists') {
+          state.movieListData[movieId] = {
+            ...state.movieListData[movieId],
+            watchedAt: undefined,
+          }
+        }
+      })
+      .addCase(removeRegisteredMovie.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
       })
       .addCase(toggleFavorites.pending, (state) => {
         state.status = 'loading'

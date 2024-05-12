@@ -7,11 +7,16 @@ import UserTabPanel from './UserTabPanel'
 
 type Props = Lists
 
-const UserTab = ({ movieListData, favorites, watchlists }: Props) => {
+const UserTab = ({
+  movieListData,
+  favorites,
+  watchlists,
+  watchedlists,
+}: Props) => {
   const [selectedTab, setSelectedTab] = useState('favorites')
 
-  const handleTabClick = (tabId: string) => {
-    setSelectedTab(tabId)
+  const handleTabClick = (tabName: string) => {
+    setSelectedTab(tabName)
   }
 
   return (
@@ -19,11 +24,13 @@ const UserTab = ({ movieListData, favorites, watchlists }: Props) => {
       {/* Tablist */}
       <UserTabList selectedTab={selectedTab} handleTabClick={handleTabClick} />
 
+      {/* TabPanel */}
       <UserTabPanel
         selectedTab={selectedTab}
         movieListData={movieListData}
         favorites={favorites}
         watchlists={watchlists}
+        watchedlists={watchedlists}
       />
     </div>
   )

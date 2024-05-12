@@ -1,6 +1,5 @@
 'use client'
 
-import { List } from 'postcss/lib/list'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -12,7 +11,6 @@ import {
 import { AppDispatch, RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 import { Lists } from '@/types/Lists'
-import { MovieItem } from '@/types/Movie'
 import { User } from '@/types/User'
 
 import UserRegisteredMovie from './UserRegisteredMovie'
@@ -20,7 +18,7 @@ import UserRegisteredMovie from './UserRegisteredMovie'
 type Props = {
   tabName: string
   selectedTab: string
-  movieList: Omit<Lists, 'movieListData'>
+  movieList: Lists[keyof Omit<Lists, 'movieListData'>]
   movieListData: Lists['movieListData']
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { signInAnonymously, signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { checkAuthStatus } from '@/lib/features/auth/authSlice'
-import { signInWithGoogle } from '@/lib/firebase/auth'
+import { signInAsAnonymous, signInWithGoogle } from '@/lib/firebase/auth'
 import { auth } from '@/lib/firebase/firebase'
 import { AppDispatch } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
@@ -62,7 +62,7 @@ const SignIn = () => {
 
   const signInWithAnonymously = async () => {
     try {
-      await signInAnonymously(auth)
+      await signInAsAnonymous(auth)
       await router.push('/movie')
       await dispatch(checkAuthStatus())
       toast.success('匿名でログインしました', toastConfig)

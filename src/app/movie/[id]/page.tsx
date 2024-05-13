@@ -1,7 +1,7 @@
+import { link } from 'fs'
 import Image from 'next/image'
-import Link from 'next/link'
-import { IoCaretBackOutline } from 'react-icons/io5'
 
+import BackButton from '@/components/BackButton'
 import MovieInfo from '@/components/MovieInfo'
 import { posterURL } from '@/constants/posterURL'
 import { getCurrentUser } from '@/lib/firebase/firebase-admin'
@@ -35,6 +35,13 @@ export default async function MovieDetails({
   const movie = res.data
   const { query, page } = searchParams
 
+  let link = '/movie'
+  if (query && page) {
+    link = `/movie?query=${query}&page=${page}`
+  } else {
+    link = `/user`
+  }
+
   return (
     <>
       <div className="container mx-auto my-6 px-3">
@@ -67,12 +74,7 @@ export default async function MovieDetails({
         </div>
 
         <div className="w-fit mx-auto mt-6">
-          <Link
-            href={`/movie?query=${query}&page=${page}`}
-            className="btn btn-accent rounded-full">
-            <IoCaretBackOutline />
-            <span className="pr-2">戻る</span>
-          </Link>
+          <BackButton link={link} />
         </div>
       </div>
     </>

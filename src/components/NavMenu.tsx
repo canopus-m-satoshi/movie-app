@@ -13,7 +13,7 @@ import { signOutUser } from '@/lib/features/auth/authSlice'
 import { AppDispatch, RootState } from '@/lib/store'
 import { toastConfig } from '@/lib/toastConfig'
 
-const UserMenu = () => {
+const NavMenu = () => {
   const dispatch: AppDispatch = useDispatch()
   const router = useRouter()
 
@@ -86,4 +86,4 @@ const UserMenu = () => {
     </div>
   )
 }
-export default UserMenu
+export default NavMenu

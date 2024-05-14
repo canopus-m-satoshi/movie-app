@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 
 import Loading from './Loading'
 import Logo from './Logo'
-import UserMenu from './UserMenu'
+import NavMenu from './NavMenu'
 
 const Header = () => {
   return (
@@ -11,7 +11,7 @@ const Header = () => {
         <Suspense fallback={<Loading />}>
           <Logo />
         </Suspense>
-        <UserMenu />
+        <NavMenu />
       </div>
     </header>
   )

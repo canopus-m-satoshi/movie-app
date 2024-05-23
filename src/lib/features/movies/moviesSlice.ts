@@ -52,7 +52,7 @@ export const fetchRegisteredMovies = createAsyncThunk<
   Record<string, MovieItem>,
   string,
   { rejectValue: { message: string; error?: any } }
->('movies/fetchRegisteredMovies', async (uid, { rejectWithValue }) => {
+>('fetchRegisteredMovies', async (uid, { rejectWithValue }) => {
   try {
     const userListRef = doc(db, 'users', uid)
     const querySnapshot = await getDocs(collection(userListRef, 'movies'))
@@ -95,7 +95,7 @@ export const fetchRegisteredLists = createAsyncThunk<
   Record<string, Record<string, MovieItem>>,
   { uid: string },
   { rejectValue: { message: string; error?: any } }
->('movies/fetchRegisteredLists', async ({ uid }, { rejectWithValue }) => {
+>('fetchRegisteredLists', async ({ uid }, { rejectWithValue }) => {
   try {
     const userListRef = doc(db, 'users', uid)
     const listTypes = ['favorites', 'watchlists', 'watchedlists']

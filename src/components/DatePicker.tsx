@@ -1,6 +1,5 @@
 'use client'
 
-import { getYear } from 'date-fns'
 import { useState } from 'react'
 import ReactDatePicker from 'react-datepicker'
 import { useDispatch } from 'react-redux'
@@ -43,9 +42,8 @@ const DatePicker = ({ title, checkboxText, movieId, uid, watcedAt }: Props) => {
     })
   }
 
-  const filterDate = (date: Date) => {
-    return date <= new Date()
-  }
+  const filterDate = (date: Date) => date <= new Date()
+
   const submitPickedDate = async () => {
     if (isUnknown) setPickedDate(null)
 
@@ -53,7 +51,6 @@ const DatePicker = ({ title, checkboxText, movieId, uid, watcedAt }: Props) => {
     await dispatch(toggleModal())
 
     toast.success('映画鑑賞日を登録しました', toastConfig)
-    return pickedDate
   }
 
   return (

@@ -1,4 +1,3 @@
-import { link } from 'fs'
 import Image from 'next/image'
 
 import BackButton from '@/components/BackButton'

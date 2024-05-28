@@ -29,8 +29,8 @@ const Tooltips = ({
 
     toast.success(
       on
-        ? 'お気に入りリストから追加しました'
-        : 'お気に入りリストに削除しました',
+        ? 'お気に入りリストに追加しました'
+        : 'お気に入りリストから削除しました',
       toastConfig,
     )
   }
@@ -41,7 +41,7 @@ const Tooltips = ({
     if (on === undefined) return
 
     toast.success(
-      on ? 'ウォッチリストから追加しました' : 'ウォッチリストに削除しました',
+      on ? 'ウォッチリストに追加しました' : 'ウォッチリストから削除しました',
       toastConfig,
     )
   }

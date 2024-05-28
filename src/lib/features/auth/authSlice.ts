@@ -2,20 +2,16 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   createUserWithEmailAndPassword,
   getAuth,
-  GoogleAuthProvider,
   signInWithEmailAndPassword,
-  signInWithPopup,
   signOut,
 } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
 
-import { auth, db } from '@/lib/firebase/firebase'
 import { AuthState, User } from '@/types/User'
 
 const initialState: AuthState = { user: null, status: 'idle', error: undefined }
 
 export const signIn = createAsyncThunk(
-  'auth/signIn',
+  'signIn',
   async (
     { email, password }: { email: string; password: string },
     { rejectWithValue },
@@ -35,7 +31,7 @@ export const signIn = createAsyncThunk(
 )
 
 export const signUp = createAsyncThunk(
-  'auth/signUp',
+  'signUp',
   async (
     { email, password }: { email: string; password: string },
     { rejectWithValue },
@@ -55,7 +51,7 @@ export const signUp = createAsyncThunk(
 )
 
 export const signOutUser = createAsyncThunk(
-  'auth/signOut',
+  'signOut',
   async (out, { rejectWithValue }) => {
     try {
       const auth = getAuth()
@@ -67,7 +63,7 @@ export const signOutUser = createAsyncThunk(
 )
 
 export const checkAuthStatus = createAsyncThunk<User>(
-  'auth/checkAuthStatus',
+  'checkAuthStatus',
   async (_, { rejectWithValue }) => {
     const auth = getAuth()
     return new Promise((resolve, reject) => {

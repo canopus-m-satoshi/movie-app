@@ -24,8 +24,10 @@ const useCustomFetch = (url: string) => {
     throw new Error('APIトークンが設定されていません。')
   }
 
-  const { data, error, isLoading } = useSWR([url, apiToken], ([url, token]) =>
-    fetchWithToken(url, token),
+  const { data, error, isLoading } = useSWR(
+    [url, apiToken],
+    ([url, token]) => fetchWithToken(url, token),
+    { suspense: true },
   )
 
   return { data, error, isLoading }

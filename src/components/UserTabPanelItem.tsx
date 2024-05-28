@@ -82,8 +82,6 @@ const UserTabPanelItem = ({
       setEdittingMovieId(null)
       setInputedComment('')
       toast.error('編集をキャンセルしました', toastConfig)
-    } else {
-      return
     }
   }
 

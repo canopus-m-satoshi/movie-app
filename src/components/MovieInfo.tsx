@@ -32,13 +32,13 @@ const MovieInfo = ({ movie, movieListStatusData }: Props) => {
     (state: RootState) => state.movies.movieListData,
   )
 
-  const uid = user?.uid
+  const [userLists, setUserLists] = useState(movieListStatusData)
 
   const watcedAt = movieListData[movie.id]?.watchedAt || null
 
-  const [userLists, setUserLists] = useState(movieListStatusData)
-
   const movieId = movie.id.toString()
+
+  const uid = user?.uid
 
   const refetch = useCallback(async () => {
     if (!uid) return

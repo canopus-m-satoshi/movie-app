@@ -35,7 +35,6 @@ const NavMenu = () => {
   useEffect(() => {
     if (!user) {
       setUserName('ゲスト')
-      return
     } else if (user.uid && user.displayName) {
       setUserName(user.displayName)
     } else if (user.uid && !user.displayName) {

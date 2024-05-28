@@ -1,4 +1,3 @@
-import { Timestamp } from 'firebase/firestore'
 import { RxCross2 } from 'react-icons/rx'
 import ReactModal from 'react-modal'
 import { useDispatch } from 'react-redux'
